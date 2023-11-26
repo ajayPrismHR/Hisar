@@ -1,0 +1,257 @@
+﻿@model List<ComplaintTracker.Models.ModelComplaintType>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<div class="header">
+    <h1 class="header-title">
+        Escalated Complaints
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Escalated Complaints</li>
+        </ol>
+    </nav>
+    <div class="row mb-3">
+        <div class="col-12 col-lg-2">
+            <input class="form-check-input" type="radio" name="SearchType" id="SearchType" value="1"> <font color="white"> Circle Wise</font>
+        </div>
+        <div class="col-12 col-lg-2">
+            <input class="form-check-input" type="radio" name="SearchType" id="SearchType1" value="2"> <font color="white"> XEN Wise</font>
+        </div>
+        <div class="col-12 col-lg-2">
+            <input class="form-check-input" type="radio" name="SearchType" id="SearchType2" value="3" checked="checked"> <font color="white"> SDO Code Wise</font>
+        </div>
+        <div style="width:300px;">
+            @Html.DropDownListFor(x => Model[0].lstComplaint[0].OfficeId, new SelectList(Model[0].lstComplaint, "OfficeId", "OfficeCode"), new { @class = "form-control", id = "ddlOfficecode" })
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-xl-12 col-xxl-12 d-flex">
+        <div class="w-100">
+            <div class="row">
+                @foreach (var item in Model)
+                {
+
+                    <div class="col-sm-2 align-items-center">
+
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col mt-0">
+                                        <h5 class="card-title">@item.ComplaintType</h5>
+                                    </div>
+                                    <a class="small text-white stretched-link" onclick="myfun($('#@item.ComplaintTypeId').text())" href="#"></a>
+                                </div>
+                                <label id="@item.ComplaintTypeId" hidden>@item.ComplaintTypeId </label>
+                                @*<h1 class="display-3 mt-1 mb-3">@item.COMPLAINT_COUNT</h1>*@
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--Grid-->
+<div class="row">
+    <div class="col-12 col-lg-12 col-xxl-12 d-flex">
+        <div class="card flex-fill">
+            <div class="card-header">
+                <div class="card-actions float-end">
+                    <a href="#" class="me-1">
+                        <i class="align-middle" data-feather="refresh-cw"></i>
+                    </a>
+                </div>
+                <h5 class="card-title mb-0">Complaint Status</h5>
+            </div>
+            <table id="comp" class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>SDO Name</th>
+                        <th>Total Complaint Open</th>
+                        <th>With In SLA</th>
+                        <th>OUT Of SLA</th>
+                        <th>AEN</th>
+                        <th>XEN</th>
+                        <th>SE</th>
+                        <th>CE</th>
+                        <th>Corporate</th>
+                        @*<th>ComplaintType</th>*@
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="loadRemarkPopUp">
+
+</div>
+
+<script type="text/javascript">
+
+    minimumInputLength: 2,
+    $(document).ready(() => {
+        $('#ddlOfficecode').select2({
+            selectOnClose: true,
+            //minimumInputLength: 2,
+            //maximumInputLength: 20,
+            //minimumResultsForSearch: 50,
+            placeholder: "Select Office Code",
+        });
+        //alert(@ViewBag.RoleID);
+        var id=@ViewBag.RoleID;
+        if (id == 5) {
+            $('#SearchType').attr("disabled", true);
+            $('#SearchType1').attr("disabled", true);
+        }
+        if (id == 6) {
+            $('#SearchType').attr("disabled", true);
+        }
+    });
+
+    function myfun(id) {
+        $('.tbody').html('');
+        var Id = $.trim(id);
+        var SLATypeID;
+        var officecode = $("#ddlOfficecode").val();
+        if ($('#SearchType').prop('checked')) {
+            SLATypeID = 1;
+        } else if ($('#SearchType1').prop('checked')) {
+            SLATypeID = 2;
+        } else if ($('#SearchType2').prop('checked')) {
+            SLATypeID = 3;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: '/EsclatedComplaints/GetComplaintTypeDetails',
+            data: { OfficeCode: officecode, ComplainttypeId: Id, SLAType: SLATypeID },
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            async: "true",
+            cache: "false",
+            success: function (data) {
+                $('#comp').DataTable(
+                    {
+                        data: data,
+
+                        columns: [
+                            {
+                                render: function (data, type, row, meta) {
+                                    return  row.SDOName
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    return '<a class=" d-inline-block fw-normal pe-auto" href="#" onclick="complaintShow(1,' + row.OFFICE_CODE + ',' + id + ')">' + row.TotalComplaintOpen +'</a>'
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    return '<a class=" d-inline-block fw-normal pe-auto" href="#" onclick="complaintShow(2,' + row.OFFICE_CODE + ',' + id + ')">' + row.WithInSLA + '</a>'
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    return '<a class=" d-inline-block fw-normal pe-auto" href="#" onclick="complaintShow(3,' + row.OFFICE_CODE + ',' + id + ')">' + row.OUTOfSLA + '</a>'
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    return '<a class=" d-inline-block fw-normal pe-auto" href="#" onclick="complaintShow(4,' + row.OFFICE_CODE + ',' + id + ')">' + row.AEN + '</a>'
+                                }
+                            }, {
+                                render: function (data, type, row, meta) {
+                                    return '<a class=" d-inline-block fw-normal pe-auto" href="#" onclick="complaintShow(5,' + row.OFFICE_CODE + ',' + id + ')">' + row.XEN + '</a>'
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    return '<a class=" d-inline-block fw-normal pe-auto" href="#" onclick="complaintShow(6,' + row.OFFICE_CODE + ',' + id + ')">' + row.SE + '</a>'
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    return '<a class=" d-inline-block fw-normal pe-auto" href="#" onclick="complaintShow(7,' + row.OFFICE_CODE + ',' + id + ')">' + row.CORPORATE + '</a>'
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    return '<a class=" d-inline-block fw-normal pe-auto" href="#" onclick="complaintShow(8,' + row.OFFICE_CODE + ',' + id + ')">' + row.DT + '</a>'
+                                }
+                            },
+                            //{
+                            //    render: function (data, type, row, meta) {
+                            //        return id
+                            //    }
+                            //},
+                        ],
+                        processing: true,
+                        pageLength: 150,
+                        lengthChange: false,
+                        bFilter: false,
+                        createdRow: function (row, data, dataIndex) {
+                            if (data['backcolor'] == 1) {
+
+                                $(row).css('background-color', '#F0F0F0');
+                            }
+                            else if (data['backcolor'] == 2) {
+                                $(row).css('background-color', '#D8D8D8');
+                            }
+                            else if (data['backcolor'] == 3) {
+                                $(row).css('background-color', '#D0D0D0');
+                            }
+                            else if (data['backcolor'] == 4) {
+                                $(row).css('background-color', '#C0C0C0');
+                            }
+                            else {
+                                $(row).css('background-color', '#BEBEBE');
+                            }
+                        },
+                        destroy: true,
+                        bSort: false
+                    });
+            },
+            error: function (errormessage) {
+                alert('error in loading');
+                alert(errormessage.responseText);
+            }
+
+        })
+    };
+
+
+</script>
+
+<script>
+    var complaintShow = function (complaintStatus, OFFICE_CODE, id) {
+        var TeamDetailPostBackURL = '/EsclatedComplaints/ShowEsclatedComplaint';
+        var officecode = OFFICE_CODE;
+        var complaintTypeId = id;
+        $.ajax({
+            type: "GET",
+            url: TeamDetailPostBackURL,
+            contentType: "application/json; charset=utf-8",
+            data: { "OfficeId": officecode, "complaintStatus": complaintStatus, 'complaintTypeId': complaintTypeId },
+            datatype: "json",
+            success: function (data) {
+                $('#loadRemarkPopUp').html(data);
+                $("#EsclatedComplaintPopup").modal('show');
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+        });
+    }
+</script>

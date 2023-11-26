@@ -1,0 +1,1063 @@
+﻿@model ComplaintTracker.Models.COMPLAINT
+
+@{
+    ViewBag.Title = "Complaint Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".searchtag").keypress(function (event) {
+                if (event.which == 13) {
+                    myfun();
+                }
+            });
+            $('a.toggle-vis').on('click', function (e) {
+                e.preventDefault();
+                var table = $('#datatables-buttons').DataTable();
+                var column = table.column($(this).attr('data-column'));
+                column.visible(!column.visible());
+            });
+            document.getElementById("fromDate").value = "";
+            document.getElementById("toDate").value = "";
+
+            $(function () {
+                $('#ddlOfficecode').select2({
+                    selectOnClose: true,
+                    placeholder: "Select Office Code",
+                });
+
+                $('#ddlSource').select2({
+                    selectOnClose: false,
+                    placeholder: "Select Source",
+                });
+
+                $('#ddlCurrentStatus').select2({
+                    selectOnClose: true,
+                    placeholder: "Select Status",
+                });
+                $('#ddlCurrentAssigned').select2({
+                    selectOnClose: true,
+                    placeholder: "Select Status",
+                });
+
+                $('#ddlOfficecode').change(function () {
+
+
+                    $("#ddlFRTNo").empty().trigger('change');
+
+                    var selectedCountry = $("#ddlOfficecode").val();
+                    fillFRTNo(selectedCountry);
+
+                });
+
+
+
+                function fillFRTNo(selectedCountry) {
+                    $.ajax({
+                        type: "GET",
+                        url: '/Complaint/GetFRTNo',
+                        data: { parentOfficeId: selectedCountry },
+                        contentType: "application/json;charset=utf-8",
+                        success: function (data) {
+                            if (data) {
+                                for (var i = 0; i < data.length; i++) {
+                                    var opt = new Option(data[i].OfficeId);
+                                    $('#ddlFRTNo').append(opt);
+                                }
+                                return;
+                            } else {
+                                alert('error');
+                            }
+                        }
+                    });
+                }
+            });
+
+            $('input[type=radio][name=options]').change(function () {
+                if (this.value == 'ALL') {
+                    $('#ComplaintTypeId').val(0);
+                }
+                else if (this.value == 'BillRelated') {
+                    $('#ComplaintTypeId').val(2);
+                }
+                else if (this.value == 'MeterRelated') {
+                    $('#ComplaintTypeId').val(3);
+                }
+                else if (this.value == 'NoCurrent') {
+                    $('#ComplaintTypeId').val(4);
+                }
+                else if (this.value == 'OtherComplaint') {
+                    $('#ComplaintTypeId').val(5);
+                }
+                else if (this.value == 'SaftyRelated') {
+                    $('#ComplaintTypeId').val(6);
+                }
+                else if (this.value == 'Service Line Related') {
+                    $('#ComplaintTypeId').val(7);
+                }
+                else if (this.value == 'Transformer Burnt') {
+                    $('#ComplaintTypeId').val(8);
+                }
+                else if (this.value == 'Theft Information') {
+                    $('#ComplaintTypeId').val(9);
+                }
+                else if (this.value == 'On Door Connection Request') {
+                    $('#ComplaintTypeId').val(10);
+                }
+                else if (this.value == 'Written Complaint') {
+                    $('#ComplaintTypeId').val(11);
+                } else if (this.value == 'Dengerous Complaint') {
+                    $('#ComplaintTypeId').val(12);
+                }
+
+            });
+
+            $.ajax({
+                type: "GET",
+                url: '/Complaint/OfficeCodeJson',
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlOfficecode").append($("<option></option>").val(this.OfficeId).html(this.OfficeCode));
+                    });
+                },
+                error: function (data) { }
+            });
+
+            $.ajax({
+                type: "GET",
+                url: '/Complaint/ComplaintSourceJson',
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlSource").append($("<option></option>").val(this.Value).html(this.Text));
+                    });
+                },
+                error: function (data) { }
+            });
+        });
+
+
+
+        function myfun() {
+            var id = @ViewBag.RoleID;
+            var Complainttype = 0;
+
+            var dataObject = new Object();
+
+            
+            if ($('#All').prop('checked')) {
+                Complainttype = 0;
+            } else if ($('#BillRelated').prop('checked')) {
+                Complainttype = 2;
+            } else if ($('#MeterRelated').prop('checked')) {
+                Complainttype = 3;
+            } else if ($('#NoCurrent').prop('checked')) {
+                Complainttype = 4;
+            } else if ($('#OtherComplaint').prop('checked')) {
+                Complainttype = 5;
+            } else if ($('#SafetyRelated').prop('checked')) {
+                Complainttype = 6;
+            } else if ($('#ServiceConnectionRelated').prop('checked')) {
+                Complainttype = 7;
+            } else if ($('#TransformerRelated').prop('checked')) {
+                Complainttype = 8;
+            } else if ($('#EnergyTheft').prop('checked')) {
+                Complainttype = 9;
+            } else if ($('#VoltageRelated').prop('checked')) {
+                Complainttype = 10;
+            } else if ($('#LineRelated').prop('checked')) {
+                Complainttype = 11;
+            } else if ($('#PoleRelated').prop('checked')) {
+                Complainttype = 12;
+            } else if ($('#HARASSMENTBYDISCOMOFFICIAL').prop('checked')) {
+                Complainttype = 13;
+            }
+            dataObject.COMPLAINT_NO = $('#txtComplaintno').val();
+            dataObject.KNO = $('#txtsearchKno').val();
+
+            dataObject.ACCOUNT_NO = $('#txtaccountNo').val();
+            dataObject.MOBILE_NO = $('#txtmobileno').val();
+            dataObject.OFFICE_ID = $('#ddlOfficecode').val();
+
+            dataObject.COMPLAINT_SOURCE = $('#ddlSource').val();
+            dataObject.COMPLAINT_status = $('#ddlCurrentStatus').val();
+            dataObject.assigned_status = $('#ddlCurrentassigned').val();
+            dataObject.fromdate = $('#fromDate').val();
+            dataObject.todate = $('#toDate').val();
+            dataObject.currentStatus = $('#COMPLAINT_status_ID').val();
+            dataObject.Complaint_Type = Complainttype;
+            var RoleId = '@Request.RequestContext.HttpContext.Session["Roll_ID"]';
+            $.ajax({
+                type: "GET",
+                url: '/Complaint/GetComplaintSearch',
+                data: dataObject,
+                dataType: "json",
+                async: "true",
+                success: function (data) {
+                    if (id == 2) {
+                        var datatablesButtons = $('#datatables-buttons').DataTable(
+                             {
+                                data: data,
+                                columns: [
+                                    //{
+                                    //    data: 'Call',
+                                    //    render: function (data, type, row, meta) {
+
+                                    //        return '<a title="Call" class="callkno" id="callkno_' + row.COMPLAINT_NO + '" href="#" onclick="callKno(' + row.MOBILE_NO + ') ">  <i class="align-middle me-2 fas fa-fw fa-phone"></i> </a>'
+
+                                    //    },
+                                    //},
+                                    {
+                                        data: 'COMPLAINT_NO',
+                                        name: 'COMPLAINT_NO',
+                                        render: function (data, type, row, meta) {
+                                            return '<a class=" d-inline-block fw-normal w-100 h-100 pe-auto" href="#" onclick="complaintShow(' + row.COMPLAINT_NO + ')">' + row.COMPLAINT_NO + '</a>  <a class="fas fa-fw fa-pen" href="#" onclick=editComplaintShow(' + row.COMPLAINT_NO + ') />'
+                                        },
+                                    },
+                                    { 'data': 'KNO' },
+                                    { 'data': 'NAME' },
+                                    { 'data': 'COMPLAINT_DATE' },
+                                    { 'data': 'COMPLAINT_status' },
+                                    { 'data': 'DURATION' },
+                                    { 'data': 'OFFICE_NAME' },
+                                    { 'data': 'ADDRESS' },
+                                    { 'data': 'MOBILE_NO' },
+                                    { 'data': 'ALTERNATE_MOBILE_NO' },
+                                    { 'data': 'COMPLAINT_TYPE' },
+                                    { 'data': 'SUB_COMPLAINT_TYPE' },
+                                    {
+                                        data: 'COMPLAINT_NO',
+                                        name: '',
+                                        render: function (data, type, row, meta) {
+                                            if (row.COMPLAINT_status != "Closed") {
+                                                return '<button href="#" type="submit" class="btn btn-primary btnShadow" onclick="Addremark(' + row.COMPLAINT_NO + ')">Remark</a>'
+                                            }
+                                            else { return '' }
+                                        },
+                                    },
+                                    {
+                                        data: 'COMPLAINT_NO',
+                                        name: '',
+                                        render: function (data, type, row, meta) {
+                                            if (row.COMPLAINT_status != "Closed") {
+                                                return '<button href="#" type="submit" class="btn btn-success btnShadow" onclick="ChangeComplaint(' + row.COMPLAINT_NO + ')">Complaint</a>'
+                                            } else { return '' }
+                                        },
+                                    },
+                                    {
+                                        data: 'COMPLAINT_NO',
+                                        name: '',
+                                        render: function (data, type, row, meta) {
+                                            if (row.COMPLAINT_status != "Closed") {
+                                                return '<button href="#" type="submit" class="btn btn-warning btnShadow" onclick="Assign(' + row.COMPLAINT_NO + ')">Assign</a>'
+                                            } else { return '' }
+                                        },
+                                    },
+                                    {
+                                        data: 'COMPLAINT_NO',
+                                        name: '',
+                                        render: function (data, type, row, meta) {
+                                            if (row.COMPLAINT_status != "Closed") {
+                                                return '<button href="#" type="submit" class="btn btn-danger btnShadow" onclick="Close(' + row.COMPLAINT_NO + ')">Close</a>'
+                                            } else { return '' }
+                                        },
+                                    },
+                                    { 'data': 'SOURCE_NAME' },
+                                    { 'data': 'ASSIGNED_TO' },
+                                    //{ 'data': 'OUTAGE_TYPE' },
+                                    //{ 'data': 'RECTIFICATION' },
+                                    //{ 'data': 'CAUSE' },
+                                    //{ 'data': 'METER_NO' },
+                                    //{ 'data': 'USP_GETFRT' },
+                                    //{ 'data': 'METER_TYPE' },
+                                    //{ 'data': 'BEFORE_RECTIFICATION' },
+                                    //{ 'data': 'AFTER_RECTIFICATION' },
+                                    //{ 'data': 'ANY_ABNORMALITY' },
+                                    //{ 'data': 'FILE' },
+                                    //{ 'data': 'SIGNATURE' },
+                                    //{
+                                    //    data: 'COMPLAINT_NO',
+                                    //    name: 'Closed',
+                                    //    render: function (data, type, row, meta) {
+                                    //        if (row.COMPLAINT_status == "Closed") {
+                                    //            return '<td class="borderTable"></td><td class="borderTable"></td><td class="borderTable"></td><td class="borderTable"></td>'
+                                    //        }
+                                    //        else { return '' }
+                                    //    },
+                                    //},
+
+                                    //{ 'data': 'UPLOAD' },
+                                    { 'data': 'CLOSED_BY' },
+                                   /* { 'data': 'CLOSED_SOURCE' },*/
+
+                                ],
+                                "rowCallback": function (row, data, dataIndex) {
+                                    if (data['COMPLAINT_status'] == "Pending") {
+                                        $(row).find('td:eq(4)').addClass('table-warning');
+                                    } else if (data['COMPLAINT_status'] == "Closed") {
+                                        $(row).find('td:eq(4)').addClass('table-success');
+                                    }
+
+                                },
+                                scrollX: true,
+                                scrollY: true,
+                                scrollCollapse: true,
+                                paging: true,
+                                processing: true,
+                                pageLength: 150,
+                                columnDefs: [{
+                                    "targets": [ 2, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+                                    "orderable": false,
+                                }],
+                                fixedHeader: true,
+                                fixedColumns: {
+                                    leftColumns: 1,
+                                    rightColumns: 1
+                                },
+                                buttons: ['print', 'csv'],
+                                destroy: true,
+
+                            });
+                        datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+                    } else {
+                        var datatablesButtons = $('#datatables-buttons').DataTable(
+                            {
+                                data: data,
+                                columns: [
+                                    {
+                                        data: 'COMPLAINT_NO',
+                                        name: 'COMPLAINT_NO',
+                                        render: function (data, type, row, meta) {
+                                            return '<a class="fw-normal pe-auto" href="#" onclick="complaintShow(' + row.COMPLAINT_NO + ')">' + row.COMPLAINT_NO + '</a>  <a class="fas fa-fw fa-pen" href="#" onclick=editComplaintShow(' + row.COMPLAINT_NO + ') />'
+
+
+                                        },
+                                    },
+                                    { 'data': 'KNO' },
+                                    { 'data': 'NAME' },
+                                    { 'data': 'COMPLAINT_DATE' },
+                                    { 'data': 'COMPLAINT_status' },
+                                    { 'data': 'DURATION' },
+                                    { 'data': 'OFFICE_NAME' },
+                                    { 'data': 'ADDRESS' },
+                                    { 'data': 'MOBILE_NO' },
+                                    { 'data': 'ALTERNATE_MOBILE_NO' },
+                                    { 'data': 'COMPLAINT_TYPE' },
+                                    { 'data': 'SUB_COMPLAINT_TYPE' },
+                                    {
+                                        data: 'COMPLAINT_NO',
+                                        name: '',
+                                        render: function (data, type, row, meta) {
+                                            if (row.COMPLAINT_status != "Closed") {
+                                                return '<button href="#" type="submit" class="btn btn-primary btnShadow" onclick="Addremark(' + row.COMPLAINT_NO + ')">Remark</a>'
+                                            }
+                                            else { return '' }
+                                        },
+                                    },
+                                    {
+                                        data: 'COMPLAINT_NO',
+                                        name: '',
+                                        render: function (data, type, row, meta) {
+                                            if (row.COMPLAINT_status != "Closed") {
+                                                return '<button href="#" type="submit" class="btn btn-success btnShadow" onclick="ChangeComplaint(' + row.COMPLAINT_NO + ')">Complaint</a>'
+                                            } else { return '' }
+                                        },
+                                    },
+                                    {
+                                        data: 'COMPLAINT_NO',
+                                        name: '',
+                                        render: function (data, type, row, meta) {
+                                            if (id == 2 || id == 6) {
+                                                return '<button href="#" type="submit" class="btn btn-success btnShadow" onclick="ChangeComplaint(' + row.COMPLAINT_NO + ')">Complaint</a>'
+                                            } else { return '' }
+                                        },
+
+                                    },
+                                    {
+                                        data: 'COMPLAINT_NO',
+                                        name: '',
+                                        render: function (data, type, row, meta) {
+                                            if (id == 2 || id == 6) {
+                                                return '<button href="#" type="submit" class="btn btn-success btnShadow" onclick="ChangeComplaint(' + row.COMPLAINT_NO + ')">Complaint</a>'
+                                            } else { return '' }
+                                        },
+
+                                    },
+                                    { 'data': 'SOURCE_NAME' },
+                                    { 'data': 'ASSIGNED_TO' },
+                                    //{ 'data': 'OUTAGE_TYPE' },
+                                    //{ 'data': 'RECTIFICATION' },
+                                    //{ 'data': 'CAUSE' },
+                                    //{ 'data': 'METER_NO' },
+                                    //{ 'data': 'USP_GETFRT' },
+                                    //{ 'data': 'METER_TYPE' },
+                                    //{ 'data': 'BEFORE_RECTIFICATION' },
+                                    //{ 'data': 'AFTER_RECTIFICATION' },
+                                    //{ 'data': 'ANY_ABNORMALITY' },
+                                    //{ 'data': 'FILE' },
+                                    //{ 'data': 'SIGNATURE' },
+                                    //{
+                                    //    data: 'COMPLAINT_NO',
+                                    //    name: 'Closed',
+                                    //    render: function (data, type, row, meta) {
+                                    //        if (row.COMPLAINT_status == "Closed") {
+                                    //            return '<td class="borderTable"></td><td class="borderTable"></td><td class="borderTable"></td><td class="borderTable"></td>'
+                                    //        }
+                                    //        else { return '' }
+                                    //    },
+                                    //},
+
+                                    //{ 'data': 'UPLOAD' },
+                                    { 'data': 'CLOSED_BY' },
+                                   /* { 'data': 'CLOSED_SOURCE' },*/
+
+                                ],
+                                "rowCallback": function (row, data, dataIndex) {
+                                    if (data['COMPLAINT_status'] == "Pending") {
+                                        $(row).find('td:eq(4)').addClass('table-warning');
+                                    } else if (data['COMPLAINT_status'] == "Closed") {
+                                        $(row).find('td:eq(4)').addClass('table-success');
+                                    }
+
+                                },
+                                scrollX: true,
+                                scrollY: true,
+                                scrollCollapse: true,
+                                paging: true,
+                                pageLength: 150,
+                                processing: true,
+                                columnDefs: [{
+                                    "targets": [ 2, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+                                    "orderable": false,
+                                }],
+                                fixedHeader: true,
+                                fixedColumns: {
+                                    leftColumns: 1,
+                                    rightColumns: 1
+                                },
+                                buttons: ['print', 'csv'],
+                                destroy: true,
+
+                            });
+                        datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+                    }
+
+                },
+
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+
+            });
+        };
+
+        //function myfun2() {
+        //    var id = sessionStorage.getItem("id");
+        //    var type = sessionStorage.getItem("type");
+        //    if (id != null) {
+        //        if (type == "Call") {
+        //            $('#callkno_' + id).hide();
+        //            $('#hold_' + id).show();
+        //            $('#pick_' + id).hide();
+        //        } else if (type == "hang") {
+        //            $('#callkno_' + id).show();
+        //            $('#hold_' + id).hide();
+        //            $('#pick_' + id).hide();
+        //        } else if (type == "hold") {
+        //            $('#callkno_' + id).hide();
+        //            $('#hold_' + id).hide();
+        //            $('#pick_' + id).show();
+        //        } else if (type == "pick") {
+        //            $('#callkno_' + id).hide();
+        //            $('#pick_' + id).hide();
+        //            $('#hold_' + id).show();
+        //        }
+        //    }
+        //}
+    </script>
+    <script>
+        var complaintShow = function (recordId) {
+            var TeamDetailPostBackURL = '/Complaint/ShowComplaint';
+
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "Id": recordId },
+                datatype: "json",
+                success: function (data) {
+                    $('#loadRemarkPopUp').html(data);
+                    $("#complaintPopup").modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+        var AddCallToFRT = function (id) {
+            var TeamDetailPostBackURL = '/Complaint/CallToFRT';
+            /*alert($('#ddlFRTNo').val());*/
+            var phoneno = $('#ddlFRTNo').val();
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "Phone": phoneno },
+                datatype: "json",
+                success: function (data) {
+                    /*alert($('#ddlFRTNo').val());*/
+                    //$('#loadRemarkPopUp').html(data);
+                    //$("#complaintPopup").modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+            //var TeamDetailPostBackURL = '/Complaint/CallToFRT';
+            //alert($('#ddlFRTNo').val());
+            //$.ajax({
+            //    type: "GET",
+            //    url: TeamDetailPostBackURL,
+            //    contentType: "application/json; charset=utf-8",
+            //    data: { "Id": id },
+            //    datatype: "json",
+            //    success: function (data) {
+            //        $('#loadRemarkPopUp').html(data);
+            //        $("#remarkPopup").modal('show');
+            //    },
+            //    error: function () {
+            //        alert("Dynamic content load failed.");
+            //    }
+            //});
+        }
+        var AddCallTransfer = function (roleid) {
+            var TeamDetailPostBackURL = '/Complaint/CallTransfer';
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "RoleId": roleid },
+                datatype: "json",
+                success: function (data) {
+                    $('#loadRemarkPopUp').html(data);
+                    $("#remarkPopup").modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+        var Addremark = function (recordId) {
+            var TeamDetailPostBackURL = '/Complaint/DetailsSaveRemark';
+
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "Id": recordId },
+                datatype: "json",
+                success: function (data) {
+                    $('#loadRemarkPopUp').html(data);
+                    $("#remarkPopup").modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+        var ChangeComplaint = function (recordId) {
+            var TeamDetailPostBackURL = '/Complaint/DetailsSaveChangeComplaint';
+
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "Id": recordId },
+                datatype: "json",
+                success: function (data) {
+                    $('#loadRemarkPopUp').html(data);
+                    $("#ChangeComplaintPopup").modal('show');
+
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+        var Assign = function (recordId) {
+
+            var TeamDetailPostBackURL = '/Complaint/DetailsSaveAssign';
+
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "Id": recordId },
+                datatype: "json",
+                success: function (data) {
+                    $('#loadRemarkPopUp').html(data);
+                    $("#AssignPopup").modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+
+        }
+        var Close = function (recordId) {
+
+            var TeamDetailPostBackURL = '/Complaint/DetailsSaveClose';
+
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "Id": recordId },
+                datatype: "json",
+                success: function (data) {
+                    $('#loadRemarkPopUp').html(data);
+                    $("#ClosePopup").modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+
+        }
+
+        var callKno = function (phone_number) {
+            var TeamDetailPostBackURL = '/Complaint/SaveCall';
+
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "Phone":phone_number },
+                datatype: "json",
+                success: function (data) {
+
+                    //$('#loadRemarkPopUp').html(data);
+                    //$("#complaintPopup").modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+            @*debugger;
+            var UID = '@Request.RequestContext.HttpContext.Session["User_name"]';
+            var rname = '@Request.RequestContext.HttpContext.Session["Roll_Name"]';
+            var PostBackURL = '@System.Configuration.ConfigurationManager.AppSettings["ExternalApiURL"]';
+            var user='@System.Configuration.ConfigurationManager.AppSettings["APIUser"]';
+            var pass='@System.Configuration.ConfigurationManager.AppSettings["APIPassword"]';
+            $('#callkno_' + id).hide();
+            $('#hold_' + id).show();
+            $('#pick_' + id).hide();
+            $.ajax({
+                type: "GET",
+                crossDomain: true,
+                url: PostBackURL,
+                contentType: "application/text; charset=utf-8",
+                data: { "user": user, "pass": pass, "agent_user": UID, "function": "external_dial", "phone_number": phone_number, "phone_code": "91" },
+                datatype: "json",
+                success: function (response) {
+                    alert(response);
+                    //var dataObject = new Object();
+                    //dataObject.AGENT_ID = $('#txtComplaintno').val();
+                    //dataObject.AGENT_TYPE = $('#txtComplaintno').val();
+                    //dataObject.LOGIN_TIME = $('#txtComplaintno').val();
+                    /*  LogAPICall(dataObject);*/
+                    $.get("/Complaint/SaveCall", {
+                        "agent_id": UID, "phone": phone_number, "agent_type": rname, "callStart":@DateTime.Now, "callType": "Call To Consumer", "callStatus": "Start", "Transfer_From": null, "Processes": "C"
+                    }, function (data) {
+
+                    });
+                    sessionStorage.setItem("id", id);
+                    sessionStorage.setItem("type", "Call");
+                },
+                error: function (xhr, status) {
+                    alert(status);
+                  /*  LogAPICall('fail');*/
+                    sessionStorage.setItem("id", id);
+                    sessionStorage.setItem("type", "Call");
+                }
+            });*@
+
+        }
+        var hangup = function (phone_number) {
+            var TeamDetailPostBackURL = '/Complaint/HangCall';
+
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "Phone": phone_number },
+                datatype: "json",
+                success: function (data) {
+                    /*alert("aaa");*/
+                    //$('#loadRemarkPopUp').html(data);
+                    //$("#complaintPopup").modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+            @*var UID = '@Request.RequestContext.HttpContext.Session["User_Name"]';
+            var PostBackURL = '@System.Configuration.ConfigurationManager.AppSettings["ExternalApiURL"]';
+            var user='@System.Configuration.ConfigurationManager.AppSettings["APIUser"]';
+            var pass='@System.Configuration.ConfigurationManager.AppSettings["APIPassword"]';
+            $('#callkno_' + id).show();
+            $('#hold_' + id).hide();
+            $('#pick_' + id).hide();
+            $.ajax({
+                type: "GET",
+                crossDomain: true,
+                url: PostBackURL,
+                contentType: "application/text; charset=utf-8",
+                data: { "user": user, "pass": pass, "agent_user": UID, "function": "external_hangup" },
+                datatype: "json",
+                success: function (response) {
+                    $.get("/Complaint/HangCall", {
+                        "agent_id": UID, "phone": phone_number, "CALL_END_TIME":@DateTime.Now, "Transfer_From": null, "Processes": "D"
+                    }, function (data) {
+
+                    });
+                    alert(response);
+                    sessionStorage.setItem("id", id);
+                    sessionStorage.setItem("type", "hang");
+                },
+                error: function (xhr, status) {
+                    alert(status);
+                    sessionStorage.setItem("id", id);
+                    sessionStorage.setItem("type", "hang");
+                }
+            });*@
+
+        }
+        var CallHold = function (phone_number) {
+            var TeamDetailPostBackURL = '/Complaint/HoldCall';
+
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "Phone": phone_number },
+                datatype: "json",
+                success: function (data) {
+                    //$('#loadRemarkPopUp').html(data);
+                    //$("#complaintPopup").modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+            @*var UID = '@Request.RequestContext.HttpContext.Session["User_Name"]';
+            var PostBackURL = '@System.Configuration.ConfigurationManager.AppSettings["ExternalApiURL"]';
+            var user='@System.Configuration.ConfigurationManager.AppSettings["APIUser"]';
+            var pass='@System.Configuration.ConfigurationManager.AppSettings["APIPassword"]';
+            $('#hold_' + id).hide();
+            $('#pick_' + id).show();
+            $.ajax({
+                type: "GET",
+                crossDomain: true,
+                url: PostBackURL,
+                contentType: "application/text; charset=utf-8",
+                data: { "user": user, "pass": pass, "agent_user": UID, "function": "hold_customer" },
+                datatype: "json",
+                success: function (response) {
+                    $('#hold').hide();
+                    $('#pick').show();
+                     $.get("/Complaint/HoldCall", {
+                        "agent_id": UID, "phone": phone_number, "CALL_HOLD_TIME":@DateTime.Now, "Transfer_From": null, "Processes": "H"
+                    }, function (data) {
+
+                    });
+                    alert(response);
+                    sessionStorage.setItem("id", id);
+                    sessionStorage.setItem("type", "hold");
+                },
+                error: function (xhr, status) {
+                    alert(status);
+                    sessionStorage.setItem("id", id);
+                    sessionStorage.setItem("type", "hold");
+                }
+            });*@
+
+        }
+        var CallPick = function (phone_number) {
+            var TeamDetailPostBackURL = '/Complaint/PickCall';
+
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "Phone": phone_number },
+                datatype: "json",
+                success: function (data) {
+                    //$('#loadRemarkPopUp').html(data);
+                    //$("#complaintPopup").modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+            @*var UID = '@Request.RequestContext.HttpContext.Session["User_Name"]';
+            var PostBackURL = '@System.Configuration.ConfigurationManager.AppSettings["ExternalApiURL"]';
+            var user='@System.Configuration.ConfigurationManager.AppSettings["APIUser"]';
+            var pass='@System.Configuration.ConfigurationManager.AppSettings["APIPassword"]';
+            $('#pick_' + id).hide();
+            $('#hold_' + id).show();
+            $.ajax({
+                type: "GET",
+                crossDomain: true,
+                url: PostBackURL,
+                contentType: "application/text; charset=utf-8",
+                data: { "user": user, "pass": pass, "agent_user": UID, "function": "pickup_customer" },
+                datatype: "json",
+                success: function (response) {
+                    $('#pick').hide();
+                    $('#hold').show();
+                     $.get("/Complaint/PickCall", {
+                         "agent_id": UID, "phone": phone_number, "CALL_PICKUP_TIME":@DateTime.Now, "Transfer_From": null, "Processes": "P"
+                    }, function (data) {
+
+                    });
+                    alert(response);
+                    sessionStorage.setItem("id", id);
+                    sessionStorage.setItem("type", "pick");
+                },
+                error: function (xhr, status) {
+                    alert(status);
+                    sessionStorage.setItem("id", id);
+                    sessionStorage.setItem("type", "pick");
+                }
+            });*@
+
+        }
+
+        function LogAPICall(msg) {
+            alert(msg);
+        }
+
+        var editComplaintShow = function (recordId) {
+                var TeamDetailPostBackURL = '/Complaint/EditComplaint';
+                $.ajax({
+                    type: "GET",
+                    url: TeamDetailPostBackURL,
+                    contentType: "application/json; charset=utf-8",
+                    data: { "ComplaintNo": recordId },
+                    datatype: "json",
+                    success: function (data) {
+                        $('#loadRemarkPopUp').html(data);
+                        $("#modeleditComplaint").modal('show');
+                    },
+                    error: function () {
+                        alert("Dynamic content load failed.");
+                    }
+                });
+            }
+    </script>
+
+
+}
+<div class="header">
+    <h1 class="header-title">
+        Search Complaint
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            @*<li class="breadcrumb-item"><a href="#">Forms</a></li>*@
+            <li class="breadcrumb-item active" aria-current="page">Search Complaint</li>
+        </ol>
+    </nav>
+</div>
+@if (TempData["AlertMessage"] != null)
+{
+    <script type="text/javascript">
+        var msg = '@TempData["AlertMessage"]'
+        swal("Good job!",msg, "success");
+    </script>
+}
+
+<div class="row">
+    @{
+        var fromDate = (DateTime)ViewBag.fromDate;
+        var toDate = (DateTime)ViewBag.toDate;
+
+    }
+
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Search Complaint</h4>
+                    @*<h6 class="card-subtitle text-muted">jQuery Plugin to make masks on form fields.</h6>*@
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-6">
+                            <input class="form-control searchtag" id="txtComplaintno" name="searchComplaintno" type="text" value="" placeholder="Complaint No." />
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <input class="form-control searchtag" id="txtsearchKno" name="searchKno" type="text" value="" placeholder="K No." />
+                        </div>
+
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-6">
+                            <input class="form-control searchtag" id="txtaccountNo" name="searchaccountno" type="text" value="" placeholder="Account No./Binder No." />
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <input class="form-control searchtag" id="txtmobileno" name="searchmobileno" type="text" value="" placeholder="Mobile No." />
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-4">
+                            @Html.DropDownList("ddlOfficecode", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlOfficecode" })
+                        </div>
+                        <div class="col-12 col-lg-4">
+                            @Html.DropDownList("ddlSource", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlSource" })
+                        </div>
+                        <div class="col-12 col-lg-4">
+                            @Html.DropDownList("ddlassigned", new List<SelectListItem>
+                           {
+                           new SelectListItem{ Text="All", Value = "0" },
+                               new SelectListItem{ Text="Assigned", Value = "1" },
+                               new SelectListItem{ Text="UnAssigned", Value = "2" },
+                            }, new { @class = "form-control", id = "ddlCurrentassigned" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-3">
+                            @Html.TextBox("fromDate", string.Format("{0:yyyy-MM-dd}", fromDate), new { @class = "form-control mb-1", type = "date" })
+                        </div>
+                        <div class="col-12 col-lg-3">
+                            @Html.TextBox("toDate", string.Format("{0:yyyy-MM-dd}", toDate), new { @class = "form-control mb-1", type = "date" })
+                        </div>
+                        <div class="col-12 col-lg-3">
+                            @Html.DropDownList("ddlstatus", new List<SelectListItem>
+                           {
+                           new SelectListItem{ Text="All", Value = "0" },
+                               new SelectListItem{ Text="Pending", Value = "1" },
+                               new SelectListItem{ Text="Closed", Value = "2" },
+                                 new SelectListItem{ Text="ReOpen", Value = "3" },
+                            }, new { @class = "form-control", id = "ddlCurrentStatus" })
+                        </div>
+                        <div class="col-12 col-lg-2">
+                            <select id="ddlFRTNo" class="form-control">
+                            </select>
+                        </div>
+
+                        @*<div class="col-12 col-lg-1">
+                                <button type="button" class="btn btn-success"  onclick="callKno(mobile.value)"><i class="align-middle me-2 fas fa-fw fa-phone" data-toggle="tooltip" data-placement="top" title="call to frt"> </i></button>
+                            </div>*@
+
+                    </div>
+                    <!--Complaint Type-->    
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-12">
+                            <input type="hidden" id="ComplaintTypeId" value="0">
+                            <div class="btn-group mb-1" style="overflow:hidden;width:100%">
+                                @foreach (var item in Model.ComplaintTypeCollection)
+                                {
+                                    if (item.ComplaintTypeId <= 8)
+                                    {
+                                        <input class="btn-check" type="radio" name="options" id="@item.ComplaintType.Replace(" ", "")" autocomplete="off">
+                                        <label class="btn text-white" for="@item.ComplaintType.Replace(" ", "")" style="background-color:@item.ComplaintTileColor">@item.ComplaintType</label>
+                                    }
+                                }
+                            </div>
+                            <div class="btn-group" style="overflow:hidden;width:100%">
+                                @foreach (var item in Model.ComplaintTypeCollection)
+                                {
+                                    if (item.ComplaintTypeId > 8)
+                                    {
+                                        <input class="btn-check" type="radio" name="options" id="@item.ComplaintType.Replace(" ", "")" autocomplete="off">
+                                        <label class="btn text-white" for="@item.ComplaintType.Replace(" ", "")" style="background-color:@item.ComplaintTileColor">@item.ComplaintType</label>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-1">
+                            <div>
+                                <input type="submit" value="Search" class="btn btn-primary btn-block" id="btnSearch" onclick="myfun()" name="btnSearch" />
+                            </div>
+                        </div>
+
+                        @*<div class="col-12 col-lg-4">
+                                <button type="button" class="btn btn-success"  data-toggle="tooltip" data-placement="top" title="Hold" onclick="CallHold(9999999999)"><i class="align-middle me-2 fas fa-fw fa-pause"></i></button>
+                                <button type="button" class="btn btn-danger"  data-toggle="tooltip" data-placement="top" title="Resume" onclick="CallPick(9999999999)"><i class="align-middle me-2 fas fa-fw fa-phone-volume "></i></button>
+                                <button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Hangup" onclick="hangup(9999999999)"><i class="align-middle me-2 fas fa-fw fa-phone-slash"></i></button>
+                            </div>*@
+                    </div>
+                    <div class="row mb-3">
+                        <table id="datatables-buttons" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    @*@{
+                                            if (ViewBag.RoleID == "2")
+                                            {
+                                                <th>Call</th>
+                                            }
+                                        }*@
+                                    <th>Complaint No.</th>
+                                    <th>Knumber</th>
+                                    <th>Consumer name</th>
+                                    <th>Date</th>
+                                    <th>Current Status</th>
+                                    <th>Duration<br />(hr:min)</th>
+                                    <th>Office Name</th>
+                                    <th>Address</th>
+                                    <th>Mobile No.</th>
+                                    <th>Alternate Mobile No.</th>
+                                    <th>Complaint Type</th>
+                                    <th>Sub Complaint Type</th>
+                                    <th>Remark</th>
+                                    <th>Complaint</th>
+                                    <th>Assign</th>
+                                    <th>Close</th>
+                                    <th>Source Status</th>
+                                    <th>Assigned To</th>
+                                    <!--<th>Outage Type</th>
+                                    <th>Rectification</th>
+                                    <th>Cause</th>
+                                    <th>Meter No.</th>
+                                    <th>USP_GetFRTFile</th>
+                                    <th>Meter Type</th>
+                                    <th>Before Rectification</th>
+                                    <th>After Rectification</th>
+                                    <th>Any Abnormailty</th>
+                                    <th>File</th>
+                                    <th>Signature</th>-->
+                                    @*<th colspan="4" style="text-align:center">Action</th>*@
+                                    <!--<th>Closed</th>
+
+
+
+                                    <th>Upload</th>-->
+                                    <th>Closed  By</th>
+                                    @*<th>Closing Source</th>*@
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="loadRemarkPopUp">
+
+</div>
+

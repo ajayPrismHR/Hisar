@@ -1,0 +1,204 @@
+﻿@model ComplaintTracker.Models.COMPLAINT
+
+@{
+    ViewBag.Title = "Complaint Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<style type="text/css">
+    #DPaging_previous a {
+        background-color: transparent;
+    }
+
+    #DPaging_next a {
+        background-color: transparent;
+    }
+
+    .paginate_button.active .page-link {
+        background-color: grey !important;
+        border: 1px solid black !important;
+    }
+</style>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            myfun();
+            $('#btnExport').prop('disabled', true);
+            document.getElementById('btnExport').style.display = 'none';
+            document.getElementById('Export').style.display = '';
+            $(".searchtag").keypress(function (event) {
+                if (event.which == 13) {
+
+                    myfun();
+                }
+            });
+            $('a.toggle-vis').on('click', function (e) {
+                e.preventDefault();
+                var table = $('#datatables-buttons').DataTable();
+                var column = table.column($(this).attr('data-column'));
+                column.visible(!column.visible());
+            });
+            document.getElementById("fromDate").value = "";
+            document.getElementById("toDate").value = "";
+
+        });
+
+        function myfun() {
+            var id = @ViewBag.RoleID;
+            var Complainttype = 0;
+
+            var dataObject = new Object();
+            myTable = $('#datatables-buttons').dataTable({
+                "ajax": {
+                    "url": "/Complaint/GetComplaintSearch/",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+                        //d.COMPLAINT_NO = dataObject.COMPLAINT_NO;
+                        //d.KNO = dataObject.KNO;
+                        //d.ACCOUNT_NO = dataObject.ACCOUNT_NO;
+                        //d.MOBILE_NO = dataObject.MOBILE_NO;
+                        //d.OFFICE_ID = dataObject.OFFICE_ID;
+                        //d.COMPLAINT_SOURCE = dataObject.COMPLAINT_SOURCE;
+                        //d.COMPLAINT_status = dataObject.COMPLAINT_status;
+                        //d.assigned_status = dataObject.assigned_status;
+                        //d.fromdate = dataObject.fromdate;
+                        //d.todate = dataObject.todate;
+                        //d.currentStatus = dataObject.currentStatus;
+                        //d.Complaint_Type = dataObject.Complaint_Type;
+                    }
+                },
+                "destroy": true,
+                "lengthMenu": [[10, 20, 50, 100, 150], [10, 20, 50, 100, 150]],
+                "pageLength": 10,
+                "processing": true,
+                "serverSide": true,
+                scrollY: true,
+                scrollX: true,
+                "searching": false,
+                ordering: false,
+                "language": {
+                    "processing": '<i class="fa fa-spinner fa-spin fa-4x fa-fw" style="color:#3B3B96;"></i><span class="sr-only">Loading...</span>'
+                },
+                dom: 'Blfrtip',
+                buttons: [
+                    'colvis'
+                ],
+                "columns": [
+                    {
+                        'width': 120,
+                        data: 'COMPLAINT_NO',
+                       
+                    },
+                    { 'data': 'NAME' },
+                    { 'data': 'COMPLAINT_DATE'  , 'width': 120 },
+                    { 'data': 'LineMan_Name' },
+                    { 'data': 'ADDRESS' },
+                    { 'data': 'MOBILE_NO' },
+                    { 'data': 'REMARK' },
+
+                    { 'data': 'Consumer_no' },
+                    {
+                        data: 'COMPLAINT_NO1',
+                        name: '',
+                        render: function (data, type, row, meta) {
+                                return '<button href="#" type="submit" class="btn btn-danger btnShadow" onclick="Close(' + row.COMPLAINT_NO1 + ')">Close</a>'
+                        },
+                    },
+                ]
+               
+            });
+
+        }
+
+
+    </script>
+    <script>
+        var Close = function (recordId) {
+            var TeamDetailPostBackURL = '/Complaint/DetailsSaveClose';
+            
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "Id": recordId },
+                datatype: "json",
+                success: function (data) {
+                    $('#loadRemarkPopUp').html(data);
+                    $("#ClosePopup").modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+
+        }
+    </script>
+}
+<div class="header">
+    <h1 class="header-title">
+        Search Complaint
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            @*<li class="breadcrumb-item"><a href="#">Forms</a></li>*@
+            <li class="breadcrumb-item active" aria-current="page">Search Complaint</li>
+        </ol>
+    </nav>
+</div>
+@if (TempData["AlertMessage"] != null)
+{
+    <script type="text/javascript">
+        var msg = '@TempData["AlertMessage"]'
+        swal("Good job!",msg, "success");
+    </script>
+}
+
+
+<div class="row">
+    @{
+        var fromDate = (DateTime)ViewBag.fromDate;
+        var toDate = (DateTime)ViewBag.toDate;
+
+    }
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Search Complaint</h4>
+                    @*<h6 class="card-subtitle text-muted">jQuery Plugin to make masks on form fields.</h6>*@
+
+                </div>
+                <div class="card-body">
+
+                    
+                    <div class="row mb-2">
+                        <table id="datatables-buttons" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Complaint No.</th>
+                                    <th>Customer name</th>
+                                    <th>Date</th>
+                                    <th>Lineman Name</th>
+                                    <th>Address</th>
+                                    <th>Mobile No.</th>
+                                    <th>Remark</th>
+                                    <th>Consumer No.</th>
+                                    <th>Close</th>
+
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="loadRemarkPopUp">
+
+</div>
+

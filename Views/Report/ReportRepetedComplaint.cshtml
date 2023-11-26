@@ -1,0 +1,171 @@
+﻿@using System.Data
+@model DataTable
+
+@{
+    ViewBag.Title = "ReportRepetedComplaint";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var fromDate = (DateTime)ViewBag.fromDate;
+    var toDate = (DateTime)ViewBag.toDate;
+    System.Collections.ArrayList arrayList = new System.Collections.ArrayList();
+}
+
+
+@using (Html.BeginForm("ReportRepetedComplaint", "Report", FormMethod.Post, new { name = "frm", id = "validation-form" }))
+{
+    <div class="header">
+        <h1 class="header-title">
+            Repeted Complaint
+        </h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Repeted Complaint</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">About Repeted Complaint</h5>
+                    <h6 class="card-subtitle text-muted">
+                        Description of Report
+                    </h6>
+                </div>
+                <div class="card-body  table-responsive">
+                    <div class="row mb-2">
+                        <div class="col-12 col-lg-2">
+                            @Html.TextBox("fromDate", string.Format("{0:yyyy-MM-dd}", fromDate), new { @class = "form-control mb-1", type = "date" })
+                        </div>
+                        <div class="col-12 col-lg-2">
+                            @Html.TextBox("toDate", string.Format("{0:yyyy-MM-dd}", toDate), new { @class = "form-control mb-1", type = "date" })
+                        </div>
+
+                        <div class="col-12 col-lg-4">
+                            @Html.DropDownList("ddlOfficecode", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlOfficecode" })
+                        </div>
+                        <div class="col-12 col-lg-2">
+                            @*@Html.DropDownList("ddlType", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlType" })*@
+                            @*@Html.DropDownList("ddlType", (SelectList)ViewBag.ItemList, new { @class = "form-control", id = "ddlType" })*@
+                            @Html.DropDownList("ddlType", (IEnumerable<SelectListItem>)ViewBag.ItemList, "[Select user]", new { @class = "form-control", id = "ddlType" })
+                        </div>
+                        <div class="col-12 col-lg-2">
+                            <input type="submit" value="Search" class="btn btn-dark btn-block" id="btnSearch" />
+                        </div>
+                    </div>
+                    <table id="datatables-buttons" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                @{
+                                   
+                                    foreach (DataColumn col in Model.Columns)
+                                    {
+                                        arrayList.Add(@col.ColumnName);
+                                        <th>@col.ColumnName</th>
+                                    }
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (DataRow row in Model.Rows)
+                            {
+                                int i = 0;
+                                <tr>
+                                    @foreach (DataColumn col in Model.Columns)
+                                    {
+                                        if (i >= 1 && i < arrayList.Count-1)
+                                        {
+                                            <td> <a href="#" onclick="complaintShow('@row[0]' +  ',' + '@arrayList[i]')" class="me-1"> @row[col.ColumnName]</a></td>
+                                        }
+                                        else
+                                        {
+                                            <td>@row[col.ColumnName]</td>
+                                        }
+                                        i = i + 1;
+
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="loadPopUp">
+
+    </div>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(function () {
+            $('#ddlOfficecode').select2({
+                selectOnClose: true,
+                placeholder: "Select Office Code",
+            });
+
+            $('#ddlType').select2({
+                selectOnClose: true,
+                placeholder: "Select Complaint type",
+            });
+
+            $.ajax({
+                type: "GET",
+                url: '/Complaint/OfficeCodeJson',
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlOfficecode").append($("<option></option>").val(this.OfficeId).html(this.OfficeCode));
+                    });
+                },
+                error: function (data) { }
+            });
+
+            //$.ajax({
+            //    type: "GET",
+            //    url: '/Complaint/ComplaintTypeJson',
+            //    contentType: "application/json; charset=utf-8",
+            //    datatype: JSON,
+            //    success: function (result) {
+            //        console.log(result);
+            //        $(result).each(function () {
+            //            $("#ddlType").append($("<option></option>").val(this.ComplaintTypeId).html(this.ComplaintType));
+            //        });
+            //    },
+            //    error: function (data) { }
+            //});
+            //$('[name=ddlType]').val("4");
+            
+        });
+    });
+    var complaintShow = function (colData) {
+        var officecode = colData.substring(0, 7);
+        var backway = colData.split("").reverse().join("");
+        var repCount = backway.substring(0, backway.indexOf(','));
+
+        var dataObject = new Object();
+        dataObject.ComplaintType = $('#ddlType').val();
+        dataObject.OfficeCode = officecode,
+        dataObject.fromdate = $('#fromDate').val();
+        dataObject.todate = $('#toDate').val();
+        dataObject.count = repCount;
+
+
+        var TeamDetailPostBackURL = '/Report/GetRepeatedComplaints_RAW';
+        $.ajax({
+            type: "GET",
+            url: TeamDetailPostBackURL,
+            contentType: "application/json; charset=utf-8",
+            data: dataObject,
+            datatype: "json",
+            success: function (data) {
+                $('#loadPopUp').html(data);
+                $("#complaintPopup").modal('show');
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+        });
+    }
+</script>

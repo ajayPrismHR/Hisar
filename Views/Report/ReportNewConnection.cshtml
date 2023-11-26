@@ -1,0 +1,178 @@
+﻿
+@{
+    ViewBag.Title = "ReportNewConnection";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery.table2excel.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Datatables with Buttons
+        var datatablesButtons = $("#datatables-buttons").DataTable({
+            responsive: true,
+            lengthChange: !1,
+            //buttons: ["copy", 'csv', 'print'],
+            //buttons: ['csv'],
+
+        });
+        datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        searchreq();
+        $("#btnExport").click(function () {
+            $("#datatables-buttons").table2excel({
+                filename: "ReportNewConnection"
+            });
+        });
+    });
+    function searchreq() {
+        var dataObject = new Object();
+        dataObject.OfficeCode ='0';
+
+        $.ajax({
+            type: "GET",
+            url: '/Report/ReportNewConnectionSearch',
+            data: dataObject,
+            dataType: "json",
+            async: "true",
+            success: function (data) {
+                var datatablesButtons = $('#datatables-buttons').DataTable(
+                    {
+                        data: data,
+                        columns: [
+                            { 'data': 'ZONE' },
+                            { 'data': 'CIRCLE' },
+                            { 'data': 'DIVISION' },
+                            { 'data': 'SUB_DIVISION' },
+                            { 'data': 'DS_COMPLAINT_RECEIVED' },
+                            { 'data': 'NDS_COMPLAINT_RECEIVED' },
+                            { 'data': 'TOTAL_REQUEST_RECEIVED' },
+                            { 'data': 'DS_COMPLAINT_RESOLVED' },
+                            { 'data': 'NDS_COMPLAINT_RESOLVED' },
+                            { 'data': 'TOTAL_REQUEST_RESOLVED' },
+                            { 'data': 'REQUEST_WITHDRAW_BY_CONSUMER' },
+                            { 'data': 'FIle_Pending_Request_Pending' },
+                            { 'data': 'FIle_Deposited_Request_Pending' },
+                            { 'data': 'Demand_Issued_Request_Pending' },
+                            { 'data': 'Demand_Deposited_Request_Pending' },
+                            { 'data': 'SJO_Complated_Request_Pending' },
+                            { 'data': 'SCO_Complated' },
+                        ],
+                        bLengthChange: true,
+                        scrollX: true,
+                        scrollY: true,
+                        scrollCollapse: true,
+                        processing: true,
+                        pageLength: 250,
+                        fixedHeader: true,
+                        fixedColumns: {
+                            leftColumns: 1,
+                            rightColumns: 1
+                        },
+                        buttons: ['csv'],
+                        destroy: true,
+                    });
+                datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+        });
+    }
+
+</script>
+<div class="header">
+    <h1 class="header-title">
+        New Connection Report
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">New Connection Report</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">About New Connection Report</h5>
+                <h6 class="card-subtitle text-muted">
+                    Description of Report
+                </h6>
+            </div>
+            <div class="col-12 col-lg-3">
+                &nbsp; &nbsp; &nbsp; <input type="submit" id="btnExport" value="Export" class="btn btn-secondary btn-block" />
+            </div>
+            <div class="card-body">
+                <table id="datatables-buttons" class="table table-bordered" style="width:100%">
+                    <thead>
+                        <tr class="text-center">
+                            <th colspan="17" class="text-center"><h4>AJMER VIDYUT VITRAN NIGAM LTD  (New Connection Request Summary)</h4> </th>
+                        </tr>
+                        <tr class="text-center">
+                            <th colspan="4" class="text-center"><h4>Office Name</h4></th>
+                            <th colspan="3" class="text-center"><h4>Request Received</h4></th>
+                            <th colspan="4" class="text-center"><h4>Request Redressed</h4></th>
+                            <th colspan="6" class="text-center"><h4>Request Pending</h4></th>
+                        </tr>
+                        <tr class="text-center">
+                            <th colspan="4" class="text-center"><h4></h4></th>
+                            <th colspan="3" class="text-center"><h4></h4></th>
+                            <th colspan="4" class="text-center"><h4>Connection Released</h4></th>
+                            <th colspan="6" class="text-center"><h4>Status of Pending Request of New Connection</h4></th>
+                        </tr>
+                        <tr>
+                            <th>Zone</th>
+                            <th>Circle</th>
+                            <th>Division</th>
+                            <th>Sub Division</th>
+                            <th>DL</th>
+                            <th>NDS</th>
+                            <th>
+                                Total Request <br />Received
+                            </th>
+                            <th>DL</th>
+                            <th>NDS</th>
+                            <th>
+                                Total Request <br />Released
+                            </th>
+                            <th>
+                                Request <br />withdraw by <br />customer/ File <br />Rejected due to <br />certain reasons
+                            </th>
+                            <th>
+                                Documents <br />Pending from<br />customer end
+                            </th>
+                            <th>
+                                File Deposit <br />but DN not <br />Issued
+                            </th>
+                            <th>
+                                DN Issued <br />but not <br />Deposited
+                            </th>
+                            <th>
+                                DN <br />Deposited & <br />Application <br />under SJO
+                            </th>
+                            <th>
+                                SJO Completed <br />Application <br />under SCO
+                            </th>
+                            <th>
+                                SCO Completed
+                            </th>
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="loadPopUp">
+
+</div>

@@ -1,0 +1,63 @@
+﻿@model List<ComplaintTracker.Models.COMPLAINT>
+
+@using (Html.BeginForm("ExportToExcel", "EsclatedComplaints", FormMethod.Get))
+{
+
+    <div class="modal fade" id="EsclatedComplaintPopup" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header with-border bg-primary text-white">
+                    <h2 class="modal-title"> Complaint Details</h2>
+                    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close"><span>&times;</span> </button>
+                </div>
+                <div class="modal-body">
+                    <table id="datatables-buttons" class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>SDO Name</th>
+                                <th>Complaint No.</th>
+                                <th>Knumber</th>
+                                <th>Name</th>
+                                <th>Mobile No.</th>
+                                <th>Alternate Mobile No.</th>
+                                <th>Date</th>
+                                <th>Complaint Type</th>
+                                <th>complaint source</th>
+                                <th>Esclated To</th>
+                                <th>Esclated By</th>
+                                <th>Esclation Time</th>
+                            </tr>
+                        </thead>
+                        <tbody class="tbody">
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.OfficeName</td>
+                                    <td>@item.COMPLAINT_NO</td>
+                                    <td>@item.KNO</td>
+                                    <td>@item.NAME</td>
+                                    <td>@item.MOBILE_NO</td>
+                                    <td>@item.ALTERNATE_MOBILE_NO</td>
+
+                                    <td>@item.Complaintdate</td>
+                                    <td>@item.ComplaintTypeName</td>
+                                    <td>@item.ComplaintSource</td>
+                                    <td>@item.ASSIGNEEName</td>
+                                    <td>@item.Esclated_BY</td>
+                                    <td>@item.Esclation_time</td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer with-border">
+                    @Html.ActionLink("Export to Excel", "ExportToExcel", new { OfficeId = Model[0].excel_OFFICE_CODE, complaintStatus = Model[0].excel_ComplaintStatus, ComplainttypeId = Model[0].excel_ComplainttypeId }, new { @class = "btn btn-primary" })
+                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+

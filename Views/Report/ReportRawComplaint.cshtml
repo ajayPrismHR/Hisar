@@ -1,0 +1,304 @@
+﻿
+@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<style type="text/css">
+    #DPaging_previous a {
+        background-color: transparent;
+    }
+
+    #DPaging_next a {
+        background-color: transparent;
+    }
+
+    .paginate_button.active .page-link {
+        background-color: grey !important;
+        border: 1px solid black !important;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        $('#fromDate1').datetimepicker();
+        $('#toDate1').datetimepicker();
+    });
+</script>
+
+
+<div class="header">
+    <h1 class="header-title">
+        Raw Complaint
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Raw Complaint</li>
+        </ol>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Search By</h5>
+                <h6 class="card-subtitle text-muted">
+                    Search with
+                </h6>
+            </div>
+
+
+
+            <div class="card-body">
+                @using (Html.BeginForm("ExportToExcelRawComplaint", "Report", FormMethod.Post))
+                {
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-3">
+                            <div class="input-group date" id="fromDate1" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" data-target="#fromDate1" id="fromDate" name="fromDate" />
+                                <div class="input-group-text" data-target="#fromDate1" data-toggle="datetimepicker">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-3">
+                            <div class="input-group date" id="toDate1" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" data-target="#toDate1" id="toDate" name="toDate" />
+                                <div class="input-group-text" data-target="#toDate1" data-toggle="datetimepicker">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-2">
+                            @Html.DropDownList("ddlSource", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlSource" })
+                        </div>
+                        <div class="col-12 col-lg-3">
+                            @Html.DropDownList("ddlOfficecode", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlOfficecode" })
+                        </div>
+
+                        <div class="col-12 col-lg-1">
+                            <input type="submit" value="Excel Export" class="btn btn-dark btn-block" />
+                        </div>
+
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-12">
+                            <input type="hidden" id="ComplaintTypeId" name="ComplaintTypeId" value="0">
+                            <div class="btn-group mb-1" style="overflow:hidden;width:100%">
+                                @foreach (var item in Model.ComplaintTypeCollection)
+                                {
+                                    if (item.ComplaintTypeId <= 8)
+                                    {
+                                        <input class="btn-check" type="radio" name="options" id="@item.ComplaintType.Replace(" ", "")" autocomplete="off">
+                                        <label class="btn text-white" for="@item.ComplaintType.Replace(" ", "")" style="background-color:@item.ComplaintTileColor">@item.ComplaintType</label>
+                                    }
+                                }
+                            </div>
+                            <div class="btn-group" style="overflow:hidden;width:100%">
+                                @foreach (var item in Model.ComplaintTypeCollection)
+                                {
+                                    if (item.ComplaintTypeId > 8)
+                                    {
+                                        <input class="btn-check" type="radio" name="options" id="@item.ComplaintType.Replace(" ", "")" autocomplete="off">
+                                        <label class="btn text-white" for="@item.ComplaintType.Replace(" ", "")" style="background-color:@item.ComplaintTileColor">@item.ComplaintType</label>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="row mb-3">
+                    <div class="col-12 col-lg-3">
+                        <input type="submit" value="Search" class="btn btn-dark btn-block" id="btnSearch" onclick="searchreq()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">About Raw Complaint</h5>
+                <h6 class="card-subtitle text-muted">
+                    Description of Report
+                </h6>
+            </div>
+            <div class="card-body">
+                <table id="DPaging" class="table table-striped table-sm" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Complaint No.</th>
+                            <th>SDO Code</th>
+                            <th>SubDivision Name</th>
+                            <th>KNO</th>
+                            <th>Name</th>
+                            <th>Father Name</th>
+                            <th>Address</th>
+                            <th>Mobile No.</th>
+                            <th>Alternate Number</th>
+                            <th>Complaint Type</th>
+                            <th>SubComplaint Type</th>
+                            <th>Complaint Date & Time</th>
+                            <th>Closed Date & Time</th>
+                            <th>Duration</th>
+                            <th>Sub Outage Type</th>
+                            <th>Current Status</th>
+                            <th>Complaint Source</th>
+                            <th>Created By User ID</th>
+                            <th>Closed By User ID</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $(function () {
+            $('#ddlOfficecode').select2({
+                selectOnClose: true,
+                //minimumInputLength: 2,
+                //maximumInputLength: 20,
+                //minimumResultsForSearch: 50,
+                placeholder: "Select Office Code",
+            });
+            $('#ddlSource').select2({
+                selectOnClose: true,
+                /*placeholder: "Select Source",*/
+            });
+            $.ajax({
+                type: "GET",
+                url: '/Complaint/OfficeCodeJson',
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlOfficecode").append($("<option></option>").val(this.OfficeId).html(this.OfficeCode));
+                    });
+                },
+                error: function (data) { }
+            });
+            $.ajax({
+                type: "GET",
+                url: '/Complaint/ComplaintSourceJson',
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlSource").append($("<option></option>").val(this.Value).html(this.Text));
+                    });
+                },
+                error: function (data) { }
+            });
+        });
+
+    });
+    function searchreq() {
+        var Complainttype = 0;
+        var dataObject = new Object();
+        if ($('#All').prop('checked')) {
+            Complainttype = 0;
+        } else if ($('#BillRelated').prop('checked')) {
+            Complainttype = 2;
+        } else if ($('#MeterRelated').prop('checked')) {
+            Complainttype = 3;
+        } else if ($('#NoCurrent').prop('checked')) {
+            Complainttype = 4;
+        } else if ($('#OtherComplaint').prop('checked')) {
+            Complainttype = 5;
+        } else if ($('#SafetyRelated').prop('checked')) {
+            Complainttype = 6;
+        } else if ($('#ServiceConnectionRelated').prop('checked')) {
+            Complainttype = 7;
+        } else if ($('#TransformerRelated').prop('checked')) {
+            Complainttype = 8;
+        } else if ($('#EnergyTheft').prop('checked')) {
+            Complainttype = 9;
+        } else if ($('#VoltageRelated').prop('checked')) {
+            Complainttype = 10;
+        } else if ($('#LineRelated').prop('checked')) {
+            Complainttype = 11;
+        } else if ($('#PoleRelated').prop('checked')) {
+            Complainttype = 12;
+        } else if ($('#HARASSMENTBYDISCOMOFFICIAL').prop('checked')) {
+            Complainttype = 13;
+        }
+        else if ($('#NewConnection').prop('checked')) {
+            Complainttype = 14;
+        }
+        dataObject.fromdate = $('#fromDate').val();
+        dataObject.todate = $('#toDate').val();
+        dataObject.OfficeCode = $('#ddlOfficecode').val();
+        dataObject.ComplaintType = Complainttype;
+        dataObject.ComplaintSource = $('#ddlSource').val();
+        $("#ComplaintTypeId").val(Complainttype);
+
+        myTable = $('#DPaging').dataTable({
+            "ajax": {
+                "url": "/Report/ReportRawComplaintSearch/",
+                "type": "POST",
+                "datatype": "json",
+                "data": function (d) {
+                    d.fromdate = dataObject.fromdate;
+                    d.todate = dataObject.todate;
+                    d.OfficeCode = dataObject.OfficeCode;
+                    d.ComplaintType = dataObject.ComplaintType;
+                    d.ComplaintSource = dataObject.ComplaintSource;
+                }
+            },
+            "destroy": true,
+            "lengthMenu": [[10, 20, 50, 100, 150], [10, 20, 50, 100, 150]],
+            "pageLength": 50,
+            "processing": true,
+            "serverSide": true,
+            scrollY: true,
+            scrollX: true,
+            "searching": false,
+            ordering: false,
+            "language": {
+                "processing": '<i class="fa fa-spinner fa-spin fa-4x fa-fw" style="color:#3B3B96;"></i><span class="sr-only">Loading...</span>'
+                /*"processing": '<div class="spinner-border text-primary" role="status" ><span class="visually-hidden">Loading...</span></div>'*/
+                /* "processing":  '<div class= "d-flex align-items-center" >  <strong>Loading...</strong>  <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div></div>'*/
+                /*"processing": "<div class='overlay custom-loader-background'><i class='fa fa-cog fa-spin custom-loader-color'></i></div>"  */
+            },
+            dom: 'Blfrtip',
+            buttons: [
+                'colvis'
+            ],
+            "columns": [
+                { 'data': 'COMPLAINT_NO' },
+                { 'data': 'SDO_CODE' },
+                { 'data': 'SubDivisionName' },
+                { 'data': 'KNO' },
+                { 'data': 'Name' },
+                { 'data': 'FatherName' },
+                { 'data': 'Address' },
+                { 'data': 'MobileNo' },
+                { 'data': 'AlternateNo' },
+                { 'data': 'ComplaintType' },
+                { 'data': 'SubComplaintType' },
+                { 'data': 'ComplaintDate' },
+                { 'data': 'ClosedDate' },
+                { 'data': 'Duration' },
+                { 'data': 'AreaCode' },
+                { 'data': 'CurrentStatus' },
+                { 'data': 'SOURCE_NAME' },
+                { 'data': 'CreatedUserID' },
+                { 'data': 'ClosedUserID' },
+            ],
+
+        });
+    }
+
+
+
+</script>
+    

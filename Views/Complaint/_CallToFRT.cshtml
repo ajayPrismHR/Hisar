@@ -1,0 +1,91 @@
+﻿@*Remark Model*@
+@model ComplaintTracker.Models.COMPLAINT
+
+
+
+@using (Html.BeginForm("CallToFRT", "Complaint", FormMethod.Post))
+{
+
+    <div class="modal fade" id="remarkPopup" tabindex="-1" aria-hidden="true" style="display: none;" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header with-border bg-primary text-white">
+                    <h2 class="modal-title"> Call To FRT</h2>
+                    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close"><span>&times;</span> </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+
+                            <label for="COMPLAINT_NO">Complaint No.</label>
+                            @Html.EditorFor(model => model.COMPLAINT_NO, new { htmlAttributes = new { placeholder = "Complaint No.", @class = "form-control", @disabled = "disabled" } })
+
+                            @Html.HiddenFor(model => model.COMPLAINT_NO)
+
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-md-12">
+
+                            @*@Html.TextAreaFor(model => model.REMARKS, new { htmlAttributes = new { placeholder = "Remarks", @class = "form-control" } })*@
+                            <label for="mobile">Mobile No.</label>
+                            <input type="number" class="form-control" name="mobile" id="mobile" value="" placeholder="Mobile No." required/>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer with-border">
+                    <button type="button" class="btn btn-success" onclick="callKno(mobile.value)"><i class="align-middle me-2 fas fa-fw fa-phone"></i></button>
+                    <button type="button" class="btn btn-danger" onclick="hangup(mobile.value)" ><i class="align-middle me-2 fas fa-fw fa-phone-slash"></i></button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    var callKno = function (phone_number) {
+        alert(phone_number);
+        var TeamDetailPostBackURL = '/Complaint/SaveCall';
+
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "Phone":phone_number },
+                datatype: "json",
+                success: function (data) {
+                    alert("aaa");
+                    //$('#loadRemarkPopUp').html(data);
+                    //$("#complaintPopup").modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+
+    }
+    var hangup = function (phone_number) {
+        var TeamDetailPostBackURL = '/Complaint/HangCall';
+
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "Phone": phone_number },
+                datatype: "json",
+                success: function (data) {
+                    alert("aaa");
+                    //$('#loadRemarkPopUp').html(data);
+                    //$("#complaintPopup").modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+    }
+
+    
+</script>
+

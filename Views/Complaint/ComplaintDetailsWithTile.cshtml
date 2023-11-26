@@ -1,0 +1,169 @@
+﻿@model List<ComplaintTracker.Models.ModelComplaintType>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+@section scripts{
+    <link href="~/Content/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="~/Scripts/select2.min.js"></script>
+}
+<script type="text/javascript">
+
+    $(document).ready(() => {
+        $('#ddlOfficecode').select2({
+            selectOnClose: true,
+            //minimumInputLength: 2,
+            //maximumInputLength: 20,
+            //minimumResultsForSearch: 50,
+           placeholder: "Select Office Code",
+        });
+
+    });
+
+
+    function myfun(id) {
+        var Id = $.trim(id);
+        var officecode = $("#ddlOfficecode").val();
+        $.ajax({
+            type: "GET",
+            url: '/Complaint/GetComplaintTypeDetails',
+            data: { OfficeCode: officecode, ComplainttypeId: Id },
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            async: "true",
+            cache: "false",
+            success: function (data) {
+                $('#comp').DataTable(
+                    {
+                        data: data,
+                        columns: [
+
+                            { 'data': 'SDOName' },
+                            { 'data': 'PreviousDayPending' },
+                            { 'data': 'TodayRegister' },
+                            { 'data': 'TotalComplaint' },
+                            { 'data': 'PreviousResolvedComplaint' },
+                            { 'data': 'TodayResolved' },
+                            { 'data': 'TotalResolved' },
+                            { 'data': 'TotalPending' },
+
+                        ],
+                        processing: true,
+                        pageLength: 250,
+                        lengthChange: false,
+                        bFilter: false,
+                        destroy: true,
+                        bSort: false
+                    });
+            },
+            error: function (errormessage) {
+                alert('error loading html');
+                alert(errormessage.responseText);
+            }
+
+        })
+    };
+
+
+</script>
+<div class="header">
+    @*<h1 class="header-title">
+        Welcome back,  @if (@Session["UserName"] != null)
+        {@Session["UserName"]}!
+    </h1>*@
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Complaint Details</a></li>
+            @*<li class="breadcrumb-item active" aria-current="page">Escalated Complaints</li>*@
+        </ol>
+    </nav>
+    <div style="width:300px;" class="mb-0">
+        @Html.DropDownListFor(x => Model[0].lstComplaint[0].OfficeId, new SelectList(Model[0].lstComplaint, "OfficeId", "OfficeCode"), new { @class = "form-control", id = "ddlOfficecode" })
+    </div>
+</div>
+
+
+<div class="row">
+
+    <div class="col-xl-12 col-xxl-12 d-flex">
+        <div class="w-100">
+            <div class="row">
+                @foreach (var item in Model)
+                {
+
+                    <div class="col-sm-2">
+
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col mt-0">
+                                        <h5 class="card-title">@item.ComplaintType</h5>
+                                    </div>
+                                    <a class="small text-white stretched-link" onclick="myfun($('#@item.ComplaintTypeId').text())" href="#"></a>
+                                </div>
+                                <label id="@item.ComplaintTypeId" hidden>@item.ComplaintTypeId </label>
+                                @*<h1 class="display-3 mt-1 mb-3">@item.COMPLAINT_COUNT</h1>*@
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--Grid-->
+<div class="row">
+    <div class="col-12 col-lg-12 col-xxl-12 d-flex">
+        <div class="card flex-fill">
+            <div class="card-header">
+                <div class="card-actions float-end">
+                    <a href="#" class="me-1">
+                        <i class="align-middle" data-feather="refresh-cw"></i>
+                    </a>
+                    <div class="d-inline-block dropdown show">
+                        <a href="#" data-bs-toggle="dropdown" data-bs-display="static">
+                            <i class="align-middle" data-feather="more-vertical"></i>
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </div>
+                </div>
+                <h5 class="card-title mb-0">Complaint Status</h5>
+            </div>
+            <table id="comp" class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>SDO Name</th>
+                        <th>Previous Day Pending</th>
+                        <th>Today Register</th>
+                        <th>Total Complaint</th>
+                        <th>Previous Resolved Complaint</th>
+                        <th>Today Resolved</th>
+                        <th>Total Resolved</th>
+                        <th>Total Pending</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+@*<script>
+        $(function () {
+            $('#comp').DataTable({
+                pageLength: 5,
+                lengthChange: false,
+                bFilter: false,
+                autoWidth: false,
+                fixedHeader: true
+            });
+        });
+    </script>*@

@@ -1,0 +1,146 @@
+﻿@model List<ComplaintTracker.Models.ModelExceptionLogger>
+@{
+    ViewBag.Title = "Exception Log";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var fromDate = (DateTime)ViewBag.fromDate;
+    var toDate = (DateTime)ViewBag.toDate;
+}
+
+@section scripts {
+    <script type="text/javascript">
+
+    </script>
+}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // Datatables with Buttons
+        var datatablesButtons = $("#datatables-buttons").DataTable({
+            responsive: true,
+            lengthChange: !1,
+            //buttons: ["copy", 'csv', 'print'],
+            buttons: ['print'],
+
+        });
+        datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+    });
+    function searchreq() {
+        var dataObject = new Object();
+        dataObject.fromdate = $('#fromDate').val();
+        dataObject.todate = $('#toDate').val();
+        $.ajax({
+            type: "GET",
+            url: '/Exception/GetExceptions',
+            data: dataObject,
+            dataType: "json",
+            async: "true",
+            success: function (data) {
+                var datatablesButtons = $('#datatables-buttons').DataTable(
+                    {
+                        data: data,
+                        columns: [
+                            { 'data': 'ExceptionId' },
+                            { 'data': 'ExceptionMessage' },
+                            { 'data': 'ControllerName' },
+                            { 'data': 'ActionName' },
+                            { 'data': 'ExceptionStackTrack' },
+                            { 'data': 'ExceptionLogTime' },
+                        ],
+                        bLengthChange: true,
+                        scrollY: '600px',
+                        processing: true,
+                        buttons: ['print'],
+                        destroy: true,
+                    });
+                datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+        });
+    }
+
+</script>
+
+<div class="header">
+    <h1 class="header-title">
+        Exception Log
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Exception Log</li>
+        </ol>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Search By</h5>
+                <h6 class="card-subtitle text-muted">
+                    Search with
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-12 col-lg-2">
+                        @Html.TextBox("fromDate", string.Format("{0:yyyy-MM-dd}", fromDate), new { @class = "form-control", type = "date" })
+                        @*<div class="input-group date" id="fromDate1" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" data-target="#fromDate1" id="fromDate" />
+                                <div class="input-group-text" data-target="#fromDate1" data-toggle="datetimepicker">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                            </div>*@
+                    </div>
+                    <div class="col-12 col-lg-2">
+                        @Html.TextBox("toDate", string.Format("{0:yyyy-MM-dd}", toDate), new { @class = "form-control", type = "date" })
+                        @*<div class="input-group date" id="toDate1" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" data-target="#toDate1" id="toDate" />
+                                <div class="input-group-text" data-target="#toDate1" data-toggle="datetimepicker">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                            </div>*@
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <input type="submit" value="Search" class="btn btn-info btn-block" id="btnSearch" onclick="searchreq()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">About Complaint Analysis</h5>
+                <h6 class="card-subtitle text-muted">
+                    Description of Report
+                </h6>
+            </div>
+            <div class="card-body">
+                <table id="datatables-buttons" class="table table-striped" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>ExceptionId</th>
+                            <th>ExceptionMessage</th>
+                            <th>ControllerName</th>
+                            <th>ActionName</th>
+                            <th>ExceptionStackTrack</th>
+                            <th>ExceptionLogTime</th>
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

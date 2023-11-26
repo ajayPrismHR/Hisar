@@ -1,0 +1,46 @@
+﻿
+@model  DirectComplaintRegister.Models.ModelPowerOutage
+
+    <div class="modal fade" id="poweroutagePopup" tabindex="-1" aria-hidden="true" style="display: none;" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header with-border  bg-warning-light  text-white">
+                    <h2 class="modal-title text-white"> Power Outage Information</h2>
+                    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close"><span>&times;</span> </button>
+                </div>
+                <div class="modal-body">
+                    <table id="gridComplaintlog" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Office</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Colonies</th>
+                                <th>Information</th>
+                                <th>Information Source</th>
+                            </tr>
+                        </thead>
+                        <tbody class="tbody">
+
+                            @foreach (var item in Model.modelPowerOutages)
+                            {
+                                <tr>
+                                    <td>@item.OFFICE_CODE</td>
+                                    <td>@item.START_TIME</td>
+                                    <td>@item.END_TIME</td>
+                                    <td>@item.COLONIES</td>
+                                    <td>@item.SHUT_DOWN_INFORMATION</td>
+                                    <td>@item.INFORMATION_SOURCE</td>
+                                </tr>
+                            }
+                            </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer with-border">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close" id="btnclose">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+

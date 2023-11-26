@@ -1,0 +1,195 @@
+﻿
+@{
+    ViewBag.Title = "ReportFRTPanalty";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var fromDate = (DateTime)ViewBag.fromDate;
+    var toDate = (DateTime)ViewBag.toDate;
+}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Datatables with Buttons
+        var datatablesButtons = $("#datatables-buttons").DataTable({
+            responsive: true,
+            lengthChange: !1,
+            //buttons: ["copy", 'csv', 'print'],
+            buttons: ['print'],
+
+        });
+        datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+    });
+    $(document).ready(function () {
+        $(function () {
+            $('#ddlOfficecode').select2({
+                selectOnClose: true,
+                placeholder: "Select Office Code",
+            });
+
+
+            $.ajax({
+                type: "GET",
+                url: '/Complaint/OfficeCodeJson',
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlOfficecode").append($("<option></option>").val(this.OfficeId).html(this.OfficeCode));
+                    });
+                },
+                error: function (data) { }
+            });
+
+        });
+    });
+</script>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        $('#fromDate1').datetimepicker();
+        $('#toDate1').datetimepicker();
+
+
+    });
+
+    function searchreq() {
+        var dataObject = new Object();
+        dataObject.fromdate = $('#fromDate').val();
+        dataObject.todate = $('#toDate').val();
+        dataObject.OfficeCode = $('#ddlOfficecode').val();
+        $.ajax({
+            type: "GET",
+            url: '/Report/ReportFRTPaneltySearch',
+            data: dataObject,
+            dataType: "json",
+            async: "true",
+            success: function (data) {
+                var datatablesButtons = $('#datatables-buttons').DataTable(
+                    {
+                        data: data,
+                        columns: [
+                            {
+                                'data': 'Type',
+                            },
+                            { 'data': 'NoOfDefaultsUpTo2Slots' },
+                            { 'data': 'NoOfDefaultsMoreThan2Slots' },
+
+                        ],
+                        bLengthChange: true,
+                        scrollY: '600px',
+                        scrollCollapse: true,
+                        processing: true,
+                        fixedHeader: true,
+                        fixedColumns: {
+                            leftColumns: 1,
+                            rightColumns: 1
+                        },
+                        buttons: ['print'],
+                        destroy: true,
+                    });
+                datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+        });
+        /*        datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");*/
+    }
+</script>
+<div class="header">
+    <h1 class="header-title">
+        Complaints not resolved by FRT within time
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Complaints not resolved by FRT within time</li>
+        </ol>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Search By</h5>
+                <h6 class="card-subtitle text-muted">
+                    Search with
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-12 col-lg-3">
+                        <div class="input-group date" id="fromDate1" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#fromDate1" id="fromDate" value="@fromDate" />
+                            <div class="input-group-text" data-target="#fromDate1" data-toggle="datetimepicker">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <div class="input-group date" id="toDate1" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#toDate1" id="toDate" value="@toDate" />
+                            <div class="input-group-text" data-target="#toDate1" data-toggle="datetimepicker">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-4">
+                        @Html.DropDownList("ddlOfficecode", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlOfficecode" })
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <input type="submit" value="Search" class="btn btn-dark btn-block" id="btnSearch" onclick="searchreq()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">About Complaints not resolved by FRT within time</h5>
+                <h6 class="card-subtitle text-muted">
+                    Description of Report
+                </h6>
+            </div>
+            <div class="card-body">
+                <table id="datatables-buttons" class="table table-striped" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Type :</th>
+                            <th>Number of Defaults upto 2 slots:</th>
+                            <th>Number of Defaults more than 2 slots:</th>
+                        </tr>
+                    </thead>
+
+                </table>
+
+                <table class="table table-striped" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Serial No:</th>
+                            <th>Delay in resolving complaint by FRT</th>
+                            <th>Penalty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1)</td>
+                            <td>For Urban Areas-Total hours of delay by FRT beyond 2 hour from the time of registration of complaint</td>
+                            <td>Rs 75/ for first two Slots, Thereafter RS.150 (Maximum penalty will not exeed Rs 150)</td>
+                        </tr>
+                        <tr>
+                            <td>2)</td>
+                            <td>For Rural Areas-Total hours of delay by FRT beyond 4 hour from the time of registration of complaint</td>
+                            <td>Rs 75/ for first two Slots, Thereafter RS.150 (Maximum penalty will not exeed Rs 150)</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

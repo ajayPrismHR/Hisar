@@ -1,0 +1,186 @@
+﻿
+@{
+    ViewBag.Title = "Randomizer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var fromDate = (DateTime)ViewBag.fromDate;
+    var toDate = (DateTime)ViewBag.toDate;
+}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Datatables with Buttons
+        var datatablesButtons = $("#datatables-buttons").DataTable({
+            responsive: true,
+            lengthChange: !1,
+            //buttons: ["copy", 'csv', 'print'],
+            buttons: ['print'],
+
+        });
+        datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+    });
+</script>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        $('#fromDate1').datetimepicker();
+        $('#toDate1').datetimepicker();
+    });
+
+    $(document).ready(function () {
+        $(function () {
+            $('#ddlOfficecode').select2({
+                selectOnClose: true,
+                //minimumInputLength: 2,
+                //maximumInputLength: 20,
+                //minimumResultsForSearch: 50,
+                placeholder: "Select Office Code",
+            });
+            $.ajax({
+                type: "GET",
+                url: '/Complaint/OfficeCodeJson',
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlOfficecode").append($("<option></option>").val(this.OfficeId).html(this.OfficeCode));
+                    });
+                },
+                error: function (data) { }
+            });
+        });
+
+    });
+    function searchreq() {
+        debugger;
+        var dataObject = new Object();
+        dataObject.fromdate = $('#fromDate').val();
+        dataObject.todate = $('#toDate').val();
+        dataObject.count = $('#RecordCount').val();
+        myTable = $('#datatables-buttons').dataTable({
+            "ajax": {
+                "url": "/Report/ReportRandomizerSearch",
+                "type": "POST",
+                "datatype": "json",
+                "data": function (d) {
+                    d.fromdate = dataObject.fromdate;
+                    d.todate = dataObject.todate;
+                    d.count = dataObject.count;
+                }
+            },
+            "destroy": true,
+            "lengthMenu": [[10, 20, 50, 100, 150], [10, 20, 50, 100, 150]],
+            "pageLength": 10,
+            "processing": true,
+            "serverSide": true,
+            scrollY: true,
+            scrollX: true,
+            "searching": false,
+            ordering: false,
+            "language": {
+                "processing": '<i class="fa fa-spinner fa-spin fa-4x fa-fw" style="color:#3B3B96;"></i><span class="sr-only">Loading...</span>'
+            },
+            dom: 'Blfrtip',
+            buttons: [
+                'colvis'
+            ],
+            "columns": [
+                { 'data': 'KNO' },
+                { 'data': 'SDOCode' },
+                { 'data': 'OFFICE_CODE' },
+                { 'data': 'CONSUMER_NAME' },
+                { 'data': 'MOBILE_NO' },
+                { 'data': 'TIME_STAMP' },
+                { 'data': 'CLOSE_DATE' },
+                { 'data': 'DURATION' },
+                { 'data': 'COMPLAINT_NO' },
+                { 'data': 'COMPLAINT_TYPE' },
+                { 'data': 'SUB_COMPLAINT_TYPE' },
+                { 'data': 'COMPLAINT_SOURCE' },
+                { 'data': 'REMARKS' },
+            ]
+        });
+    }
+</script>
+<div class="header">
+    <h1 class="header-title">
+        Randomizer
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="dashboard-default.html">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Randomizer</li>
+        </ol>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Search By</h5>
+                <h6 class="card-subtitle text-muted">
+                    Search with
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-12 col-lg-3">
+                        <div class="input-group date" id="fromDate1" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#fromDate1" id="fromDate" value="@fromDate"  name="fromDate"/>
+                            <div class="input-group-text" data-target="#fromDate1" data-toggle="datetimepicker">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <div class="input-group date" id="toDate1" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#toDate1" id="toDate" value="@toDate" name="toDate" />
+                            <div class="input-group-text" data-target="#toDate1" data-toggle="datetimepicker">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <input type="text" class="form-control" id="RecordCount" name="RecordCount" placeholder="Enter Record Count" />
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <input type="submit" value="Search" class="btn btn-dark btn-block" id="btnSearch" onclick="searchreq()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">About Randomizer</h5>
+                <h6 class="card-subtitle text-muted">
+                    Description of Report
+                </h6>
+            </div>
+            <div class="card-body">
+                <table id="datatables-buttons" class="table table-striped" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>K No.</th>
+                            <th>SDO Code</th>
+                            <th>Sub Division</th>
+                            <th>Consumer Name</th>
+                            <th>Mobile No.</th>
+                            <th>Complaint Date</th>
+                            <th>Close Date</th>
+                            <th>Duration</th>
+                            <th>Complaint No.</th>
+                            <th>Complaint Type</th>
+                            <th>Sub Complaint Type</th>
+                            <th>Source</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,186 @@
+﻿@model IEnumerable<ComplaintTracker.Models.ModelUser>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var fromDate = (DateTime)ViewBag.fromDate;
+    var toDate = (DateTime)ViewBag.toDate;
+}
+@section scripts{
+    <link href="~/Content/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="~/Scripts/select2.min.js"></script>
+    <script>
+        var changepasswordShow = function (recordId) {
+            var TeamDetailPostBackURL = '/GetUsers/ChangePassword';
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "id": recordId },
+                datatype: "json",
+                success: function (data) {
+                    $('#loadPopUp').html(data);
+                    $("#remarkChangePassword").modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+    </script>
+}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Datatables Responsive
+        $("#gridTable").DataTable({
+            responsive: true
+        });
+    });
+</script>
+
+
+<div class="header">
+    <h1 class="header-title">
+        User
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">User</li>
+        </ol>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            @if (@TempData["AlertMessage"] != null)
+            {
+                <div class="alert alert-success">
+                    <strong> Success ! </strong> @TempData["AlertMessage"]
+                    <div class="float-end">
+                        <button type="button" class="btn-close" data-dismiss="alert">
+                        </button>
+                    </div>
+                </div>
+            }
+            <div class="card-header">
+                <h5 class="card-title">Search By</h5>
+                <h6 class="card-subtitle text-muted">
+                    Search with
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-12 col-lg-2">
+                        @Html.TextBox("fromDate", string.Format("{0:yyyy-MM-dd}", fromDate), new { @class = "form-control", type = "date" })
+                        @*<div class="input-group date" id="fromDate1" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" data-target="#fromDate1" id="fromDate" />
+                                <div class="input-group-text" data-target="#fromDate1" data-toggle="datetimepicker">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                            </div>*@
+                    </div>
+                    <div class="col-12 col-lg-2">
+                        @Html.TextBox("toDate", string.Format("{0:yyyy-MM-dd}", toDate), new { @class = "form-control", type = "date" })
+                        @*<div class="input-group date" id="toDate1" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" data-target="#toDate1" id="toDate" />
+                                <div class="input-group-text" data-target="#toDate1" data-toggle="datetimepicker">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                            </div>*@
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <input type="submit" value="Search" class="btn btn-primary btn-block" id="btnSearch" onclick="searchreq()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title"></h5>
+                <h6 class="card-subtitle text-muted">
+                    Description of Report
+                </h6>
+            </div>
+
+            <div class="card-body">
+                @using (Html.BeginForm("Create", "GetUsers", FormMethod.Post))
+                {
+                    <table id="gridTable" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.User_Name)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Name)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Role)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Mobile_NO)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Email)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Address)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Is_Active)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Is_deleted)
+                                </th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.User_Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Role)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Mobile_NO)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Email)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Address)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Is_Active)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Is_deleted)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Edit", "EditUser", new { id = @item.User_id }, new { @class = "btn btn-primary" })
+                                        @Html.ActionLink("Delete", "Delete", new { id = item.User_id }, new { onclick = "return confirm('Are you sure you wish to delete this User: " + @item.User_Name + " ?');", @class = "btn btn-danger" })
+
+                                        <a href="#" onclick="changepasswordShow(@item.User_id)" class="btn btn-success">Change Password</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                }
+
+            </div>
+        </div>
+    </div>
+</div>

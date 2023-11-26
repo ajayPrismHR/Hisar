@@ -1,0 +1,102 @@
+﻿@*Remark Model*@
+@model ComplaintTracker.Models.COMPLAINT
+
+
+
+
+
+    <div class="modal fade" id="remarkPopup" tabindex="-1" aria-hidden="true" style="display: none;" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header with-border bg-primary text-white">
+                    <h2 class="modal-title"> Add Remark</h2>
+                    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close"><span>&times;</span> </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+
+                            <label for="COMPLAINT_NO">Complaint No.</label>
+                            @Html.EditorFor(model => model.COMPLAINT_NO, new { htmlAttributes = new { placeholder = "Complaint No.", @class = "form-control", @disabled = "disabled" } })
+
+                            @Html.HiddenFor(model => model.COMPLAINT_NO)
+
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-md-12">
+                            <div class="form-floating">
+                                <h3>Complaint remarks</h3>
+                                <table id="gridComplaintlog" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Remarks</th>
+                                            <th>Date</th>
+                                            <th>Remarks By</th>
+                                            <th>Complaint No</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody class="tbody">
+                                        @foreach (var item in Model.ComplaintRemarkCollection)
+                                        {
+                                            <tr>
+                                                <td>@item.REMARK </td>
+                                                <td>@item.REMARK_DATE_TIME</td>
+                                                <td>@item.REMARKBY</td>
+                                                <td>@item.ComplaintNumber</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-md-12">
+                            <label for="REMARKS">Remarks</label>
+                            <textarea class="form-control" name="REMARKS" id="REMARKS" style="height: 147px;" value="" placeholder="Remark" required></textarea>
+                            @Html.ValidationMessageFor(model => model.REMARKS, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer with-border">
+                    <button type="button" class="btn btn-success" id="btnUpdate" onclick="addremark()">Update</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"   aria-label="Close">Close</button>
+                </div>
+            </div>
+        </div>
+        </div>
+        
+
+        <script type="text/javascript">
+            function addremark() {
+                var TeamDetailPostBackURL = '/Complaint/SaveRemark';
+                var model = new Object();
+                model.COMPLAINT_NO = $('#COMPLAINT_NO').val();
+                model.REMARKS = $('#REMARKS').val();
+
+                $.ajax({
+                    type: "GET",
+                    url: TeamDetailPostBackURL,
+                    contentType: "application/json; charset=utf-8",
+                    data:  model,
+                    datatype: "json",
+                    success: function (data) {
+                        if (data.status == 1) {
+                            swal("Good job!", data.message, "success");
+                            $("#remarkPopup").modal('hide');
+                        }
+                        else {
+                            swal("error occured!", data.message, "error");
+                        }
+                        
+                    },
+                    error: function (data) {
+                        //alert("Dynamic content load failed.");
+                        swal("Dynamic content load failed.!", "error");
+                    }
+                });
+            }
+
+            </script>

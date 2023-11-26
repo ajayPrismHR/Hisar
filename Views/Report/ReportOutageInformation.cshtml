@@ -1,0 +1,305 @@
+﻿@model ComplaintTracker.Models.ModelOutageReport
+@{
+    ViewBag.Title = "ReportOutageInformation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var fromDate = (DateTime)ViewBag.fromDate;
+    var toDate = (DateTime)ViewBag.toDate;
+    int ID = 0;
+}
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Datatables with Buttons
+        ID = 0;
+        var datatablesButtons = $("#datatables-buttons").DataTable({
+            responsive: true,
+            lengthChange: !1,
+            buttons: ['print','csv'],
+
+
+        });
+        datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+    });
+</script>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        $('#fromDate1').datetimepicker();
+        $('#toDate1').datetimepicker();
+    });
+
+    var UpdateInfo = function (recordId) {
+        var dataObject = new Object();
+
+        dataObject.ID = recordId;
+        ID = recordId;
+        dataObject.PROCESS_TYPE = 'S';
+        $.ajax({
+            type: "GET",
+            url: '/Report/ReportOutage',
+            data: dataObject,
+            dataType: "json",
+            async: "true",
+            success: function (data) {
+                console.log(data[0].OFFICE_CODE)
+
+                $("#txtColonies").val(data[0].COLONIES);
+                $('#txtShutdowninformation').val(data[0].SHUT_DOWN_INFORMATION);
+                $('#txtSourceofInformation').val(data[0].INFORMATION_SOURCE);
+
+                $("#ddlComplaintType").select2("val", data[0].COMPLAINT_TYPE);
+                /*$("#ddlOfficecode").select2("val", data[0].COMPLAINT_TYPE);*/
+
+
+            },
+            error: function (data) { }
+        });
+    }
+    $(document).ready(function () {
+
+        $(function () {
+
+            $('#ddlComplaintType').select2({
+                placeholder: "Complaint Type",
+                selectOnClose: true,
+            });
+
+            $('#ddlOfficecode').select2({
+                selectOnClose: true,
+                //minimumInputLength: 2,
+                //maximumInputLength: 20,
+                //minimumResultsForSearch: 50,
+                placeholder: "Select Office Code",
+            });
+            $.ajax({
+                type: "GET",
+                url: '/Complaint/OfficeCodeJson',
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlOfficecode").append($("<option></option>").val(this.OfficeId).html(this.OfficeCode));
+                    });
+                },
+                error: function (data) { }
+            });
+        });
+        loadGrid();
+
+    });
+    function Savereq() {
+        var dataObject = new Object();
+        dataObject.OfficeCode = $('#ddlOfficecode').val();
+        dataObject.COLONIES = $('#txtColonies').val();
+        dataObject.fromdate = $('#fromDate').val();
+        dataObject.todate = $('#toDate').val();
+        dataObject.ComplaintType = $('#ddlComplaintType').val();
+        dataObject.SHUTDOWN_INFORMATION = $('#txtShutdowninformation').val();
+        dataObject.INFORMATION_SOURCE = $('#txtSourceofInformation').val();
+
+        if (ID > 0) {
+            dataObject.PROCESS_TYPE = 'U';
+            dataObject.ID = ID;
+        }
+        else {
+            dataObject.PROCESS_TYPE = 'I';
+            dataObject.ID = 0;
+        }
+
+
+        $.ajax({
+            type: "GET",
+            url: '/Report/ReportOutage',
+            data: dataObject,
+            dataType: "json",
+            async: "true",
+            success: function (data) {
+
+
+                $('#txtColonies').val('');
+                $('#fromDate').val('');
+                $('#toDate').val('');
+
+                $('#txtShutdowninformation').val('');
+                $('#txtSourceofInformation').val('');
+                $('#ddlOfficecode').val(null).trigger('change');
+                $('#ddlComplaintType').val(null).trigger('change');
+                swal("Good job!", "Saved Successfully!", "success");
+                
+                loadGrid();
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+        });
+
+    }
+
+    function loadGrid() {
+        ID = 0;
+        var dataObject = new Object();
+        dataObject.OfficeCode = '0';
+        dataObject.COLONIES = '';
+        dataObject.fromdate = '';
+        dataObject.todate = '';
+        dataObject.ComplaintType = '';
+        dataObject.SHUTDOWN_INFORMATION = '';
+        dataObject.INFORMATION_SOURCE = '';
+        dataObject.PROCESS_TYPE = 'SA';
+        $.ajax({
+            type: "GET",
+            url: '/Report/ReportOutage',
+            data: dataObject,
+            dataType: "json",
+            async: "true",
+            success: function (data) {
+                var datatablesButtons = $('#datatables-buttons').DataTable(
+                    {
+                        data: data,
+                        columns: [
+
+                            { 'data': 'OFFICE_CODE' },
+                            { 'data': 'COLONIES' },
+                            { 'data': 'StartTime' },
+                            { 'data': 'EndTime' },
+                            { 'data': 'COMPLAINT_TYPE' },
+                            { 'data': 'INFORMATION_SOURCE' },
+                            { 'data': 'SHUT_DOWN_INFORMATION' },
+                           /* { 'data': 'ID' },*/
+                            {
+                                data: 'ID',
+                                name: 'ID',
+                                render: function (data, type, row, meta) {
+                                    return '<button href="#" type="submit" class="btn btn-primary btnShadow" onclick="UpdateInfo(' + row.ID + ')">Update</a>'
+                                },
+                            },
+                        ],
+                        bLengthChange: true,
+                        scrollX: true,
+                        scrollY: true,
+                        scrollCollapse: true,
+                        processing: true,
+                        fixedHeader: true,
+                        fixedColumns: {
+                            leftColumns: 1,
+                            rightColumns: 1
+                        },
+                        buttons: ['print','csv'],
+                        destroy: true,
+                    });
+                datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+        });
+
+    }
+</script>
+<div class="header">
+    <h1 class="header-title">
+        Outage Information
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Outage Information</li>
+        </ol>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Search By</h5>
+                <h6 class="card-subtitle text-muted">
+                    Search with
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-12 col-lg-3">
+                        <label for="ddlOfficecode">Office Code</label>
+                        @Html.DropDownList("ddlOfficecode", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlOfficecode" })
+                        <label id="PROCESS_TYPE"></label>
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <label for="Colonies">Colonies</label>
+                        <input type="text" class="form-control" name="txtColonies" id="txtColonies" placeholder="Colonies" />
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <label for="User_Name">Start Time</label>
+                        <div class="input-group date" id="fromDate1" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#fromDate1" id="fromDate" />
+                            <div class="input-group-text" data-target="#fromDate1" data-toggle="datetimepicker">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <label for="User_Name">End Time</label>
+                        <div class="input-group date" id="toDate1" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#toDate1" id="toDate" />
+                            <div class="input-group-text" data-target="#toDate1" data-toggle="datetimepicker">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12 col-lg-3">
+                        <label for="User_Name">Type</label>
+                        @Html.DropDownListFor(x => Model.ComplaintTypeId, new SelectList(Model.ComplaintTypeCollection, "ComplaintTypeId", "ComplaintType"), new { @class = "form-control select2", id = "ddlComplaintType" })
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <label for="User_Name">Shut down information</label>
+                        <input type="text" class="form-control" name="txtShutdowninformation" id="txtShutdowninformation" placeholder="Shut down information" />
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <label for="SourceofInformation">Source of Information</label>
+                        <input type="text" class="form-control" name="txtSourceofInformation" id="txtSourceofInformation" placeholder="Source of Information" />
+                    </div>
+                    <div class="col-12 col-lg-3 mt-3">
+                        <input type="submit" value="Save" class="btn btn-dark btn-block" id="btnSave" onclick="Savereq()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">About Outage Information</h5>
+                <h6 class="card-subtitle text-muted">
+                    Description of Report
+                </h6>
+            </div>
+            <div class="card-body">
+                <table id="datatables-buttons" class="table table-striped" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>SDO Name</th>
+                            <th>Colonies</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Type</th>
+                            <th>Source of Information</th>
+                            <th>Shutdown Information</th>
+                            @*<th hidden>Id</th>*@
+                            <th>Update</th>
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,474 @@
+﻿
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+    <link href="~/Content/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="~/Scripts/select2.min.js"></script>
+    }
+
+    <div class="header">
+        <h1 class="header-title">
+            Welcome back,  @if (@Session["User_Name"] != null)
+            {@Session["User_Name"]}!
+        </h1>
+        @*<p class="header-subtitle">You have 24 new messages and 5 new notifications.</p>*@
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Search By</h5>
+                    <h6 class="card-subtitle text-muted">
+                        Search with
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-3">
+                            <label>Bill Year</label>
+                            @Html.DropDownList("ddlMY", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlMY" })
+
+                        </div>
+                        <div class="col-12 col-lg-3">
+                            <label>Division</label>
+                            @Html.DropDownList("ddlDivision", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlDivision" })
+                        </div>
+                        <div class="col-12 col-lg-3">
+                            <label>Sub Division</label>
+                            <select id="ddlSubDivision" class="form-control" required>
+                            </select>
+                        </div>
+                        <div class="col-12 col-lg-3">
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="row">
+        <div class="col-xl-6 col-xxl-7">
+            <div class="card flex-fill w-100">
+                <div class="card-header">
+                    <div class="card-actions float-end">
+                        <a href="#" class="me-1">
+                            <i class="align-middle" data-feather="refresh-cw"></i>
+                        </a>
+                        <div class="d-inline-block dropdown show">
+                            <a href="#" data-bs-toggle="dropdown" data-bs-display="static">
+                                <i class="align-middle" data-feather="more-vertical"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <h5 class="card-title mb-0">Complaints summary</h5>
+                </div>
+                <div class="card-body py-3">
+                    <div class="chart chart-sm">
+                        <canvas id="chartjs-dashboard-line"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6 col-xxl-5 d-flex">
+            <div class="w-100">
+                <div class="row">
+                    <div class="col-sm-6">
+
+                    </div>
+                    <div class="col-sm-6">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-12 col-md-6 col-xxl-3 d-flex order-1 order-xxl-1">
+            <div class="card flex-fill">
+                <div class="card-header">
+                    <div class="card-actions float-end">
+                        <a href="#" class="me-1">
+                            <i class="align-middle" data-feather="refresh-cw"></i>
+                        </a>
+                        <div class="d-inline-block dropdown show">
+                            <a href="#" data-bs-toggle="dropdown" data-bs-display="static">
+                                <i class="align-middle" data-feather="more-vertical"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <h5 class="card-title mb-0">Calendar</h5>
+                </div>
+                <div class="card-body d-flex">
+                    <div class="align-self-center w-100">
+                        <div class="chart">
+                            <div id="datetimepicker-dashboard"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-12 col-xxl-6 d-flex order-3 order-xxl-2">
+            <div class="card flex-fill">
+                <div class="card-header">
+                    <div class="card-actions float-end">
+                        <a href="#" class="me-1">
+                            <i class="align-middle" data-feather="refresh-cw"></i>
+                        </a>
+                        <div class="d-inline-block dropdown show">
+                            <a href="#" data-bs-toggle="dropdown" data-bs-display="static">
+                                <i class="align-middle" data-feather="more-vertical"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <h5 class="card-title mb-0">Current Month Complaint Count</h5>
+                </div>
+                <table id="datatables-dashboard-projects" class="table table-striped my-0">
+                    <thead>
+                        <tr>
+                            <th>Circle Name</th>
+                            <th class="d-none d-xl-table-cell">Total Complaints</th>
+                            <th class="d-none d-xl-table-cell">Pending Complaints</th>
+                            <th>Reopen</th>
+                            <th class="d-none d-md-table-cell">Resolved</th>
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-xxl-3 d-flex order-2 order-xxl-3">
+            <div class="card flex-fill w-100">
+                <div class="card-header">
+                    <div class="card-actions float-end">
+                        <a href="#" class="me-1">
+                            <i class="align-middle" data-feather="refresh-cw"></i>
+                        </a>
+                        <div class="d-inline-block dropdown show">
+                            <a href="#" data-bs-toggle="dropdown" data-bs-display="static">
+                                <i class="align-middle" data-feather="more-vertical"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <h5 class="card-title mb-0">Current Month Complaints</h5>
+                </div>
+                <div class="card-body d-flex">
+                    <div class="align-self-center w-100">
+                        <div class="py-3">
+                            <div class="chart chart-xs">
+                                <canvas id="chartjs-dashboard-pie"></canvas>
+                            </div>
+                        </div>
+
+                        <table class="table mb-0">
+                            <tbody>
+                                <tr>
+                                    <td><i class="fas fa-circle text-primary fa-fw"></i> Total Complaints</td>
+                                    <td class="text-end"><label id="TotalComplaints" /></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-circle text-warning fa-fw"></i> Resolved Complaints</td>
+                                    <td class="text-end"><label id="ResolvedComplaints" /></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-circle text-danger fa-fw"></i> Pending Complaints</td>
+                                    <td class="text-end"><label id="PendingComplaints" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="loadPopUp">
+
+    </div>
+    <script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: '/Dashboard/ddlMY',
+            contentType: "application/json; charset=utf-8",
+            datatype: JSON,
+            success: function (result) {
+                $(result).each(function () {
+                    $("#ddlMY").append($("<option></option>").val(this.Value).html(this.Text));
+                });
+            },
+            error: function (data) { }
+        });
+
+
+        $.ajax({
+            type: "GET",
+            url: '/Dashboard/GetDivision',
+            contentType: "application/json; charset=utf-8",
+            datatype: JSON,
+            success: function (result) {
+                $(result).each(function () {
+                    $("#ddlDivision").append($("<option></option>").val(this.Value).html(this.Text));
+                });
+            },
+            error: function (data) { }
+        });
+
+        //loadpage();
+        @*if (@Session["Roll_ID"]== 8) {
+            dashboardLoad = setInterval("loadpage()", 3000
+            );
+        }*@
+
+
+
+    });
+
+    function showLoginmsg() {
+            var message = '@TempData["loginmsg"]';
+            var title = "Login Success";
+            var type = "success";
+            toastr[type](message, title, {
+                positionClass: "toast-top-right",
+                closeButton: "checked",
+                progressBar: "checked",
+                newestOnTop: "checked",
+                rtl: $("body").attr("dir") === "rtl" || $("html").attr("dir") === "rtl",
+                timeOut: 5000
+            });
+    }
+
+    function loadpage() {
+        var PendingComplaints = 0;
+        var arrM = [];
+        var arrTC = [];
+        var arrTR = [];
+        $.ajax({
+            type: "GET",
+            url: '/Dashboard/ComplaintSourceJson',
+            contentType: "application/json; charset=utf-8",
+            datatype: JSON,
+            async: true,
+            success: function (result) {
+                // Line chart
+                $.each(result.ComplaintSummaries, function (index, value) {
+                    arrM.push(value.Month);
+                    arrTC.push(value.TotalComplaint);
+                    arrTR.push(value.ResolveComplaint);
+                });
+                new Chart(document.getElementById("chartjs-dashboard-line"), {
+                    type: 'line',
+                    data: {
+                        labels: arrM,
+
+                        datasets: [{
+                            label: "Resolved Complaints",
+                            fill: true,
+                            backgroundColor: window.theme.primary,
+                            borderColor: window.theme.primary,
+                            borderWidth: 2,
+                            data: arrTR
+                        },
+                        {
+                            label: "Register Complaints",
+                            fill: true,
+                            backgroundColor: "rgba(255,0,255,0.3)",
+                            borderColor: "rgba(255,0,255,0.3)",
+                            borderWidth: 2,
+                            data: arrTC
+                        }
+                        ]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        legend: {
+                            display: true
+                        },
+                        tooltips: {
+                            intersect: false
+                        },
+                        hover: {
+                            intersect: true
+                        },
+                        plugins: {
+                            filler: {
+                                propagate: true
+                            }
+                        },
+                        elements: {
+                            point: {
+                                radius: 0
+                            }
+                        },
+                        scales: {
+                            xAxes: [{
+                                reverse: true,
+                                gridLines: {
+                                    color: "rgba(0,0,0,0.0)"
+                                }
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    stepSize: 5
+                                },
+                                display: true,
+                                gridLines: {
+                                    color: "rgba(0,0,0,0)",
+                                    fontColor: "#fff"
+                                }
+                            }]
+                        }
+                    }
+                });
+
+                //Tiles
+                $('#cmTc').text(result.CurrentMonthTotalComplaint);
+                $('#cmRc').text(result.CurrentMonthResolvedComplaint);
+                $('#pmTc').text(result.PreviousMonthTotalComplaint);
+                $('#pmRc').text(result.PreviousMonthResolvedComplaint);
+
+                $('#hct').text(result.Hares_TOTAL_COMPLAINTS_TILL_DATE);
+                $('#hcr').text(result.Hares_TOTAL_COMPLAINTS_RESOLVED_TILL_DATE);
+                $('#hccm').text(result.Hares_TOTAL_COMPLAINTS_FOR_CURRENT_MONTH);
+                $('#hcrm').text(result.Hares_TOTAL_COMPLAINTS_RESOLVED_IN_CURRENT_MONTH);
+
+
+                //Grid
+                var datatablesButtons = $('#datatables-dashboard-projects').DataTable(
+                    {
+                        data: result.CircleWiseComplaintSummaryData,
+                        columns: [
+                            { 'data': 'CircleName' },
+                            { 'data': 'TotalComplaint' },
+                            { 'data': 'TotalPendingComplaints' },
+                            { 'data': 'TotalReopenComplaint' },
+                            { 'data': 'TotalResolvedComplaints' },
+                        ],
+                        processing: true,
+                        fixedHeader: true,
+                        destroy: true,
+                        bFilter: false,
+                        pageLength: 3,
+                        lengthChange: false,
+                        bFilter: false,
+                        autoWidth: true
+                    });
+
+                // Pie chart and Data
+                PendingComplaints = result.CurrentMonthTotalComplaint - result.CurrentMonthResolvedComplaint;
+                $('#TotalComplaints').text(result.CurrentMonthTotalComplaint);
+                $('#ResolvedComplaints').text(result.CurrentMonthResolvedComplaint);
+                $('#PendingComplaints').text(PendingComplaints);
+                new Chart(document.getElementById("chartjs-dashboard-pie"), {
+                    type: 'pie',
+                    data: {
+                        labels: ["Total Complaints", "Resolved Complaints", "Pending Complaints"],
+                        datasets: [{
+                            data: [result.CurrentMonthTotalComplaint, result.CurrentMonthResolvedComplaint, PendingComplaints],
+                            backgroundColor: [
+                                window.theme.primary,
+                                window.theme.warning,
+                                window.theme.danger,
+                                "#E8EAED"
+                            ],
+                            borderColor: "transparent"
+                        }]
+                    },
+                    options: {
+                        responsive: !window.MSInputMethodContext,
+                        maintainAspectRatio: false,
+                        legend: {
+                            display: false
+                        },
+                        cutoutPercentage: 75
+                    }
+                });
+
+            },
+            error: function (data) { }
+        });
+    }
+
+    $(function () {
+        $('#datetimepicker-dashboard').datetimepicker({
+            inline: true,
+            sideBySide: false,
+            format: 'L'
+        });
+
+        $('#ddlMY').select2({
+            selectOnClose: true,
+            placeholder: "Select Billing year",
+        });
+
+
+        $('#ddlDivision').select2({
+            selectOnClose: true,
+            placeholder: "Select Division",
+        });
+
+
+        $('#ddlSubDivision').select2({
+            selectOnClose: true,
+            placeholder: "Select Sub Division",
+            allowClear: true,
+        });
+
+
+
+    
+        $('#ddlDivision').change(function () {
+            var selectedDivision = $("#ddlDivision").val();
+            alert(selectedDivision);
+
+        });
+
+    });
+
+
+    var HarasmentcomplaintShow = function (cmonth, compstatus) {
+        var TeamDetailPostBackURL = '/Dashboard/HarasmentcomplaintShow';
+        let month = 0;
+        if (cmonth == -1) {
+            const d = new Date();
+            month = d.getMonth() + 1;
+        }
+        else {
+            month = 0;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: TeamDetailPostBackURL,
+            contentType: "application/json; charset=utf-8",
+            data: { "compstatus": compstatus, "cmonth": month },
+            datatype: "json",
+            success: function (data) {
+                $('#loadPopUp').html(data);
+                $("#complaintPopup").modal('show');
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+        });
+    }
+
+    </script>
+
+    @if (TempData["loginmsg"] != null)
+    {
+        <script>
+            showLoginmsg();
+        </script>
+    }

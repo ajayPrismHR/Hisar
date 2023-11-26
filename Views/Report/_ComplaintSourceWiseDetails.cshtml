@@ -1,0 +1,57 @@
+﻿@model  List<ComplaintTracker.Models.ModelComplaintSourceWiseDetailReport>
+
+@using (Html.BeginForm("PartialComplaintDetails", "Complaint", FormMethod.Get))
+{
+<div class="modal fade" id="complaintSourcePopup" tabindex="-1" aria-hidden="true" style="display: none;" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header with-border bg-warning text-white">
+                <h2 class="modal-title"> Complaint Source Wise Details</h2>
+                <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close"><span>&times;</span> </button>
+            </div>
+            <div class="modal-body">
+                <div class="row border g-0 rounded shadow-sm">
+                    <div class="col p-4">
+                        <h3>Complaint Log</h3>
+                        <table id="gridComplaintlog" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Action Type</th>
+                                    <th>Date Time</th>
+                                    <th>State</th>
+                                    <th>Remarks</th>
+                                    <th>Source</th>
+                                    <th>UserID</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="tbody">
+                                @foreach (var item in Model)
+                                {
+                                        <tr>
+                                            <td>@item.One</td>
+                                            <td>@item.Two</td>
+                                            <td>@item.One</td>
+                                            <td>@item.Two</td>
+                                            <td>@item.One</td>
+                                            <td>@item.Two</td>
+
+                                        </tr>
+                                }
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer with-border">
+                @*<button type="button" class="btn btn-success" id="btnUpdate">Update</button>*@
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+  }
+  

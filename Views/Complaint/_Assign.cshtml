@@ -1,0 +1,226 @@
+﻿@*Assign Model*@
+
+@model ComplaintTracker.Models.COMPLAINT
+@section scripts{
+    <link href="~/Content/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="~/Scripts/select2.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+}
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+        $(function () {
+            $("#divFRTMobile").hide();
+            $("#divFRTMobilev1").hide();
+
+            $('select:not(.normal)').each(function () {
+                $(this).select2({
+                    dropdownParent: $(this).parent()
+                });
+            });
+
+        });
+        $('#submitComplaint').click(function () {
+                $("#AssignId").val($("#ddlAssignee").val());
+               $("#UserId").val(@Session["UserId"]);
+
+               var data = $("#ddlFRTMobile").select2('data');
+               if (data) {
+                   $("#Assign_FRTMobile").val(data[0].text);
+            }
+            /*alert($('#frtContactNo').val());*/
+            $("#Assign_FRTMobile").val($('#frtContactNo').val());
+
+
+
+
+        });
+        $('#ddlAssignee').select2({
+            placeholder: "Complaint Type",
+            minimumResultsForSearch: -1,
+            selectOnClose: true,
+            width: '200px',
+        });
+
+        $('#chkSelect').change(function () {
+            var status = this.checked;
+            if (status) {
+                $('#SMS').prop("disabled", false);
+                $('#MOBILE_NO').prop("disabled", false);
+            }
+            else {
+                $('#SMS').prop("disabled", true);
+                $('#MOBILE_NO').prop("disabled", true);
+            }
+        });
+
+       });
+
+
+    $('#ddlAssignee').change(function () {
+        var data = $("#ddlAssignee").select2('data');
+        if (data) {
+            if (data[0].text == 'FRT') {
+                $("#divFRTMobile").show();
+                $("#divFRTMobilev1").show();
+                $("#ddlFRTMobile").empty().trigger('change');
+                var complaintnoOfficeId = $("#OFFICE_CODE_ID").val();
+                fillFRTNo(complaintnoOfficeId);
+            }
+            else {
+                $("#ddlFRTMobile").empty().trigger('change');
+                $("#divFRTMobile").hide();
+                $("#divFRTMobilev1").hide();
+
+            }
+        }
+    });
+
+    function fillFRTNo(complaintnoOfficeId) {
+
+        $.ajax({
+            type: "GET",
+            url: '/Complaint/GetFRTNo',
+            data: { parentOfficeId: complaintnoOfficeId },
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var opt = new Option(data[i].OfficeId);
+                        $('#ddlFRTMobile').append(opt);
+                    }
+                    $('#frtContactNo').val($('#ddlFRTMobile').select2("val"));
+                    return;
+                } else {
+                    alert('error');
+                }
+            }
+        });
+    }
+
+    $('#ddlFRTMobile').change(function () {
+
+        $('#frtContactNo').val($('#ddlFRTMobile').select2("val"));
+
+    });
+    function SaveAssignC() {
+        var TeamDetailPostBackURL = '/Complaint/SaveAssign';
+        var model = new Object();
+        model.COMPLAINT_NO = $("#COMPLAINT_NO").val();
+        model.ASSIGNEEId = $("#ddlAssignee").val();
+        model.MOBILE_NO = $("#MOBILE_NO").val();
+        model.EMAIL = $("#EMAIL").val();
+        model.SMS = $("#SMS").val();
+        model.REMARKS = $("#REMARKS").val();
+        model.EMAIL_SEND = "0";
+        model.Assign_FRTMobile = $('#frtContactNo').val();
+        $.ajax({
+            type: "GET",
+            url: TeamDetailPostBackURL,
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+            data: model,
+            success: function (data) {
+                if (data.status == -1) {
+                    $("#AssignPopup").modal('hide');
+                    swal("error in saving", "error");
+                }
+                else {
+                    $("#AssignPopup").modal('hide');
+                    swal("Saved Successfully", "success");
+                }
+            },
+            error: function (data) {
+                $("#AssignPopup").modal('hide');
+                swal("Dynamic content load failed.!", "error");
+            }
+        });
+    }
+</script>
+
+
+    <div class="modal fade" id="AssignPopup" tabindex="-1" aria-hidden="true" style="display: none;" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header with-border bg-warning text-white">
+                    <h2 class="modal-title">Assign</h2>
+                    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close"><span>&times;</span> </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-1">
+                        <div class="card mb-2">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            @Html.HiddenFor(x => x.OFFICE_CODE_ID)
+                                            <div class="row">
+                                                <div class="col-12 col-lg-6">
+                                                    <label for="COMPLAINT_NO">Complaint No.</label>
+                                                    @Html.EditorFor(model => model.COMPLAINT_NO, new { htmlAttributes = new { placeholder = "Complaint No.", @class = "form-control", @disabled = "disabled" } })
+                                                    @Html.HiddenFor(model => model.COMPLAINT_NO)
+                                                </div>
+                                                <div class="col-12 col-lg-4 test">
+                                                    <label for="ASSIGNEE">Assign To</label>
+                                                    @Html.DropDownListFor(x => Model.ASSIGNEEId, new SelectList(Model.ComplaintAssignCollection, "AssignId", "AssigneeName"), new { @class = "form-control", id = "ddlAssignee" })
+                                                </div>
+                                                <div class="col-12 col-lg-2" id="divFRTMobile">
+                                                    @Html.HiddenFor(x => x.Assign_FRTMobile)
+                                                    <label for="FRT">FRT Contact No.</label>
+                                                    <select id="ddlFRTMobile" class="form-control">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row" id="divFRTMobilev1">
+                                                <div class="col-12 col-lg-9">
+                                                </div>
+                                                <div class="col-12 col-lg-3">
+                                                    <label for="FRT">Contact No.</label>
+                                                    <input id="frtContactNo" value="" class="form-control" type="number" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-12 col-lg-6">
+                                        <input type="checkbox" id="chkSelect" /><br />
+                                        <label for="MOBILE_NO">MOBILE_NO</label>
+                                        @Html.EditorFor(model => model.MOBILE_NO, new { htmlAttributes = new { placeholder = "MOBILE_NO", @class = "form-control" } })
+                                        @Html.HiddenFor(model => model.MOBILE_NO)
+                                    </div>
+                                    <div class="col-12 col-lg-6">
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-lg-6">
+
+                                        <label for="SMS">SMS</label>
+                                        <textarea class="form-control" name="SMS" id="SMS" style="height: 147px;" value="" placeholder="SMS" required>Dear Consumer, This is to inform you that your Complaint has been assigned to  Fault Rectification Team against Complaint No. @Model.COMPLAINT_NO On Date: @Model.Complaintdate AVVNL</textarea>
+
+                                        @Html.ValidationMessageFor(model => model.SMS, "", new { @class = "text-danger" })
+                                        @Html.HiddenFor(model => model.SMS)
+                                    </div>
+                                    <div class="col-12 col-lg-6">
+                                        <label for="REMARKS">REMARKS</label>
+                                        <textarea class="form-control" name="REMARKS" id="REMARKS" style="height: 147px;" value="" placeholder="REMARKS"></textarea>
+                                        @Html.ValidationMessageFor(model => model.REMARKS, "", new { @class = "text-danger" })
+                                        @Html.HiddenFor(model => model.REMARKS)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="submitComplaint" onclick="SaveAssignC()">Update</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+

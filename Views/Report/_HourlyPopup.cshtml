@@ -1,0 +1,58 @@
+﻿
+@model List<ComplaintTracker.Models.COMPLAINT>
+
+@using (Html.BeginForm("", "Report", FormMethod.Get))
+{
+
+    <div class="modal fade" id="HourlyPopup" tabindex="-1" aria-hidden="true" style="display: none;" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header with-border bg-primary text-white">
+                    <h2 class="modal-title"> Complaint Hourly Details</h2>
+                    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close"><span>&times;</span> </button>
+                </div>
+                <div class="modal-body">
+                    <table id="gridTable" class="table table-bordered table-hover  table-responsive">
+                        <thead>
+                            <tr>
+                                <th>Complaint No.</th>
+                                <th>Knumber</th>
+                                <th>Complaint Date</th>
+                                <th>Name</th>
+                                <th>Office Name</th>
+                                <th>Address</th>
+                                <th>Complaint Type</th>
+                                <th>Complaint Source</th>
+                                <th>Complaint Status</th>
+                                <th>Assignee</th>
+                            </tr>
+                        </thead>
+                        <tbody class="tbody">
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.COMPLAINT_NO</td>
+                                    <td>@item.KNO</td>
+                                    <td>@item.Complaintdate</td>
+                                    <td>@item.NAME</td>
+                                    <td>@item.ACCOUNT_NO</td>
+                                    <td>@item.ADDRESS1</td>
+                                    <td>@item.ComplaintTypeName</td>
+                                    <td>@item.ComplaintSourceName</td>
+                                    <td>@item.COMPLAINT_status</td>
+                                    <td>@item.ASSIGNEEName</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer with-border">
+                    @*<button type="button" class="btn btn-success" id="btnUpdate">Update</button>*@
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+

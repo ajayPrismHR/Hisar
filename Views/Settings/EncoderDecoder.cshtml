@@ -1,0 +1,103 @@
+﻿
+@{
+    ViewBag.Title = "Encoder Decoder";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="header">
+    <h1 class="header-title">
+        Encoder Decoder
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Encoder Decoder</li>
+        </ol>
+    </nav>
+</div>
+
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Encoder Decoder</h5>
+                    <h6 class="card-subtitle text-muted">utility to Password Encode and decode</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-4">
+                            <input class="form-control" id="txtPassword" name="txtPassword" type="text" value="" placeholder="Enter password Text" />
+                        </div>
+                        <div class="col-12 col-lg-1">
+                            <input type="submit" value="Encode" class="btn btn-primary btn-block" id="btnEncode" onclick="Encode()" />
+                        </div>
+                        <div class="col-12 col-lg-2">
+                            <input type="submit" value="Decode" class="btn btn-success btn-block" id="btnDecode" onclick="Decode()" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-4">
+                            <h4>Data</h4>
+                            @Html.Label("-", new { @class = "", id = "datatext" })
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    function Encode() {
+        var TeamDetailPostBackURL = '/Settings/Encode';
+        var passwordText = $('#txtPassword').val();
+
+        txtPassword
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "passwordText": passwordText },
+                datatype: "json",
+                success: function (data) {
+                    $('#datatext').text(data);
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+    }
+    function Decode() {
+        var TeamDetailPostBackURL = '/Settings/Decode';
+        var passwordText = $('#txtPassword').val();
+        $.ajax({
+            type: "GET",
+            url: TeamDetailPostBackURL,
+            contentType: "application/json; charset=utf-8",
+            data: { "passwordText": passwordText },
+            datatype: "json",
+            success: function (data) {
+                $('#datatext').text(data);
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+    });
+
+
+</script>

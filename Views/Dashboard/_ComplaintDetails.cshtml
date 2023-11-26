@@ -1,0 +1,74 @@
+﻿@*Remark Model*@
+@model  List<ComplaintTracker.Models.ModelDashboardHaresment>
+<script src="~/Scripts/jquery.table2excel.js"></script>
+
+    <div class="modal fade" id="complaintPopup" tabindex="-1" aria-hidden="true" style="display: none;" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header with-border bg-dark">
+                    <h2 class="modal-title text-white"> Complaint Details</h2>
+                    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close"><span>&times;</span> </button>
+                </div>
+                <div class="modal-body">
+                        <table id="gridComplaintlog" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>COMPLAINT NO</th>
+                                    <th>KNO</th>
+                                    <th>COMPLAINT DATE</th>
+                                    <th>COMPLAINT TYPE</th>
+                                    <th>NAME</th>
+                                    <th>ADDRESS</th>
+                                    <th>MOBILE NO</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="tbody">
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.COMPLAINT_NO</td>
+                                        <td>@item.KNO</td>
+                                        <td>@item.COMPLAINT_DATE</td>
+                                        <td>@item.COMPLAINT_TYPE</td>
+                                        <td>@item.NAME</td>
+                                        <td>@item.ADDRESS</td>
+                                        <td>@item.MOBILE_NO</td>
+                                        <td>@item.STATUS</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                </div>
+                <div class="modal-footer with-border">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                    <input type="submit" id="btnExport" value="Export" class="btn btn-secondary btn-block" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+    var datatablesButtons = $('#gridComplaintlog').DataTable(
+        {
+            processing: true,
+            fixedHeader: false,
+            destroy: true,
+            bFilter: false,
+            pageLength: 10000,
+            lengthChange: false,
+            bFilter: false,
+            autoWidth: true,
+        });
+
+
+    $("#btnExport").click(function () {
+        $("#gridComplaintlog").table2excel({
+            filename: "ReportHarassment"
+        });
+    });
+
+</script>

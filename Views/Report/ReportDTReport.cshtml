@@ -1,0 +1,212 @@
+﻿
+@{
+    ViewBag.Title = "ReportDTReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Datatables with Buttons
+        var datatablesButtons = $("#datatables-buttons").DataTable({
+            responsive: true,
+            lengthChange: !1,
+            //buttons: ["copy", 'csv', 'print'],
+            buttons: ['print'],
+
+        });
+        datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+    });
+</script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $(function () {
+            $('#ddlBillMonth').select2({
+                selectOnClose: true,
+                placeholder: "Select Bill Month",
+            });
+            $('#ddlBillyear').select2({
+                selectOnClose: true,
+                placeholder: "Select Bill Year",
+            });
+
+            $('#ddlOfficecode').select2({
+                selectOnClose: true,
+                placeholder: "Select Office Code",
+            });
+            $.ajax({
+                type: "GET",
+                url: '/Complaint/OfficeCodeJsonCircle',
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlOfficecode").append($("<option></option>").val(this.OfficeId).html(this.OfficeCode));
+                    });
+                },
+                error: function (data) { }
+            });
+
+           
+        });
+
+    });
+    function searchreq() {
+        var dataObject = new Object();
+        debugger;
+        dataObject.BILL_MONTH = $('#ddlBillMonth').val();
+        dataObject.BILL_YEAR = $('#ddlBillyear').val();
+        dataObject.OfficeCode = $('#ddlOfficecode').val();
+
+        $.ajax({
+            type: "GET",
+            url: '/Report/ReportDTSearch',
+            data: dataObject,
+            dataType: "json",
+            async: "true",
+            success: function (data) {
+                var datatablesButtons = $('#datatables-buttons').DataTable(
+                    {
+                        data: data,
+                        columns: [
+                            { 'data': 'CIRCLE'},
+                            { 'data': 'DT_FAILED_FOR_SELECTED_MONTH' },
+                            { 'data': 'DT_REPLACE_FOR_SELECTED_MONTH' },
+                            { 'data': 'BALANCE_FOR_SELECTED_MONTH' },
+                            { 'data': 'AVERAGE_REDRESSAL_TIME_IN_SELECTED_MONTH' },
+                            { 'data': 'DT_FAILED_UPTO_SELECTED_MONTH' },
+                            { 'data': 'DT_REPLACE_UPTO_SELECTED_MONTH' },
+                            { 'data': 'BALANCE_FOR_UPTO_SELECTED_MONTH' },
+                            { 'data': 'AVERAGE_REDRESSAL_TIME_UPTO_SELECTED_MONTH' },
+                        ],
+                        bLengthChange: true,
+                        scrollX: true,
+                        scrollY: true,
+                        scrollCollapse: true,
+                        processing: true,
+                        pageLength: 150,
+                        fixedHeader: true,
+                        fixedColumns: {
+                            leftColumns: 1,
+                            rightColumns: 1
+                        },
+                        buttons: ['print'],
+                        destroy: true,
+                    });
+                datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+        });
+    }
+
+</script>
+<div class="header">
+    <h1 class="header-title">
+        DT Report
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">DT Report</li>
+        </ol>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Search By</h5>
+                <h6 class="card-subtitle text-muted">
+                    Search with
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-12 col-lg-2">
+                        <label>Bill Month</label>
+                        @Html.DropDownList("ddlBillMonth", new List<SelectListItem>
+                        {
+                        new SelectListItem{ Text="Select", Value = "0" },
+                            new SelectListItem{ Text="January", Value = "1" },
+                              new SelectListItem{ Text="February", Value = "2" },
+                            new SelectListItem{ Text="March", Value = "3" },
+                            new SelectListItem{ Text="April", Value = "4" },
+                            new SelectListItem{ Text="May", Value = "5" },
+                            new SelectListItem{ Text="June", Value = "6" },
+                            new SelectListItem{ Text="July", Value = "7" },
+                            new SelectListItem{ Text="August", Value = "8" },
+                            new SelectListItem{ Text="September", Value = "9" },
+                            new SelectListItem{ Text="October", Value = "10" },
+                            new SelectListItem{ Text="November", Value = "11" },
+                            new SelectListItem{ Text="December", Value = "12" },
+                         }, new { @class = "form-control select2", id = "ddlBillMonth" })
+                    </div>
+                    <div class="col-12 col-lg-2">
+                        <label>Bill Year</label>
+                        @Html.DropDownList("ddlBillyear", new List<SelectListItem>
+                        {
+                        new SelectListItem{ Text="Select", Value = "0" },
+                            new SelectListItem{ Text="2023", Value = "2023" },
+                              new SelectListItem{ Text="2024", Value = "2024" },
+                            new SelectListItem{ Text="2025", Value = "2025" },
+                         }, new { @class = "form-control select2", id = "ddlBillyear" })
+                    </div>
+                    
+                    <div class="col-12 col-lg-3">
+                        <label>Office</label>
+                        @Html.DropDownList("ddlOfficecode", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlOfficecode" })
+                    </div>
+                    <div class="col-12 col-lg-2">
+                        <br />
+                        <input type="submit" value="Search" class="btn btn-dark btn-block" id="btnSearch" onclick="searchreq()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">About DT Report</h5>
+                <h6 class="card-subtitle text-muted">
+                    Description of Report
+                </h6>
+            </div>
+            <div class="card-body">
+                <table id="datatables-buttons" class="table table-striped" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Name of circle</th>
+                            <th colspan="4">During Selected Month and year</th>
+                            <th colspan="4">Upto Selected Month and year</th>
+                        </tr>
+                        <tr>
+                            <th>DTs Failed</th>
+                            <th>DTs Replaced</th>
+                            <th>Balance</th>
+                            <th>Average Redressed Time</th>
+                            <th>DTs Failed</th>
+                            <th>DTs Replaced</th>
+                            <th>Balance</th>
+                            <th>Average Redressed Time</th>
+
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="loadPopUp">
+
+</div>

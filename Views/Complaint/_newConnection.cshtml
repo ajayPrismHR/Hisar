@@ -1,0 +1,145 @@
+﻿@*Close Model*@
+
+
+<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.validate.min.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+@section scripts{
+    <link href="~/Content/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="~/Scripts/select2.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#rdoDsOrNds').val(1);
+
+        if ($('#gridComplaintlog tr').length > 1) {
+            var dsOrRds = document.getElementById("gridComplaintlog").rows[1].cells[2].innerHTML;
+            if (dsOrRds == 'Not Selected') {
+                $('input[name=options]').attr("disabled", false);
+            }
+            else {
+                $('input[name=options]').attr("disabled", true);
+
+                if (dsOrRds == 'DS') {
+                    $('#rdoDsOrNds').val(1);
+                }
+                else {
+                    $('#rdoDsOrNds').val(2);
+                }
+
+            }
+        }
+
+        $('input[type=radio][name=options]').change(function () {
+            
+            if (this.value == 'Domestic') {
+
+                $('#rdoDsOrNds').val(1);
+                ('#rdoDomestic').prop("checked", true);
+            }
+            else if (this.value == 'NonDomestic') {
+
+                $('#rdoDsOrNds').val(2);
+                ('#rdoNonDomestic').prop("checked", true);
+            }
+        });
+    });
+    $('#submitComplaint').click(function () {
+        $("#NewConnectionStepId").val($("#NEWCONNECTIONSTEP").val());
+        
+        });
+
+</script>
+@model ComplaintTracker.Models.ModelNewConnection
+@using (Html.BeginForm("SaveNewConnection", "Complaint", FormMethod.Post))
+{
+
+    <div class="modal fade" id="NewConnectionPopup" tabindex="-1" aria-hidden="true" style="display: none;" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header with-border bg-success text-white">
+                    <h2 class="modal-title">New Connection</h2>
+                    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close"><span>&times;</span> </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-1">
+                        <div class="col-md-12">
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    @Html.HiddenFor(x => x.rdoDsOrNds)
+                                    @Html.HiddenFor(x => x.NewConnectionStepId)
+
+                                    
+                                    <h3>Complaint No.</h3>
+                                    @Html.EditorFor(model => model.ComplaintNo, new { htmlAttributes = new { placeholder = "Complaint No.", @class = "form-control", @disabled = "disabled" } })
+
+                                    @Html.HiddenFor(model => model.ComplaintNo)
+
+                                </div>
+                            </div>
+                            <div class="row mb-1">
+                                <div class="col-md-12">
+                                    <div class="form-floating">
+                                        <h3>New Connection Step</h3>
+                                        <table id="gridComplaintlog" class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Complaint No</th>
+                                                    <th>Step Name</th>
+                                                    <th>Ds/NDS</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody class="tbody">
+                                                @foreach (var item in Model.NewConnectionStepDetailList)
+                                                    {
+                                                        <tr>
+                                                            <td>@item.COMPLAINT_NO </td>
+                                                            <td>@item.STEP_NAME</td>
+                                                            <td>@item.DS_NDS</td>
+                                                        </tr>
+                                                    }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-12">
+                                    <label for="NEWCONNECTIONSTEP">New connection step</label>
+                                    @Html.DropDownListFor(x => Model.NewConnectionStepList, new SelectList(Model.NewConnectionStepList, "Value", "Text"), new { @class = "form-control", id = "NEWCONNECTIONSTEP" })
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="options" id="rdoDomestic" value="Domestic" checked>
+                                        <label class="form-check-label" for="rdoDomestic">
+                                            Domestic
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="options" id="rdoNonDomestic"  value="NonDomestic" >
+                                        <label class="form-check-label" for="rdoNonDomestic">
+                                            Non Domestic
+                                        </label>
+                                    </div>
+                                </div>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" id="submitComplaint">Update</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

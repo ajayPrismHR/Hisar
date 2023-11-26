@@ -1,0 +1,346 @@
+﻿@*Change Complaint Type Model*@
+
+@section scripts{
+    <link href="~/Content/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="~/Scripts/select2.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+}
+<script type="text/javascript">
+        $(document).ready(function () {
+            $(function () {
+
+                $('#ddlComplaintType').select2({
+                    placeholder: "Complaint Type",
+                    minimumResultsForSearch: -1,
+                    selectOnClose: true,
+                    width: '350px',
+                    dropdow
+                 });
+
+                $('#ddlSubComplaintType').select2({
+                    placeholder: "Sub Complaint Type",
+                    minimumResultsForSearch: -1,
+                    selectOnClose: true,
+                    width: '350px',
+                });
+            });
+
+          $('select:not(.normal)').each(function () {
+                $(this).select2({
+                    dropdownParent: $(this).parent()
+                });
+          });
+
+            $('#ddlComplaintType').change(function () {
+                $("#ddlSubComplaintType").empty().trigger('change');
+                var selectedComplaintTypeId = $("#ddlComplaintType").val();
+                fillsubcomplainttype(selectedComplaintTypeId);
+
+            });
+            function fillsubcomplainttype(selectedComplaintTypeId) {
+
+                $.ajax({
+                    type: "GET",
+                    url: '/Complaint/GetSubComplaintByComplaintTypeId',
+                    data: { ComplaintTypeId: selectedComplaintTypeId },
+                    contentType: "application/json;charset=utf-8",
+                    success: function (data) {
+                        if (data) {
+
+                            for (var i = 0; i < data.length; i++) {
+                                var opt = new Option(data[i].SubComplaintType, data[i].SubComplaintTypeId);
+                                $('#ddlSubComplaintType').append(opt);
+                            }
+                            return;
+                        } else {
+                            alert('error');
+                        }
+                    }
+                });
+            }
+
+
+
+            $('#submitComplaint').click(function () {
+            $("#SUB_COMPLAINT_TYPE_ID").val($("#ddlSubComplaintType").val());
+            $("#UserId").val(@Session["UserId"]);
+
+        });
+  
+            fieldValidate();
+        });
+    function ChangeComplaint1() {
+        var TeamDetailPostBackURL = '/Complaint/ccomplaint';
+        var model = new Object();
+        model.COMPLAINT_NO = $('#COMPLAINT_NO').val();
+        
+        model.ComplaintTypeId = $("#ddlComplaintType").val();
+        model.SUB_COMPLAINT_TYPE_ID = $("#ddlSubComplaintType").val();
+        $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+            datatype: "json",
+            data: model,
+            success: function (data) {
+                if (data.status == -1) {
+                    $("#ChangeComplaintPopup").modal('hide');
+                    swal("error in saving", "error");
+                }
+                else {
+                    $("#ChangeComplaintPopup").modal('hide');
+                    swal("Saved Successfully", "success");
+                }
+                },
+                error: function (data) {
+                    //alert("Dynamic content load failed.");
+                    $("#ChangeComplaintPopup").modal('hide');
+                    swal("Dynamic content load failed.!", "error");
+                }
+            });
+    }
+</script>
+
+
+
+@model ComplaintTracker.Models.COMPLAINT
+
+
+    <div class="modal fade" id="ChangeComplaintPopup" aria-hidden="true" style="display: none; z-index: 10060;" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="mc">
+                <div class="modal-header with-border bg-success text-white">
+                    <h2 class="modal-title">Change Complaint Type</h2>
+                    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close"><span>&times;</span> </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-1">
+                        <div class="col-md-6">
+                            <div>
+                                <label for="COMPLAINT_NO">Complaint No.</label>
+                                @Html.EditorFor(model => model.COMPLAINT_NO, new { htmlAttributes = new { placeholder = "Complaint No.", @class = "form-control", @disabled = "disabled" } })
+                                @Html.HiddenFor(model => model.COMPLAINT_NO)
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <label for="ADDRESS1">Address 1</label>
+                                @Html.EditorFor(model => model.ADDRESS1, new { htmlAttributes = new { placeholder = "Address 1", @class = "form-control", @disabled = "disabled" } })
+                                @Html.HiddenFor(model => model.ADDRESS1)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-md-6">
+                            <div>
+                                <label for="SDO_CODE">Complaint No.</label>
+                                @Html.EditorFor(model => model.SDO_CODE, new { htmlAttributes = new { placeholder = "SDO CODE", @class = "form-control", @disabled = "disabled" } })
+
+                                @Html.HiddenFor(model => model.SDO_CODE)
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <label for="ADDRESS2">ADDRESS 2</label>
+                                @Html.EditorFor(model => model.ADDRESS2, new { htmlAttributes = new { placeholder = "ADDRESS 2", @class = "form-control", @disabled = "disabled" } })
+
+                                @Html.HiddenFor(model => model.ADDRESS2)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-md-6">
+                            <div>
+                                <label for="NAME">Name</label>
+                                @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { placeholder = "NAME", @class = "form-control", @disabled = "disabled" } })
+
+                                @Html.HiddenFor(model => model.NAME)
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <label for="ADDRESS3">ADDRESS 3</label>
+                                @Html.EditorFor(model => model.ADDRESS3, new { htmlAttributes = new { placeholder = "ADDRESS 3", @class = "form-control", @disabled = "disabled" } })
+
+                                @Html.HiddenFor(model => model.ADDRESS3)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-md-6">
+                            <div>
+                                <label for="FATHER_NAME">FATHER NAME</label>
+                                @Html.EditorFor(model => model.FATHER_NAME, new { htmlAttributes = new { placeholder = "FATHER NAME", @class = "form-control", @disabled = "disabled" } })
+
+                                @Html.HiddenFor(model => model.FATHER_NAME)
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <label for="LANDMARK">LANDMARK</label>
+                                @Html.EditorFor(model => model.LANDMARK, new { htmlAttributes = new { placeholder = "LANDMARK", @class = "form-control", @disabled = "disabled" } })
+
+                                @Html.HiddenFor(model => model.LANDMARK)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-md-6">
+                            <div>
+                                <label for="KNO">KNO</label>
+                                @Html.EditorFor(model => model.KNO, new { htmlAttributes = new { placeholder = "KNO", @class = "form-control", @disabled = "disabled" } })
+
+                                @Html.HiddenFor(model => model.KNO)
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <label for="AREA_CODE">AREA_CODE</label>
+                                @Html.EditorFor(model => model.AREA_CODE, new { htmlAttributes = new { placeholder = "AREA_CODE", @class = "form-control", @disabled = "disabled" } })
+
+                                @Html.HiddenFor(model => model.AREA_CODE)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-md-6">
+                            <div>
+                                <label for="MOBILE_NO">MOBILE_NO</label>
+                                @Html.EditorFor(model => model.MOBILE_NO, new { htmlAttributes = new { placeholder = "MOBILE_NO", @class = "form-control", @disabled = "disabled" } })
+
+                                @Html.HiddenFor(model => model.MOBILE_NO)
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <label for="CONSUMER_STATUS">CONSUMER_STATUS</label>
+                                @Html.EditorFor(model => model.CONSUMER_STATUS, new { htmlAttributes = new { placeholder = "CONSUMER_STATUS", @class = "form-control", @disabled = "disabled" } })
+
+                                @Html.HiddenFor(model => model.CONSUMER_STATUS)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-md-6">
+                            <div>
+                                <label for="ALTERNATE_MOBILE_NO">ALTERNATE_MOBILE_NO</label>
+                                @Html.EditorFor(model => model.ALTERNATE_MOBILE_NO, new { htmlAttributes = new { placeholder = "ALTERNATE_MOBILE_NO", @class = "form-control", @disabled = "disabled" } })
+
+                                @Html.HiddenFor(model => model.ALTERNATE_MOBILE_NO)
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <label for="FEEDER_NAME">FEEDER_NAME</label>
+                                @Html.EditorFor(model => model.FEEDER_NAME, new { htmlAttributes = new { placeholder = "FEEDER_NAME", @class = "form-control", @disabled = "disabled" } })
+
+                                @Html.HiddenFor(model => model.FEEDER_NAME)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-md-6">
+                            <div>
+                                <label for="EMAIL">EMAIL</label>
+                                @Html.EditorFor(model => model.EMAIL, new { htmlAttributes = new { placeholder = "EMAIL", @class = "form-control", @disabled = "disabled" } })
+
+                                @Html.HiddenFor(model => model.EMAIL)
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <label for="COMPLAINT_NO">Complaint No.</label>
+                                @Html.EditorFor(model => model.COMPLAINT_NO, new { htmlAttributes = new { placeholder = "Complaint No.", @class = "form-control", @disabled = "disabled" } })
+
+                                @Html.HiddenFor(model => model.COMPLAINT_NO)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-md-6">
+                            <div>
+                                <label for="COMPLAINT_TYPE">COMPLAINT_TYPE</label>
+                                @Html.EditorFor(model => model.COMPLAINT_TYPE, new { htmlAttributes = new { placeholder = "COMPLAINT_TYPE", @class = "form-control", @disabled = "disabled" } })
+
+                                @Html.HiddenFor(model => model.COMPLAINT_TYPE)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">Modify Complaint Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 error-placeholder">
+                                        <label for="ddlComplaintType">Complaint Type</label>
+                                        @Html.DropDownListFor(x => Model.ComplaintTypeId, new SelectList(Model.ComplaintTypeCollection, "ComplaintTypeId", "ComplaintType"), new { @class = "form-control select2", id = "ddlComplaintType", style = "width:250px; height:35px;" })
+                                    </div>
+                                    <div class="col-6 error-placeholder">
+                                        <label for="ddlSubComplaintType">Sub Complaint Type</label>
+                                        <select id="ddlSubComplaintType" name="ddlSubComplaintType" class="form-control select2" data-bs-toggle="select2" style="width:250px; height:35px;">
+                                        </select>
+                                        @Html.HiddenFor(model => model.SUB_COMPLAINT_TYPE_ID)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="submitComplaint" onclick="ChangeComplaint1()">Update</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    function fieldValidate() {
+        // Trigger validation on tagsinput change
+        $("input[name=\"validation-bs-tagsinput\"]").on("itemAdded itemRemoved", function () {
+            $(this).valid();
+        });
+        // Initialize validation
+        $("#validation-form").validate({
+            ignore: ".ignore",
+            focusInvalid: true,
+            rules: {
+                "ComplaintTypeId": {
+                    required: true
+                },
+                "ddlSubComplaintType": {
+                    required: true
+                },
+            },
+            // Errors
+            errorPlacement: function errorPlacement(error, element) {
+                var $parent = $(element).parents(".error-placeholder");
+                // Do not duplicate errors
+                if ($parent.find(".jquery-validation-error").length) {
+                    return;
+                }
+                $parent.append(
+                    error.addClass("jquery-validation-error small form-text invalid-feedback")
+                );
+            },
+            highlight: function (element) {
+                var $el = $(element);
+                var $parent = $el.parents(".error-placeholder");
+                $el.addClass("is-invalid");
+                // Select2 and Tagsinput
+                if ($el.hasClass("select2-hidden-accessible") || $el.attr("data-role") === "tagsinput") {
+                    $el.parent().addClass("is-invalid");
+                }
+            },
+            unhighlight: function (element) {
+                $(element).parents(".error-placeholder").find(".is-invalid").removeClass("is-invalid");
+            }
+        });
+    }
+</script>
+

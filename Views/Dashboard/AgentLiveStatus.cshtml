@@ -1,0 +1,375 @@
+﻿
+@{
+    ViewBag.Title = "AgentLiveStatus";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+        $(document).ready(function () {
+            $(function () {
+                $('select:not(.normal)').each(function () {
+                    $(this).select2({
+                        dropdownParent: $(this).parent()
+                    });
+                });
+
+                $('#ddlRole').select2({
+                    selectOnClose: false,
+                });
+
+            });
+        });
+
+</script>
+
+
+<div class="header">
+    <h1 class="header-title">
+        Agent Live Status
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Live Status</li>
+        </ol>
+        <div class="col-12 col-lg-6">
+            @Html.DropDownList("ddlRole", new List<SelectListItem>
+           {
+           new SelectListItem{ Text="All", Value = "0" },
+               new SelectListItem{ Text="Inbound", Value = "1" },
+               new SelectListItem{ Text="Outbound", Value = "2" },
+            }, new { @class = "form-control select2", id = "ddlCurrentStatus", style = "width:200px" })
+        </div>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 col-xxl-12 d-flex">
+        <div class="w-100">
+            <div class="row">
+                <div class="col-sm-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Login</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="avatar">
+                                        <div class="avatar-title rounded-circle bg-primary-dark">
+                                            <i class="align-middle" data-feather="users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1 class="display-6 mt-1 mb-1"><label id="tileLogin" />  </h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Free</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="avatar">
+                                        <div class="avatar-title rounded-circle bg-primary-dark">
+                                            <i class="align-middle" data-feather="users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1 class="display-6 mt-1 mb-1"><label id="tileFree" /></h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Ringing</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="avatar">
+                                        <div class="avatar-title rounded-circle bg-primary-dark">
+                                            <i class="align-middle" data-feather="users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1 class="display-6 mt-1 mb-1"><label id="tileRinging" /></h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Busy</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="avatar">
+                                        <div class="avatar-title rounded-circle bg-primary-dark">
+                                            <i class="align-middle" data-feather="users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1 class="display-6 mt-1 mb-1"><label id="tileBusy"/></h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Wrap Up</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="avatar">
+                                        <div class="avatar-title rounded-circle bg-primary-dark">
+                                            <i class="align-middle" data-feather="users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1 class="display-6 mt-1 mb-1"><label id="tileWrapUp" /></h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Break</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="avatar">
+                                        <div class="avatar-title rounded-circle bg-primary-dark">
+                                            <i class="align-middle" data-feather="users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1 class="display-6 mt-1 mb-1"><label id="tileBreak" /></h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Queue</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="avatar">
+                                        <div class="avatar-title rounded-circle bg-primary-dark">
+                                            <i class="align-middle" data-feather="users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1 class="display-6 mt-1 mb-1"><label id="tileQueue" /></h1>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Hold</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="avatar">
+                                        <div class="avatar-title rounded-circle bg-primary-dark">
+                                            <i class="align-middle" data-feather="users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1 class="display-6 mt-1 mb-1"><label id="tileHold" /></h1>
+                        </div>
+                    </div>
+
+                </div>
+                @*<div class="col-sm-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Custome1</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="avatar">
+                                        <div class="avatar-title rounded-circle bg-primary-dark">
+                                            <i class="align-middle" data-feather="users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1 class="display-6 mt-1 mb-1">100</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Visitors</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="avatar">
+                                        <div class="avatar-title rounded-circle bg-primary-dark">
+                                            <i class="align-middle" data-feather="users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1 class="display-6 mt-1 mb-1">100</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Visitors</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="avatar">
+                                        <div class="avatar-title rounded-circle bg-primary-dark">
+                                            <i class="align-middle" data-feather="users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1 class="display-6 mt-1 mb-1">100</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Visitors</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="avatar">
+                                        <div class="avatar-title rounded-circle bg-primary-dark">
+                                            <i class="align-middle" data-feather="users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1 class="display-6 mt-1 mb-1">100</h1>
+                        </div>
+                    </div>
+                </div>*@
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Live</h5>
+                <h6 class="card-subtitle text-muted">
+                    Showig Agent <code>Live Status</code>
+                </h6>
+            </div>
+            <table id="datatables-dashboard-projects" class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Agent Id</th>
+                        <th scope="col">Agent Name</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Campaign</th>
+                        <th scope="col">ACDGroup</th>
+                        <th scope="col">Agent Id</th>
+                        <th scope="col">Agent Name</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Campaign</th>
+                        <th scope="col">ACDGroup</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        reloadpage();
+        dashboardLoad = setInterval("reloadpage()", 1000
+        );
+    });
+
+    function reloadpage() {
+        $.ajax({
+            type: "GET",
+            url: '/Dashboard/AgentLiveStatusJson',
+            contentType: "application/json; charset=utf-8",
+            datatype: JSON,
+            async: true,
+            success: function (result) {
+  
+                //alert(result);
+                //Tiles
+                $('#tileLogin').text(result.Login);
+                $('#tileFree').text(result.Free);
+                $('#tileRinging').text(result.Ringing);
+                $('#tileBusy').text(result.Busy);
+                $('#tileWrapUp').text(result.WrapUp);
+                $('#tileBreak').text(result.Break);
+                $('#tileQueue').text(result.Queue);
+                $('#tileHold').text(result.Hold);
+
+                //Grid
+                var datatablesButtons = $('#datatables-dashboard-projects').DataTable(
+                    {
+                        
+                        data: result.ListLiveGridData,
+      
+       
+                            columns: [
+                                { 'data': 'AgentId' },
+                                { 'data': 'AgentName' },
+                                { 'data': 'Phone' },
+                                { 'data': 'Campaign' },
+                                { 'data': 'ACDGroup' },
+                                { 'data': 'AgentId' },
+                                { 'data': 'AgentName' },
+                                { 'data': 'Phone' },
+                                { 'data': 'Campaign' },
+                                { 'data': 'ACDGroup' },
+                            ],
+
+                        
+                        processing: true,
+                        fixedHeader: true,
+                        destroy: true,
+                        bFilter: false,
+                        pageLength: 20,
+                        lengthChange: false,
+                        bFilter: false,
+                        autoWidth: true
+                    });
+            },
+            error: function (data) { }
+        });
+    }
+</script>
+

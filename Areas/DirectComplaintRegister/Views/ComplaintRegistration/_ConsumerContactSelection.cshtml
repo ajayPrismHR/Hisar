@@ -1,0 +1,160 @@
+﻿@model  IList<DirectComplaintRegister.Models.COMPLAINT>
+@using (Html.BeginForm("PartialComplaintDetails", "ComplaintRegistration", FormMethod.Get))
+{
+    <div class="modal fade" id="consumerComplaintListPopup" tabindex="-1" aria-hidden="true" style="display: none;" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header with-border bg-primary  text-white">
+                    <h2 class="modal-title"> Complaint Details</h2>
+                    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close"><span>&times;</span> </button>
+                </div>
+                <div class="modal-body">
+
+
+                    <table id="gridComplaintlog" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Address1</th>
+                                <th>Address2</th>
+                                <th>Address3</th>
+                                <th>Mobile No.</th>
+                                <th>KNO</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="tbody">
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.NAME</td>
+                                    <td>@item.ADDRESS1</td>
+                                    <td>@item.ADDRESS2</td>
+                                    <td>@item.ADDRESS3</td>
+                                    <td>@item.MOBILE_NO</td>
+                                    <td>@item.KNO</td>
+                                    <td><button type="button" onclick="getDetailsofKo(@item.KNO)" class="btn btn-primary btnget tooltip-test" aria-label="select"  title="kno selection for complaint">Select</button></td>
+                                </tr>
+                            }
+                            </tbody>
+                    </table>
+
+                </div>
+                <div class="modal-footer with-border">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close" id="btnclose">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+
+
+<script>
+
+    function getDetailsofKo(kno) {
+        var officecode = '0';
+        var consumerType = '1';
+        var searchparm = kno ;
+
+
+         $.ajax({
+                type: "GET",
+             url: '/ComplaintRegistration/GetList',
+                data: { OfficeCode: officecode, ConsumerType: consumerType, Searchparm: searchparm },
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                async: "true",
+                cache: "false",
+                success: function (data) {
+                    $('#comp').DataTable(
+                        {
+                            data: data,
+                            columns: [
+                                { 'data': 'Complaintdate' },
+                                { 'data': 'COMPLAINT_NO' },
+                                { 'data': 'COMPLAINT_TYPE' },
+                                { 'data': 'REMARKS' },
+                                { 'data': 'COMPLAINT_status' },
+                            ],
+                            //lengthMenu: [[10, 15, 20, 50, 100, -1], [10, 15, 20, 50, 100, "All"]],
+                            //bPaginate: true,
+                            processing: true,
+                            pageLength: 5,
+                            lengthChange: false,
+                            bFilter: false,
+                            destroy: true,
+                            bSort: false
+                        });
+                    $('#comp').DataTable().row("tr:first-child").remove().draw();
+
+                    var flag = false;
+                    var nos;
+                    var serviceEnable = false;
+                    $.each(data, function (key, item) {
+                        if (item.COMPLAINT_status == "Pending") {
+                            flag = true;
+                            nos = item.COMPLAINT_NO;
+                        }
+                        if (key == 0) {
+                            if (item.CONSUMER_STATUS == 'R' || item.CONSUMER_STATUS == 'N' || item.CONSUMER_STATUS == 'F') {
+                                serviceEnable = true;
+                            }
+                            $('#SDO_CODE').val(item.SDO_CODE);
+                            $('#ADDRESS1').val(item.ADDRESS1);
+                            $('#ADDRESS2').val(item.ADDRESS2);
+                            $('#ADDRESS3').val(item.ADDRESS3);
+                            $('#NAME').val(item.NAME);
+                            $('#FATHER_NAME').val(item.FATHER_NAME);
+                            $('#KNO').val(item.KNO);
+                            $('#LANDMARK').val(item.LANDMARK);
+                            $('#LANDLINE_NO').val(item.LANDLINE_NO);
+                            $('#MOBILE_NO').val(item.MOBILE_NO);
+                            $('#ALTERNATE_MOBILE_NO').val(item.ALTERNATE_MOBILE_NO);
+                            $('#CONSUMER_STATUS').val(item.CONSUMER_STATUS);
+                            $('#EMAIL').val(item.EMAIL);
+                            $('#FEEDER_NAME').val(item.FEEDER_NAME);
+                            $('#ACCOUNT_NO').val(item.ACCOUNT_NO);
+                            $('#AREA_CODE').val(item.AREA_CODE);
+
+                            $("#ddlOfficecode > option").each(function () {
+                                let result = this.value.slice(0, 7);
+                                if (result == item.KNO.slice(0, 7)) {
+                                    $("#ddlOfficecode").val(this.value).trigger('change');   
+                                }
+                            });
+                        }
+                    });
+
+                    if (flag == true) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'info',
+                            text: 'Complaint Already Registered With no. ' + nos,
+                            footer: 'Sandha & Co.'
+                        })
+                    }
+                    if (serviceEnable == false && consumerType == 1) {
+                        $('#submitComplaint').prop('disabled', true);
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'info',
+                            text: 'Consumer is Disconnected or No Consumer Exist',
+                            footer: 'Sandha & Co.'
+                        })
+                    } else {
+                        $('#submitComplaint').prop('disabled', false);
+                    }
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+
+            });
+
+
+        $('#btnclose').trigger('click') 
+    };
+
+</script>

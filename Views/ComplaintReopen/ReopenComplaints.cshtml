@@ -1,0 +1,256 @@
+﻿@model List<ComplaintTracker.Models.COMPLAINT>
+
+@{
+    ViewBag.Title = "Complaint Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('select:not(.normal)').each(function () {
+                $(this).select2({
+                    dropdownParent: $(this).parent()
+                });
+            });
+            $(function () {
+                $('#ddlOfficecode').select2({
+                    selectOnClose: true,
+                    //minimumInputLength: 2,
+                    //maximumInputLength: 20,
+                    //minimumResultsForSearch: 50,
+                    placeholder: "Select Office Code",
+                });
+
+                $('#ddlSource').select2({
+                    selectOnClose: false,
+                    placeholder: "Select Source",
+                });
+
+            });
+
+            $(document).ready(function () {
+                /*myfun();*/
+            });
+            //$.ajax({
+            //    type: "GET",
+            //    url: '/Complaint/OfficeCodeJson',
+            //    contentType: "application/json; charset=utf-8",
+            //    datatype: JSON,
+            //    success: function (result) {
+            //        $(result).each(function () {
+            //            $("#ddlOfficecode").append($("<option></option>").val(this.OfficeId).html(this.OfficeCode));
+            //        });
+            //    },
+            //    error: function (data) { }
+            //});
+
+            //$.ajax({
+            //    type: "GET",
+            //    url: '/Complaint/ComplaintSourceJson',
+            //    contentType: "application/json; charset=utf-8",
+            //    datatype: JSON,
+            //    success: function (result) {
+            //        $(result).each(function () {
+            //            $("#ddlSource").append($("<option></option>").val(this.Value).html(this.Text));
+            //        });
+            //    },
+            //    error: function (data) { }
+            //});
+        });
+
+        function myfun() {
+            var Complainttype = 0;
+            var dataObject = new Object();
+
+            dataObject.COMPLAINT_NO = $('#txtComplaintno').val();
+            //dataObject.KNO = $('#txtsearchKno').val();
+            //dataObject.MOBILE_NO = $('#txtmobileno').val();
+            //dataObject.OFFICE_NAME = $('#ddlOfficecode').val();
+
+            //dataObject.SOURCE_NAME = $('#ddlSource').val();
+            //dataObject.fromdate = $('#fromDate').val();
+            //dataObject.todate = $('#toDate').val();
+            $.ajax({
+                type: "GET",
+                url: '/ComplaintReopen/GetComplaintSearchReopen',
+                data: dataObject,
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                async: "true",
+                cache: "false",
+                success: function (data) {
+                    $('#comp').DataTable(
+                        {
+                            data: data,
+                            columns: [
+                                { 'data': 'KNO' },
+                                { 'data': 'NAME' },
+                                { 'data': 'COMPLAINT_DATE' },
+                                { 'data': 'COMPLAINT_NO' },
+                                { 'data': 'OFFICE_NAME' },
+                                { 'data': 'ADDRESS' },
+                                { 'data': 'COMPLAINT_TYPE' },
+                                { 'data': 'SOURCE_NAME' },
+                                { 'data': 'COMPLAINT_status' },
+                                { 'data': 'ASSIGNED_TO' },
+                                { 'data': 'MOBILE_NO' },
+                                { 'data': 'LANDLINE_NO' },
+                                { 'data': 'REJECTION_CAUSE' },
+                                {
+                                    render: function (data, type, row, meta) {
+                                        return '<button href="#" type="submit" class="btn btn-primary btnShadow" onclick="complaintShow(' + row.COMPLAINT_NO + ')"">Ropen</button>'
+                                    }
+                                },
+                            ],
+                            scrollX: true,
+                            scrollY: true,
+                            lengthChange: false,
+                            scrollCollapse: true,
+                            processing: true,
+                            fixedHeader: false,
+                            fixedColumns: {
+                                leftColumns: 1,
+                                rightColumns: 1
+                            },
+                            destroy: true,
+                        });
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+
+            });
+        };
+
+
+    </script>
+}
+
+
+
+<div class="header">
+    <h1 class="header-title">
+        Reopen Complaints
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Reopen Complaints</li>
+        </ol>
+    </nav>
+    @{
+        var fromDate = (DateTime)ViewBag.fromDate;
+        var toDate = (DateTime)ViewBag.toDate;
+
+    }
+</div>
+
+<div class="row">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Reopen Complaint</h5>
+                    @*<h6 class="card-subtitle text-muted">jQuery Plugin to make masks on form fields.</h6>*@
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-6">
+                            <input class="form-control" id="txtComplaintno" name="searchComplaintno" type="text" value="" placeholder="Complaint No." />
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <input type="submit" value="Search" class="btn btn-primary btn-block" id="btnSearch" onclick="myfun()" />
+                        </div>
+                        @*<div class="col-12 col-lg-6">
+            <input class="form-control" id="txtsearchKno" name="searchKno" type="text" value="" placeholder="K No." />
+        </div>*@
+                    </div>
+                    <div class="row mb-3">
+                        @*<div class="col-12 col-lg-6">
+                            <input class="form-control" id="txtmobileno" name="searchmobileno" type="text" value="" placeholder="Mobile No." />
+                        </div>*@
+                        @*<div class="col-12 col-lg-6">
+                            @Html.DropDownList("ddlOfficecode", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control select2", id = "ddlOfficecode" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-3">
+                            @Html.TextBox("fromDate", string.Format("{0:yyyy-MM-dd}", fromDate), new { @class = "form-control", type = "date" })
+                        </div>
+                        <div class="col-12 col-lg-3">
+                            @Html.TextBox("toDate", string.Format("{0:yyyy-MM-dd}", toDate), new { @class = "form-control", type = "date" })
+                        </div>
+                        <div class="col-12 col-lg-4">
+                            @Html.DropDownList("ddlSource", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control select2", id = "ddlSource" })
+                        </div>*@
+                        @*<div class="col-12 col-lg-2">
+                            <input type="submit" value="Search" class="btn btn-primary btn-block" id="btnSearch" onclick="myfun()" />
+                        </div>*@
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-12">
+                            <table id="comp" class="table table-bordered table-hover" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Knumber</th>
+                                        <th>Consumer name</th>
+                                        <th>Date</th>
+                                        <th>Complaint No.</th>
+                                        <th>Office Name</th>
+                                        <th>Address</th>
+                                        <th>Complaint Type</th>
+                                        <th>Source Status</th>
+                                        <th>Current Status</th>
+                                        <th>Assigned To</th>
+                                        <th>Mobile No.</th>
+                                        <th>Landline No.</th>
+                                        <th>Rejected Cause</th>
+                                        <th>Reopen Complaint</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="loadRemarkPopUp">
+
+    </div>
+</div>
+
+
+
+<script>
+    var complaintShow = function (recordId) {
+        var TeamDetailPostBackURL = '/ComplaintReopen/ReopenComplaint_Save';
+        if (window.confirm("Are you sure to Reopen the complaint?")) {
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "Id": recordId },
+                datatype: "json",
+                success: function (data) {
+                    alert("Request Reopened Successfully");
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Datatables Responsive
+        $("#comp").DataTable({
+            responsive: true
+        });
+    });
+
+
+</script>
+

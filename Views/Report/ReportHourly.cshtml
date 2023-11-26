@@ -1,0 +1,297 @@
+﻿
+@{
+    ViewBag.Title = "ReportHourly";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var fromDate = (DateTime)ViewBag.fromDate;
+    var toDate = (DateTime)ViewBag.toDate;
+}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Datatables with Buttons
+        var datatablesButtons = $("#datatables-buttons").DataTable({
+            responsive: true,
+            lengthChange: !1,
+            //buttons: ["copy", 'csv', 'print'],
+            buttons: ['print'],
+
+        });
+        datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+    });
+</script>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        $('#fromDate1').datetimepicker();
+        $('#toDate1').datetimepicker();
+    });
+
+    $(document).ready(function () {
+        $(function () {
+            $('#ddlOfficecode').select2({
+                selectOnClose: true,
+                //minimumInputLength: 2,
+                //maximumInputLength: 20,
+                //minimumResultsForSearch: 50,
+                placeholder: "Select Office Code",
+            });
+            $('#ddlSource').select2({
+                selectOnClose: true,
+                placeholder: "Select Source",
+            });
+            $('#ddlType').select2({
+                selectOnClose: true,
+                placeholder: "Select Complaint type",
+            });
+
+            $('#ddlCurrentStatus').select2({
+                selectOnClose: true,
+                 placeholder: "Select Status",
+            });
+            $.ajax({
+                type: "GET",
+                url: '/Complaint/OfficeCodeJson',
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlOfficecode").append($("<option></option>").val(this.OfficeId).html(this.OfficeCode));
+                    });
+                },
+                error: function (data) { }
+            });
+            $.ajax({
+                type: "GET",
+                url: '/Complaint/ComplaintSourceJson',
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlSource").append($("<option></option>").val(this.Value).html(this.Text));
+                    });
+                },
+                error: function (data) { }
+            });
+            $.ajax({
+                type: "GET",
+                url: '/Complaint/ComplaintTypeJson',
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    console.log(result);
+                    $(result).each(function () {
+                        $("#ddlType").append($("<option></option>").val(this.ComplaintTypeId).html(this.ComplaintType));
+                    });
+                },
+                error: function (data) { }
+            });
+        });
+
+    });
+    function searchreq() {
+        var dataObject = new Object();
+        dataObject.fromdate = $('#fromDate').val();
+        dataObject.todate = $('#toDate').val();
+        dataObject.OfficeCode = $('#ddlOfficecode').val();
+        dataObject.ComplaintStatus = $('#ddlCurrentStatus').val();
+        dataObject.ComplaintSource = $('#ddlSource').val();
+        dataObject.ComplaintType = $('#ddlType').val();
+
+        $.ajax({
+            type: "GET",
+            url: '/Report/ReportComplaintHourlySearch',
+            data: dataObject,
+            dataType: "json",
+            async: "true",
+            success: function (data) {
+                var datatablesButtons = $('#datatables-buttons').DataTable(
+                    {
+                        data: data,
+                        columns: [
+                            { 'data': 'OFFICE_CODE'},
+                            { 'data': 'OFFICE_NAME' },
+                            {
+                                render: function (data, type, row, meta) {
+                                    return '<a class=" d-inline-block fw-normal pe-auto" href="#" onclick="complaintShow(1,' + row.OFFICE_CODE + ')">' + row.ONE_HOUR +  '</a>'
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    return '<a class=" d-inline-block fw-normal pe-auto" href="#" onclick="complaintShow(2,' + row.OFFICE_CODE + ')">' + row.TWO_HOUR +  '</a>'
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    return '<a class=" d-inline-block fw-normal pe-auto" href="#" onclick="complaintShow(3,' + row.OFFICE_CODE + ')">' + row.THREE_HOUR +  '</a>'
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    return '<a class=" d-inline-block fw-normal pe-auto" href="#" onclick="complaintShow(4,' + row.OFFICE_CODE + ')">' + row.FOUR_HOUR +  '</a>'
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    return '<a class=" d-inline-block fw-normal pe-auto" href="#" onclick="complaintShow(5,' + row.OFFICE_CODE + ')">' + row.FIVE_HOUR +  '</a>'
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    return '<a class=" d-inline-block fw-normal pe-auto" href="#" onclick="complaintShow(6,' + row.OFFICE_CODE + ')">' + row.MOTE_THEN_FIVE_HOUR +  '</a>'
+                                }
+                            },
+                        ],
+                        bLengthChange: true,
+                        scrollX: true,
+                        scrollY: true,
+                        scrollCollapse: true,
+                        processing: true,
+                        fixedHeader: true,
+                        fixedColumns: {
+                            leftColumns: 1,
+                            rightColumns: 1
+                        },
+                        buttons: ['print'],
+                        destroy: true,
+                    });
+                datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+        });
+    }
+    var complaintShow = function (SlaType,officeId) {
+        var dataObject = new Object();
+        dataObject.fromdate = $('#fromDate').val();
+        dataObject.todate = $('#toDate').val();
+        dataObject.OfficeCode = officeId;
+        dataObject.ComplaintStatus = $('#ddlCurrentStatus').val();
+        dataObject.ComplaintSource = $('#ddlSource').val();
+        dataObject.ComplaintType = $('#ddlType').val();
+        dataObject.SlaType = SlaType;
+
+        var PostBackURL = '/Report/ShowHourlyRawDetails';
+        $.ajax({
+            type: "GET",
+            url: PostBackURL,
+            contentType: "application/json; charset=utf-8",
+            data: dataObject,
+            datatype: "json",
+            success: function (data) {
+                $('#loadPopUp').html(data);
+                $("#HourlyPopup").modal('show');
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+        });
+    }
+</script>
+<div class="header">
+    <h1 class="header-title">
+        Hourly Report
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Hourly Report</li>
+        </ol>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Search By</h5>
+                <h6 class="card-subtitle text-muted">
+                    Search with
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-12 col-lg-3">
+                        <div class="input-group date" id="fromDate1" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#fromDate1" id="fromDate" />
+                            <div class="input-group-text" data-target="#fromDate1" data-toggle="datetimepicker">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <div class="input-group date" id="toDate1" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#toDate1" id="toDate" />
+                            <div class="input-group-text" data-target="#toDate1" data-toggle="datetimepicker">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-3">
+
+                        @Html.DropDownList("ddlstatus", new List<SelectListItem>
+                          {
+                          new SelectListItem{ Text="ALL", Value = "0" },
+                              new SelectListItem{ Text="Pending", Value = "1" },
+                                new SelectListItem{ Text="Closed", Value = "2" },
+                              new SelectListItem{ Text="Reopen", Value = "3" },
+                           }, new { @class = "form-control select2", id = "ddlCurrentStatus" })
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12 col-lg-3">
+                        <label>Complaint Source</label>
+                        @Html.DropDownList("ddlSource", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlSource" })
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <label>Complaint Type</label>
+                        @Html.DropDownList("ddlType", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlType" })
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <label>Office</label>
+                        @Html.DropDownList("ddlOfficecode", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlOfficecode" })
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <br />
+                        <input type="submit" value="Search" class="btn btn-dark btn-block" id="btnSearch" onclick="searchreq()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">About Hourly Report</h5>
+                <h6 class="card-subtitle text-muted">
+                    Description of Report
+                </h6>
+            </div>
+            <div class="card-body">
+                <table id="datatables-buttons" class="table table-striped" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>SDO Code</th>
+                            <th>SDO Name</th>
+                            <th>One Hour</th>
+                            <th>Two Hour</th>
+                            <th>Threee Hour</th>
+                            <th>Four Hour</th>
+                            <th>Five Hour</th>
+                            <th>More Than Five Hour</th>
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="loadPopUp">
+
+</div>

@@ -1,0 +1,237 @@
+﻿@*Remark Model*@
+@model ComplaintTracker.Models.COMPLAINT
+
+@using (Html.BeginForm("PartialComplaintDetails", "Complaint", FormMethod.Get))
+{
+    <div class="modal fade" id="complaintPopup" tabindex="-1" aria-hidden="true" style="display: none;" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header with-border bg-warning text-white">
+                    <h2 class="modal-title"> Complaint Details</h2>
+                    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close"><span>&times;</span> </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container mt-2">
+
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active bg-primary text-white" data-bs-toggle="tab" href="#home">
+                                    <i class="fa fa-home"></i>
+                                    Complaint Log
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link bg-danger text-white" data-bs-toggle="tab" href="#profile">
+                                    <i class="fa-solid fa-comment"></i>
+                                    Remarks
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link bg-success text-white" data-bs-toggle="tab" href="#contact">
+                                    <i class="fa far fa-sun"></i>
+                                    Complaint Records
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="home">
+                                <div class="row border g-0 rounded shadow-sm">
+                                    <div class="col p-4">
+                                        <h3>Complaint Log</h3>
+                                        <table id="gridComplaintlog" class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Action Type</th>
+                                                    <th>Date Time</th>
+                                                    <th>State</th>
+                                                    <th>Remarks</th>
+                                                    <th>Source</th>
+                                                    <th>UserID</th>
+                                                    <th>Complaint No</th>
+                                                    <th>Image</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody class="tbody">
+                                                @foreach (var item in Model.ComplaintLogCollection)
+                                                {
+                                                    <tr>
+                                                        <td>@item.ActionType</td>
+                                                        <td>@item.DateTime</td>
+                                                        <td>@item.State</td>
+                                                        <td>@item.Remarks</td>
+                                                        <td>@item.Source</td>
+                                                        <td>@item.UserID</td>
+                                                        <td>@item.ComplaintNumber</td>
+                                                        <td><a href="~/Areas/DirectComplaintRegister/images/@item.Image" class="img-fluid rounded-circle mb-2" target="_blank">@item.Image</a></td>
+                                                    </tr>
+                                                }
+
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="profile">
+                                <div class="row border g-0 rounded shadow-sm">
+                                    <div class="col p-4">
+                                        <h3>Complaint remarks</h3>
+                                        <table id="gridComplaintlog" class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Remarks</th>
+                                                    <th>Date</th>
+                                                    <th>Remarks By</th>
+                                                    <th>Complaint No</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody class="tbody">
+                                                @foreach (var item in Model.ComplaintRemarkCollection)
+                                                {
+                                                    <tr>
+                                                        <td>@item.REMARK </td>
+                                                        <td>@item.REMARK_DATE_TIME</td>
+                                                        <td>@item.REMARKBY</td>
+                                                        <td>@item.ComplaintNumber</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="contact">
+                                <div class="row border g-0 rounded shadow-sm">
+                                    <div class="col p-4">
+                                        <h3>Complaint Record</h3>
+                                        <div class="row mb-1">
+                                            <div class="form-group col-md-6">
+                                                <label>Complaint Number</label>
+                                                @Html.EditorFor(model => model.COMPLAINT_NO, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label>SDO Code</label>
+                                                @Html.EditorFor(model => model.SDO_CODE, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-1">
+                                            <div class="form-group col-md-6">
+                                                <label>SDO Name</label>
+                                                @Html.EditorFor(model => model.ADDRESS2, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label>JE Area Name</label>
+                                                @Html.EditorFor(model => model.ADDRESS3, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="form-group col-md-6">
+                                                <label>Address</label>
+                                                @Html.TextAreaFor(model => model.ADDRESS1, new { rows = "3", cols = "55", @class = "form-control", @disabled = "disabled" })
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label>Landmark</label>
+                                                @Html.TextAreaFor(model => model.LANDMARK, new { rows = "3", cols = "55", @class = "form-control", @disabled = "disabled" })
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="form-group col-md-6">
+                                                <label>Name</label>
+                                                @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label>Father Name</label>
+                                                @Html.EditorFor(model => model.FATHER_NAME, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="form-group col-md-6">
+                                                <label>K.NO.</label>
+                                                @Html.EditorFor(model => model.KNO, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label>Pin Code</label>
+                                                @Html.EditorFor(model => model.AREA_CODE, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="form-group col-md-6">
+                                                <label>Phone Number</label>
+                                                @Html.EditorFor(model => model.LANDLINE_NO, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label>Consumer Status</label>
+                                                @Html.EditorFor(model => model.CONSUMER_STATUS, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="form-group col-md-6">
+                                                <label>Mobile No.</label>
+                                                @Html.EditorFor(model => model.MOBILE_NO, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label>Feeder Name</label>
+                                                @Html.EditorFor(model => model.FEEDER_NAME, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="form-group col-md-6">
+                                                <label>Email Id</label>
+                                                @Html.EditorFor(model => model.EMAIL, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label>Complaint Type</label>
+                                                @Html.EditorFor(model => model.ComplaintTypeName, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="form-group col-md-6">
+                                                <label>Account No.</label>
+                                                @Html.EditorFor(model => model.ACCOUNT_NO, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label>Reject Cause</label>
+                                                @Html.EditorFor(model => model.REJECTED_CAUSE, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="form-group col-md-6">
+                                                <label>Status upon registration</label>
+                                                @Html.EditorFor(model => model.currentStatus, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label>Alternate Mobile No.</label>
+                                                @Html.EditorFor(model => model.ALTERNATE_MOBILE_NO, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="form-group col-md-6">
+                                                <label>Remarks</label>
+                                                @Html.TextAreaFor(model => model.REMARKS, new { rows = "3", cols = "55", @class = "form-control", @disabled = "disabled" })
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label>Complaint Date</label>
+                                                @Html.TextAreaFor(model => model.Complaintdate, new { rows = "3", cols = "55", @class = "form-control", @disabled = "disabled" })
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer with-border">
+                    @*<button type="button" class="btn btn-success" id="btnUpdate">Update</button>*@
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

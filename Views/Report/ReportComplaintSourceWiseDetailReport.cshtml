@@ -1,0 +1,509 @@
+﻿
+@{
+    ViewBag.Title = "Complaint Source Wise Detail Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Datatables with Buttons
+        var datatablesButtons = $("#datatables-buttons").DataTable({
+            responsive: true,
+            lengthChange: !1,
+            buttons: ['csv', 'print'],
+            orderable: false
+        });
+        datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+    });
+</script>
+<script type="text/javascript">
+    
+    $(document).ready(function () {
+        $(function () {
+            $('#ddlBillMonth').select2({
+                selectOnClose: true,
+                /*placeholder: "Select Bill Month",*/
+            });
+            $('#ddlBillyear').select2({
+                selectOnClose: true,
+                /*placeholder: "Select Bill Year",*/
+            });
+
+            $('#ddlOfficecode').select2({
+                selectOnClose: true,
+                placeholder: "Select Office Code",
+            });
+            $('#ddlSource').select2({
+                selectOnClose: true,
+                /*placeholder: "Select Source",*/
+            });
+            $.ajax({
+                type: "GET",
+                url: '/Complaint/OfficeCodeJsonCircle',
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlOfficecode").append($("<option></option>").val(this.OfficeId).html(this.OfficeCode));
+                    });
+                },
+                error: function (data) { }
+            });
+           
+            $.ajax({
+                type: "GET",
+                url: '/Complaint/ComplaintSourceJson',
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlSource").append($("<option></option>").val(this.Value).html(this.Text));
+                    });
+                },
+                error: function (data) { }
+            });
+        });
+    });
+    var complaintShow = function (recordDate) {
+
+        var OfficeCode = $('#ddlOfficecode').val();
+        var BILL_MONTH = $('#ddlBillMonth').val();
+        var BILL_YEAR = $('#ddlBillyear').val();
+        var ComplaintSource = $('#ddlSource').val();
+        var sDate = recordDate + '-' + BILL_MONTH + '-' + BILL_YEAR;
+
+        var TeamDetailPostBackURL = '/Report/ShowComplaintSourceWise';
+
+        $.ajax({
+            type: "GET",
+            url: TeamDetailPostBackURL,
+            contentType: "application/json; charset=utf-8",
+            data: { "sDate": sDate, "ComplaintSource": ComplaintSource, "OfficeCode": OfficeCode  },
+            datatype: "json",
+            success: function (data) {
+                $('#loadPopUp').html(data);
+                $("#complaintSourcePopup").modal('show');
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+        });
+    }
+    function searchreq() {
+        var dataObject = new Object();
+ 
+        dataObject.BILL_MONTH = $('#ddlBillMonth').val();
+        dataObject.BILL_YEAR = $('#ddlBillyear').val();
+        dataObject.OfficeCode = $('#ddlOfficecode').val();
+        dataObject.ComplaintSource = $('#ddlSource').val();
+        $.ajax({
+            type: "GET",
+            url: '/Report/ReportComplaintSourceWiseDetailSearch',
+            data: dataObject,
+            dataType: "json",
+            async: "true",
+            success: function (data) {
+                var datatablesButtons = $('#datatables-buttons').DataTable(
+                    {
+                        data: data,
+                        columns: [
+                            { 'data': 'OfficeCode' },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.One != null && row.One != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#" onclick="complaintShow(1)">' + row.One + '</a>'
+                                    else
+                                        return row.One
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Two != null && row.Two != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#" onclick="complaintShow(2)">' + row.Two + '</a>'
+                                    else
+                                        return row.Two
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Three != null && row.Three != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#" onclick="complaintShow(3)">' + row.Three + '</a>'
+                                    else
+                                        return row.Three
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Four != null && row.Four != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(4)">' + row.Four + '</a>'
+                                    else
+                                        return row.Four
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Five != null && row.Five != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(5)">' + row.Five + '</a>'
+                                    else
+                                        return row.Five
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Six != null && row.Six != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(6)">' + row.Six + '</a>'
+                                    else
+                                        return row.Six
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Seven != null && row.Seven != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(7)">' + row.Seven + '</a>'
+                                    else
+                                        return row.Seven
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Eight != null && row.Eight != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(8)">' + row.Eight + '</a>'
+                                    else
+                                        return row.Eight
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Nine != null && row.Nine != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(9)">' + row.Nine + '</a>'
+                                    else
+                                        return row.Nine
+                                }
+                            },
+                           
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Ten != null && row.Ten != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(10)">' + row.Ten + '</a>'
+                                    else
+                                        return row.Ten
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Eleven != null && row.Eleven != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(11)">' + row.Eleven + '</a>'
+                                    else
+                                        return row.Eleven
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Twelve != null && row.Twelve != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(12)">' + row.Twelve + '</a>'
+                                    else
+                                        return row.Twelve
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Thirteen != null && row.Thirteen != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(13)">' + row.Thirteen + '</a>'
+                                    else
+                                        return row.Thirteen
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Fourteen != null && row.Fourteen != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(14)">' + row.Fourteen + '</a>'
+                                    else
+                                        return row.Fourteen
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Fifteen != null && row.Fifteen != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(15)">' + row.Fifteen + '</a>'
+                                    else
+                                        return row.Fifteen
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Sixteen != null && row.Sixteen != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(16)">' + row.Sixteen + '</a>'
+                                    else
+                                        return row.Sixteen
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Seventeen != null && row.Seventeen != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(17)">' + row.Seventeen + '</a>'
+                                    else
+                                        return row.Seventeen
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Eighteen != null && row.Eighteen != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(18)">' + row.Eighteen + '</a>'
+                                    else
+                                        return row.Eighteen
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Nineteen != null && row.Nineteen != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(19)">' + row.Nineteen + '</a>'
+                                    else
+                                        return row.Nineteen
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Twenty != null && row.Twenty != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(20)">' + row.Twenty + '</a>'
+                                    else
+                                        return row.Twenty
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.TwentyOne != null && row.TwentyOne != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(21)">' + row.TwentyOne + '</a>'
+                                    else
+                                        return row.TwentyOne
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.TwentyTwo != null && row.TwentyTwo != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(22)">' + row.TwentyTwo + '</a>'
+                                    else
+                                        return row.TwentyTwo
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.TwentyThree != null && row.TwentyThree != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(23)">' + row.TwentyThree + '</a>'
+                                    else
+                                        return row.TwentyThree
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.TwentyFour != null && row.TwentyFour != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(24)">' + row.TwentyFour + '</a>'
+                                    else
+                                        return row.TwentyFour
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.TwentyFive != null && row.TwentyFive != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(25)">' + row.TwentyFive + '</a>'
+                                    else
+                                        return row.TwentyFive
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.TwentySix != null && row.TwentySix != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(26)">' + row.TwentySix + '</a>'
+                                    else
+                                        return row.TwentySix
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.TwentySeven != null && row.TwentySeven != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(27)">' + row.TwentySeven + '</a>'
+                                    else
+                                        return row.TwentySeven
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.TwentyEight != null && row.TwentyEight != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(28)">' + row.TwentyEight + '</a>'
+                                    else
+                                        return row.TwentyEight
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.TwentyNine != null && row.TwentyNine != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(29)">' + row.TwentyNine + '</a>'
+                                    else
+                                        return row.TwentyNine
+                                }
+                            },
+                            {
+                                render: function (data, type, row, meta) {
+                                    if (row.Thirty != null && row.Thirty != '0')
+                                        return '<a class=" d-inline-block fw-normal pe-auto" href="#"  onclick="complaintShow(30)">' + row.Thirty + '</a>'
+                                    else
+                                        return row.Thirty
+                                }
+                            },
+                        ],
+                        bLengthChange: true,
+                        scrollX: true,
+                        scrollY: true,
+                        scrollCollapse: true,
+                        processing: true,
+                        pageLength: 150,
+                        fixedHeader: true,
+                        fixedColumns: {
+                            leftColumns: 1,
+                            rightColumns: 1
+                        },
+                        buttons: ['print', 'csv'],
+                        columnDefs: [{
+                            "targets": [1,2,3,4,5,6,7,8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,19,20,21,22,23,24,25,26,27,28,29,30],
+                            "orderable": false,
+                        }],
+                        destroy: true,
+                    });
+                datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+        });
+    }
+
+</script>
+<div class="header">
+    <h1 class="header-title">
+        Complaint Wise Detail Report
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Complaint Wise Detail Report</li>
+        </ol>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Search By</h5>
+                <h6 class="card-subtitle text-muted">
+                    Search with
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-12 col-lg-2">
+                        <label>Bill Month</label>
+                        @Html.DropDownList("ddlBillMonth", new List<SelectListItem>
+                        {
+                        
+                            new SelectListItem{ Text="January", Value = "1" },
+                              new SelectListItem{ Text="February", Value = "2" },
+                            new SelectListItem{ Text="March", Value = "3" },
+                            new SelectListItem{ Text="April", Value = "4" },
+                            new SelectListItem{ Text="May", Value = "5" },
+                            new SelectListItem{ Text="June", Value = "6" },
+                            new SelectListItem{ Text="July", Value = "7" },
+                            new SelectListItem{ Text="August", Value = "8" },
+                            new SelectListItem{ Text="September", Value = "9" },
+                            new SelectListItem{ Text="October", Value = "10" },
+                            new SelectListItem{ Text="November", Value = "11" },
+                            new SelectListItem{ Text="December", Value = "12" },
+                         }, new { @class = "form-control select2", id = "ddlBillMonth" })
+                    </div>
+                    <div class="col-12 col-lg-2">
+                        <label>Bill Year</label>
+                        @Html.DropDownList("ddlBillyear", new List<SelectListItem>
+                        {
+                        
+                            new SelectListItem{ Text="2023", Value = "2023" },
+                              new SelectListItem{ Text="2024", Value = "2024" },
+                            new SelectListItem{ Text="2025", Value = "2025" },
+                         }, new { @class = "form-control select2", id = "ddlBillyear" })
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <label>Complaint Source</label>
+                        @Html.DropDownList("ddlSource", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlSource" })
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <label>Office</label>
+                        @Html.DropDownList("ddlOfficecode", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlOfficecode" })
+                    </div>
+                    <div class="col-12 col-lg-2">
+                        <br />
+                        <input type="submit" value="Search" class="btn btn-dark btn-block" id="btnSearch" onclick="searchreq()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">About Complaint Wise Detail Report</h5>
+                <h6 class="card-subtitle text-muted">
+                    Description of Report
+                </h6>
+            </div>
+            <div class="card-body">
+                <table id="datatables-buttons" class="table table-striped" style="width:100%">
+                    <thead>
+                        @*<tr>
+                            <th rowspan="2">Name of circle</th>
+                            <th colspan="4">During @Model.BILL_MONTH Selected Month and year</th>
+                            <th colspan="4">Upto Selected Month and year</th>
+                        </tr>*@
+                        <tr>
+                            <th>OfficeCode</th>
+                            <th>1</th>
+                            <th>2</th>
+                            <th>3</th>
+                            <th>4</th>
+                            <th>5</th>
+                            <th>6</th>
+                            <th>7</th>
+                            <th>8</th>
+                            <th>9</th>
+                            <th>10</th>
+                            <th>11</th>
+                            <th>12</th>
+                            <th>13</th>
+                            <th>14</th>
+                            <th>15</th>
+                            <th>16</th>
+                            <th>17</th>
+                            <th>18</th>
+                            <th>19</th>
+                            <th>20</th>
+                            <th>21</th>
+                            <th>22</th>
+                            <th>23</th>
+                            <th>24</th>
+                            <th>25</th>
+                            <th>26</th>
+                            <th>27</th>
+                            <th>28</th>
+                            <th>29</th>
+                            <th>30</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="loadPopUp">
+
+</div>

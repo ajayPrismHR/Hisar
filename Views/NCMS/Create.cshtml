@@ -1,0 +1,447 @@
+﻿@model ComplaintTracker.Models.COMPLAINT
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+    <link href="~/Content/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="~/Scripts/select2.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(() => {
+            $('select:not(.normal)').each(function () {
+                $(this).select2({
+                    dropdownParent: $(this).parent()
+                });
+            });
+            $(".searchtag").keypress(function (event) {
+                if (event.which == 13) {
+                    $("#btnSearch").click();
+                    return false;
+                }
+            });
+
+            fieldValidate();
+            setTimeout(function () {
+                $('#successMessage').fadeOut('fast');
+            }, 5000); // <-- time in milliseconds
+
+        });
+        $(function () {
+            var $select = $('#ddlOfficecode').select2({
+                allowClear: false,
+            });
+
+
+            var $select = $('#ddlJEArea').select2({
+                placeholder: 'JEArea',
+                allowClear: true,
+            });
+
+
+            $select.on('change', function () {
+                $(this).trigger('blur');
+            });
+
+
+            $('#Consumertype').select2({
+                selectOnClose: true,
+            });
+            $('#ddlComplaintType').select2({
+                placeholder: "Complaint Type",
+                selectOnClose: true,
+            }).change(function () {
+                $(this).valid();
+            });
+            $('#ddlSubComplaintType').select2({
+                placeholder: "Sub Complaint Type",
+                selectOnClose: true,
+            });
+
+
+            $('#ddlOfficecode').change(function () {
+                $("#ddlJEArea").empty().trigger('change');
+                var selectedCountry = $("#ddlOfficecode").val();
+                filljendd(selectedCountry);
+
+            });
+
+
+
+
+            function filljendd(selectedCountry) {
+                $.ajax({
+                    type: "GET",
+                    url: '/Complaint/GetOfficeListByParentOffice',
+                    data: { parentOfficeId: selectedCountry },
+                    contentType: "application/json;charset=utf-8",
+                    success: function (data) {
+                        if (data) {
+
+                            for (var i = 0; i < data.length; i++) {
+                                var opt = new Option(data[i].OfficeCode, data[i].OfficeId);
+                                $('#ddlJEArea').append(opt);
+                            }
+                            return;
+                        } else {
+                            alert('error');
+                        }
+                    }
+                });
+            }
+
+
+
+        $('#Consumertype').change(function () {
+            var consumerType = $("#Consumertype").val();
+            if (consumerType == 3) {
+                $('.pubMobile').val('');
+                $("#divConsumer").animate({ "opacity": "show", top: "100" }, 1000);
+                $("#divPublic").animate({ "opacity": "hide", top: "100" }, 1000);
+
+            }
+
+            else if (consumerType == 4) {
+                $('.conMobile').val('');
+                $("#divConsumer").animate({ "opacity": "hide", top: "100" }, 1000);
+                $("#divPublic").animate({ "opacity": "hide", top: "100" }, 1000);
+                $('#SDO_CODE').val("");
+            }
+
+        });
+
+
+            $('#btnSearch').click(function () {
+            var officecode = $("#ddlOfficecode").val();
+                if (officecode == '')
+                    officecode = 0;
+            var consumerType = $('#Consumertype').val();
+            var searchtype = 0;
+                if (consumerType == 3) {
+                    searchtype = 1
+                    searchparm = $('#txtsearchKno').val();
+                    $("#ddlOfficecode > option").each(function () {
+                        let result = this.value.slice(0, 7);
+
+                        if (result == searchparm.slice(0, 7)) {
+                            $('#SDO_CODE').val(searchparm.slice(0, 7));
+                            $('#KNO').val("0");
+                            $("#ddlOfficecode").val(this.value).trigger('change');
+                        }
+                    });
+                }
+        });
+            $('#submitComplaint').click(function () {
+                var officecode = $("#ddlOfficecode").val();
+                var ddlJEArea = $("#ddlJEArea").val();
+            $("#JE_AREA").val($('#ddlJEArea').val());
+            $("#CONSUMER_TYPE").val($("#Consumertype").val());
+            $("#UserId").val(@Session["UserId"]);
+        });
+
+        });
+    </script>
+}
+
+@if (TempData["AlertMessage"] != null)
+{
+    <script type="text/javascript">
+        var msg = '@TempData["AlertMessage"]'
+        alert(msg);
+        if (msg.includes("Error")) {
+            swal("Error!", msg, "error");
+        }
+        else {
+            $('#submitComplaint').prop('disabled', true);
+            swal("Good job!", msg, "success");
+        }
+    </script>
+}
+
+@using (Html.BeginForm("Create", "NCMS", FormMethod.Post, new { name = "frm", id = "validation-form" }))
+{
+    @Html.AntiForgeryToken()
+    <div id="loadRemarkPopUp">
+
+    </div>
+    <div class="header">
+        <h1 class="header-title">
+            NCMS
+        </h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">NCMS Complaint</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="row">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Register Technical Complaint</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-lg-4 error-placeholder">
+                                @Html.DropDownListFor(x => Model.OFFICE_CODE_ID, new SelectList(Model.OfficeCodeCollection, "OfficeId", "OfficeCode"), "Select Office Code", new { @class = "form-control", id = "ddlOfficecode", required = "required" })
+                            </div>
+                            <div class="col-12 col-lg-4 error-placeholder">
+                                <select id="ddlJEArea" class="form-control" required>
+                                </select>
+                            </div>
+                            <div class="col-12 col-lg-4">
+                                @Html.DropDownList("ddlConsumerType", new List<SelectListItem>
+                           {
+                               new SelectListItem{ Text="Neighbour Consumer", Value = "3" },
+                               new SelectListItem{ Text="Office", Value = "4" },
+
+                            }, new { @class = "form-control select2", id = "Consumertype" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Search Consumer by</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3" id="divConsumer">
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                <input id="txtsearchKno" name="searchKno" value="" type="number" placeholder="K NO." class="form-control searchtag" />
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                <input type="button" value="Search" class="btn btn-primary" id="btnSearch" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Consumer Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.SDO_CODE, new { htmlAttributes = new { @class = "form-control", @placeholder = "Sdo Code" } })
+                            </div>
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.KNO, new { htmlAttributes = new { @class = "form-control", @placeholder = "K No.", @type = "number", @disabled = "true" } })
+                            </div>
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name" } })
+                            </div>
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.FATHER_NAME, new { htmlAttributes = new { @class = "form-control", @placeholder = "Father's Name" } })
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.ADDRESS1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address 1" } })
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                @Html.EditorFor(model => model.ADDRESS2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address 2" } })
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                @Html.EditorFor(model => model.ADDRESS3, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address 3" } })
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                @Html.EditorFor(model => model.LANDMARK, new { htmlAttributes = new { @class = "form-control", @placeholder = "Landmark" } })
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12 col-lg-3">
+                                @Html.EditorFor(model => model.LANDLINE_NO, new { htmlAttributes = new { @class = "form-control", @placeholder = "Landline No." } })
+                            </div>
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.MOBILE_NO, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile No.", @type = "number" } })
+                            </div>
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.ALTERNATE_MOBILE_NO, new { htmlAttributes = new { @class = "form-control", @placeholder = "Alternate Mobile No.", @type = "number" } })
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                @Html.EditorFor(model => model.CONSUMER_STATUS, new { htmlAttributes = new { @class = "form-control", @placeholder = "Consumer Status" } })
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.EMAIL, new { htmlAttributes = new { @class = "form-control", @placeholder = "E-MailID/Social Media" } })
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                @Html.EditorFor(model => model.FEEDER_NAME, new { htmlAttributes = new { @class = "form-control", @placeholder = "Feeder Name" } })
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                @Html.EditorFor(model => model.ACCOUNT_NO, new { htmlAttributes = new { @class = "form-control", @placeholder = "Account No./Binder No." } })
+                            </div>
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.AREA_CODE, new { htmlAttributes = new { @class = "form-control", @placeholder = "Area Code" } })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Complaint Source</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-3">Complaint Source</div>
+                            <div class="col-4 error-placeholder">
+                                @Html.DropDownListFor(x => Model.ComplaintSource, new SelectList(Model.ComplaintSourceCollection, "Value", "Text"), new { @class = "form-control", id = "ddlComplaintAssign" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Complaint Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-lg-4">
+                                @Html.EditorFor(model => model.REMARKS, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-1 align-items-center">
+            <input type="submit" value="Generate Complaint" class="btn btn-primary btn-block" id="submitComplaint" onclick="return stopMultipleSubmit();" />
+            <a class="btn btn-primary">Reset</a>
+        </div>
+
+        @Html.HiddenFor(model => model.UserId)
+        @Html.HiddenFor(model => model.JE_AREA)
+        @Html.HiddenFor(model => model.CONSUMER_TYPE)
+    </div>
+}
+
+
+<script>
+
+    function fieldValidate() {
+        // Initialize Select2 select box
+        $("select[name=\"ComplaintTypeId\"]").select2({
+            allowClear: true,
+            placeholder: "Select gear...",
+        }).change(function () {
+            $(this).valid();
+        });
+        // Trigger validation on tagsinput change
+        $("input[name=\"validation-bs-tagsinput\"]").on("itemAdded itemRemoved", function () {
+            $(this).valid();
+        });
+
+
+        // Initialize validation
+        $("#validation-form").validate({
+            ignore: '.ignore, .select2-input',
+            focusInvalid: true,
+            rules: {
+                "SDO_CODE": {
+                    required: true,
+                },
+                "searchKno": {
+                    required: false,
+                    number: true,
+                    minlength: 12,
+                    maxlength: 12
+                },
+                "searchmobileno": {
+                    required: false,
+                    number: true,
+                    minlength: 10,
+                    maxlength: 10
+                },
+                "searchmobileno1": {
+                    required: false,
+                    number: true,
+                    minlength: 10,
+                    maxlength: 10
+                },
+                "EMAIL": {
+                    required: false,
+                    email: true,
+                },
+                "FATHER_NAME": {
+                    required: false,
+                },
+                "KNO": {
+                    required: false,
+                    number: true,
+                    minlength: 12,
+                    maxlength: 12
+                },
+                "MOBILE_NO": {
+                    required: true,
+                    number: true,
+                    minlength: 10,
+                    maxlength: 10
+                },
+                "ALTERNATE_MOBILE_NO": {
+                    required: false,
+                    number: true,
+                    minlength: 10,
+                    maxlength: 10
+                },
+                "ASSIGNEEId": {
+                    required: false,
+                },
+                "OFFICE_CODE_ID": {
+                    required: true,
+                },
+                "AREA_CODE": {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 1
+                },
+
+            },
+            // Errors
+            errorPlacement: function errorPlacement(error, element) {
+                var $parent = $(element).parents(".error-placeholder");
+                // Do not duplicate errors
+                if ($parent.find(".jquery-validation-error").length) {
+                    return;
+                }
+                $parent.append(
+                    error.addClass("jquery-validation-error small form-text invalid-feedback")
+                );
+            },
+            highlight: function (element) {
+                var $el = $(element);
+                var $parent = $el.parents(".error-placeholder");
+                $el.addClass("is-invalid");
+                // Select2 and Tagsinput
+                if ($el.hasClass("select2-hidden-accessible") || $el.attr("data-role") === "tagsinput") {
+                    $el.parent().addClass("is-invalid");
+                }
+            },
+            unhighlight: function (element) {
+                $(element).parents(".error-placeholder").find(".is-invalid").removeClass("is-invalid");
+            }
+        });
+    }
+</script>

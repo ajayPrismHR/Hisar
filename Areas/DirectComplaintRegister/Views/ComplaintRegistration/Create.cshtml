@@ -1,0 +1,759 @@
+﻿@model DirectComplaintRegister.Models.COMPLAINT
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/DirectComplaintRegister/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+    <link href="~/Content/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="~/Scripts/select2.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(() => {
+            $('select:not(.normal)').each(function () {
+                $(this).select2({
+                    dropdownParent: $(this).parent()
+                });
+            });
+            $(".searchtag").keypress(function (event) {
+                if (event.which == 13) {
+                    $("#btnSearch").click();
+                    return false;
+                }
+            });
+
+            fieldValidate();
+            //$('#KNO').attr("disabled", true);
+            $('#txtemail').attr("disabled", true);
+            $('#txtaccountNo').attr("disabled", true);
+            $('#txtmobileno').attr("disabled", true);
+            $('#txtlandline').attr("disabled", true);
+            setTimeout(function () {
+                $('#successMessage').fadeOut('fast');
+            }, 5000); // <-- time in milliseconds
+
+        });
+        $(function () {
+            var $select = $('#ddlOfficecode').select2({
+                allowClear: true,
+            });
+
+
+            var $select = $('#ddlJEArea').select2({
+                placeholder: 'JEArea',
+                allowClear: true,
+            });
+
+
+            $select.on('change', function () {
+                $(this).trigger('blur');
+            });
+
+            $('#Consumertype').select2({
+                selectOnClose: true,
+            });
+            $('#ddlComplaintType').select2({
+                placeholder: "Complaint Type",
+                selectOnClose: true,
+            }).change(function () {
+                $(this).valid();
+            });
+            $('#ddlSubComplaintType').select2({
+                placeholder: "Sub Complaint Type",
+                selectOnClose: true,
+            });
+
+            var count = 0;
+            $('#ddlOfficecode').change(function () {
+                var selectedOffice = $("#ddlOfficecode").val();
+                if (selectedOffice.length > 0) {
+                    filljendd(selectedOffice);
+                    checkPowerOutage(selectedOffice);
+                }
+            });
+
+            function checkPowerOutage(officecode) {
+                $.ajax({
+                    type: "GET",
+                    url: '/ComplaintRegistration/checkPowerOutage',
+                    data: { officecode: officecode },
+                    contentType: "application/json;charset=utf-8",
+                    success: function (data) {
+                        if (data) {
+                            $('#loadRemarkPopUp').html(data);
+                            $("#poweroutagePopup").modal('show');
+                        }
+                    },
+                    error: function () {
+                        alert("Dynamic content load failed.");
+                    }
+                });
+            }
+
+
+
+            function filljendd(selectedCountry) {
+                $("#ddlJEArea").empty().trigger('change');
+                 $.ajax({
+                    type: "GET",
+                     url: '/ComplaintRegistration/GetOfficeListByParentOffice',
+                    data: { parentOfficeId: selectedCountry },
+                    contentType: "application/json;charset=utf-8",
+                    success: function (data) {
+                        if (data) {
+                            for (var i = 0; i < data.length; i++) {
+                                var opt = new Option(data[i].OfficeCode, data[i].OfficeId);
+                                $('#ddlJEArea').append(opt);
+                            }
+                            return;
+                        } else {
+                            alert('error');
+                        }
+                    }
+                });
+            }
+
+
+
+            $('#ddlComplaintType').change(function () {
+                $("#ddlSubComplaintType").empty().trigger('change');
+
+                var selectedComplaintTypeId = $("#ddlComplaintType").val();
+                fillsubcomplainttype(selectedComplaintTypeId);
+
+            });
+
+            function fillsubcomplainttype(selectedComplaintTypeId) {
+                $.ajax({
+                    type: "GET",
+                    url: '/ComplaintRegistration/GetSubComplaintByComplaintTypeId',
+                    data: { ComplaintTypeId: selectedComplaintTypeId },
+                    contentType: "application/json;charset=utf-8",
+                    success: function (data) {
+                        if (data) {
+
+                            for (var i = 0; i < data.length; i++) {
+                                var opt = new Option(data[i].SubComplaintType, data[i].SubComplaintTypeId);
+                                $('#ddlSubComplaintType').append(opt);
+                            }
+                            return;
+                        } else {
+                            alert('error');
+                        }
+                    }
+                });
+            }
+
+
+
+        $('#Consumertype').change(function () {
+            var consumerType = $("#Consumertype").val();
+            if (consumerType == 1) {
+                $('.pubMobile').val('');
+                $("#divConsumer").animate({ "opacity": "show", top: "100" }, 1000);
+                $("#divPublic").animate({ "opacity": "hide", top: "100" }, 1000);
+
+            }
+
+            else if (consumerType == 2) {
+                $('.conMobile').val('');
+                $("#divConsumer").animate({ "opacity": "hide", top: "100" }, 1000);
+                $("#divPublic").animate({ "opacity": "show", top: "100" }, 1000);
+            }
+
+        });
+
+
+            $('#btnSearch').click(function () {
+
+            var officecode = $("#ddlOfficecode").val();
+                if (officecode == '')
+                    officecode = 0;
+
+
+            var consumerType = $('#Consumertype').val();
+            var searchtype = 0;
+            if (consumerType == 1) {
+                if ($("#searchKno").prop("checked")) {
+                    searchtype = 1
+                    searchparm = $('#txtsearchKno').val();
+                    $("#ddlOfficecode > option").each(function () {
+                        let result = this.value.slice(0, 7);
+
+                        if (result == searchparm.slice(0, 7)) {
+                            $("#ddlOfficecode").val(this.value);
+                        }
+                    });
+
+                } else if ($("#searchemail").prop("checked")) {
+                    searchtype = 2
+                    searchparm = $('#txtemail').val();
+                }
+
+                else if ($("#searchaccno").prop("checked")) {
+                    searchtype = 3
+                    searchparm = $('#txtaccountNo').val();
+                }
+
+                else if ($("#searchmobileno").prop("checked")) {
+                    searchtype = 4
+                    searchparm = $('#txtmobileno').val();
+                }
+
+                else if ($("#searchlandlineno").prop("checked")) {
+                    searchtype = 5
+                    searchparm = $('#txtlandline').val();
+                }
+                ConsumerComplaintListShow(searchparm);
+            }
+            else {
+                                
+
+                searchparm = $('#txtmobileno1').val();
+                searchtype = 4;
+                 $.ajax({
+                type: "GET",
+                     url: '/ComplaintRegistration/GetList',
+                data: { OfficeCode: officecode, ConsumerType: consumerType, Searchparm: searchparm },
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                async: "true",
+                cache: "false",
+                success: function (data) {
+                    $('#comp').DataTable(
+                        {
+                            data: data,
+                            columns: [
+                                { 'data': 'Complaintdate' },
+                                { 'data': 'COMPLAINT_NO' },
+                                { 'data': 'COMPLAINT_TYPE' },
+                                { 'data': 'REMARKS' },
+                                { 'data': 'COMPLAINT_status' },
+                            ],
+                            //lengthMenu: [[10, 15, 20, 50, 100, -1], [10, 15, 20, 50, 100, "All"]],
+                            //bPaginate: true,
+                            processing: true,
+                            pageLength: 5,
+                            lengthChange: false,
+                            bFilter: false,
+                            destroy: true,
+                            bSort: false
+                        });
+                    $('#comp').DataTable().row("tr:first-child").remove().draw();
+
+                    var flag = false;
+                    var nos;
+                    var serviceEnable = false;
+                    $.each(data, function (key, item) {
+                        if (item.COMPLAINT_status == "Pending" || item.COMPLAINT_status == "Reopen") {
+                            flag = true;
+                            nos = item.COMPLAINT_NO;
+                        }
+                        if (key == 0) {
+                            if (item.CONSUMER_STATUS == 'R' || item.CONSUMER_STATUS == 'N' || item.CONSUMER_STATUS == 'F') {
+                                serviceEnable = true;
+                            }
+                            $('#SDO_CODE').val(item.SDO_CODE);
+                            $('#ADDRESS1').val(item.ADDRESS1);
+                            $('#ADDRESS2').val(item.ADDRESS2);
+                            $('#ADDRESS3').val(item.ADDRESS3);
+                            $('#NAME').val(item.NAME);
+                            $('#FATHER_NAME').val(item.FATHER_NAME);
+                            $('#KNO').val(item.KNO);
+                            $('#LANDMARK').val(item.LANDMARK);
+                            $('#LANDLINE_NO').val(item.LANDLINE_NO);
+                            $('#MOBILE_NO').val(item.MOBILE_NO);
+                            $('#ALTERNATE_MOBILE_NO').val(item.ALTERNATE_MOBILE_NO);
+                            $('#CONSUMER_STATUS').val(item.CONSUMER_STATUS);
+                            $('#EMAIL').val(item.EMAIL);
+                            $('#FEEDER_NAME').val(item.FEEDER_NAME);
+                            $('#ACCOUNT_NO').val(item.ACCOUNT_NO);
+                            $('#AREA_CODE').val(item.AREA_CODE);
+
+                            $("#ddlOfficecode > option").each(function () {
+                                let result = this.value.slice(0, 7);
+
+                                if (result == item.KNO.slice(0, 7)) {
+                                    $("#ddlOfficecode").val(this.value).trigger('change');
+                                }
+                            });
+
+                        }
+
+                    });
+                    if (flag == true) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'info',
+                            text: 'Complaint Already Registered With no. ' + nos,
+                            footer: 'Sandha & Co.'
+                        })
+                    }
+                    if (serviceEnable == false && consumerType == 1) {
+                        $('#submitComplaint').prop('disabled', true);
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'info',
+                            text: 'Consumer is Disconnected or No Consumer Exist',
+                            footer: 'Sandha & Co.'
+                        })
+                    } else {
+                        $('#submitComplaint').prop('disabled', false);
+                    }
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+
+            });
+                }
+
+        });
+
+
+        $('input[type=radio][name=flexRadioDefault]').change(function () {
+            if (this.value == 'Kno') {
+                $('#txtsearchKno').attr("disabled", false);
+                $('#txtemail').attr("disabled", true);
+                $('#txtaccountNo').attr("disabled", true);
+                $('#txtmobileno').attr("disabled", true);
+                $('#txtlandline').attr("disabled", true);
+            }
+            else if (this.value == 'email') {
+                $('#txtsearchKno').attr("disabled", true);
+                $('#txtemail').attr("disabled", false);
+                $('#txtaccountNo').attr("disabled", true);
+                $('#txtmobileno').attr("disabled", true);
+                $('#txtlandline').attr("disabled", true);
+            }
+            else if (this.value == 'accno') {
+                $('#txtsearchKno').attr("disabled", true);
+                $('#txtemail').attr("disabled", true);
+                $('#txtaccountNo').attr("disabled", false);
+                $('#txtmobileno').attr("disabled", true);
+                $('#txtlandline').attr("disabled", true);
+            }
+            else if (this.value == 'mobileno') {
+                $('#txtsearchKno').attr("disabled", true);
+                $('#txtemail').attr("disabled", true);
+                $('#txtaccountNo').attr("disabled", true);
+                $('#txtmobileno').attr("disabled", false);
+                $('#txtlandline').attr("disabled", true);
+            }
+            else if (this.value == 'landlineno') {
+                $('#txtsearchKno').attr("disabled", true);
+                $('#txtemail').attr("disabled", true);
+                $('#txtaccountNo').attr("disabled", true);
+                $('#txtmobileno').attr("disabled", true);
+                $('#txtlandline').attr("disabled", false);
+            }
+        });
+            $('#submitComplaint').click(function () {
+                var officecode = $("#ddlOfficecode").val();
+                var ddlJEArea = $("#ddlJEArea").val();
+
+
+            $("#SUB_COMPLAINT_TYPE_ID").val($("#ddlSubComplaintType").val());
+            $("#JE_AREA").val($('#ddlJEArea').val());
+            $("#CONSUMER_TYPE").val($("#Consumertype").val());
+            $("#UserId").val(@Session["UserId"]);
+        });
+
+
+
+
+
+        });
+
+
+        var ConsumerComplaintListShow = function (recordId) {
+            var TeamDetailPostBackURL = '/ComplaintRegistration/ConsumerComplaintList';
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "searchparam": recordId },
+                datatype: "json",
+                success: function (data) {
+                    $('#loadRemarkPopUp').html(data);
+                    $("#consumerComplaintListPopup").modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+
+    </script>
+}
+
+@if (TempData["AlertMessage"] != null)
+{
+    <script type="text/javascript">
+        var msg = '@TempData["AlertMessage"]'
+        if (msg.includes("Error")) {
+            swal("Error!", msg, "error");
+        }
+        else {
+            $('#submitComplaint').prop('disabled', true);
+            swal("Good job!", msg, "success");
+        }
+    </script>
+}
+
+@using (Html.BeginForm("Create", "ComplaintRegistration", FormMethod.Post, new { enctype = "multipart/form-data" ,name = "frm", id = "validation-form" }))
+{
+    @Html.AntiForgeryToken()
+    <div id="loadRemarkPopUp">
+
+    </div>
+    <div class="header mb-1">
+        <h1 class="header-title">
+            Register Complaint
+        </h1>
+    </div>
+    <div class="row">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    @* <div id="successMessage" class="text-center text-danger"><h3 class="text-danger">@ViewBag.SuccessMessage</h3></div>*@
+                    <div class="card-header">
+                        <h5 class="card-title">Register Technical Complaint</h5>
+                        @*<h6 class="card-subtitle text-muted">jQuery Plugin to make masks on form fields.</h6>*@
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-lg-4 error-placeholder">
+                                @Html.DropDownListFor(x => Model.OFFICE_CODE_ID, new SelectList(Model.OfficeCodeCollection, "OfficeId", "OfficeCode"), "Select Office Code", new { @class = "form-control", id = "ddlOfficecode", required = "required" })
+                                @*<small class="form-text d-block text-muted">select office code</small>*@
+                            </div>
+                            <div class="col-12 col-lg-4 error-placeholder">
+                                <select id="ddlJEArea" class="form-control" required>
+                                </select>
+                            </div>
+                            <div class="col-12 col-lg-4">
+                                @Html.DropDownList("ddlConsumerType", new List<SelectListItem>
+                           {
+                               new SelectListItem{ Text="Consumer", Value = "1" },
+                               new SelectListItem{ Text="General Public", Value = "2" },
+
+                            }, new { @class = "form-control select2", id = "Consumertype" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Search Consumer by</h5>
+                        @*<h6 class="card-subtitle text-muted">jQuery Plugin to make masks on form fields.</h6>*@
+                    </div>
+                    <div class="card-body">
+                        <div class="row" id="divConsumer">
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                <input id="txtsearchKno" name="searchKno" value="" type="number" placeholder="K NO." class="form-control searchtag" />
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="searchKno" checked="checked" value="Kno">
+                            </div>
+                            <div class="col-12 col-lg-2 error-placeholder">
+                                <input class="form-control searchtag" id="txtmobileno" name="searchmobileno" type="number" value="" placeholder="Mobile No." />
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="searchmobileno" value="mobileno">
+                            </div>
+
+                            <div class="col-12 col-lg-3 hidden">
+                                <input class="form-control" id="txtemail" name="searchemail" type="email" value="" placeholder="E-Mail" hidden />
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="searchemail" value="email" hidden>
+                            </div>
+                            <div class="col-12 col-lg-2 hidden">
+                                <input class="form-control" id="txtaccountNo" name="searchaccountno" type="text" value="" placeholder="Account No./Binder No." hidden />
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="searchaccno" value="accno" hidden>
+                            </div>
+
+                            <div class="col-12 col-lg-2 hidden">
+                                <input class="form-control" id="txtlandline" name="searchlandline" type="text" value="" placeholder="Landline No." hidden />
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="searchlandlineno" value="landlineno" hidden>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2" id="divPublic" style="display:none">
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                <input class="form-control searchtag" id="txtmobileno1" name="searchmobileno1" type="number" value="" placeholder="Mobile No." />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-lg-3">
+                                <input type="button" value="Search" class="btn btn-primary" id="btnSearch" />
+                                @*<button class="btn btn-primary">Primary</button>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Consumer Details</h5>
+                        @*<h6 class="card-subtitle text-muted">jQuery Plugin to make masks on form fields.</h6>*@
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.SDO_CODE, new { htmlAttributes = new { @class = "form-control", @placeholder = "Sdo Code" } })
+                            </div>
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.KNO, new { htmlAttributes = new { @class = "form-control", @placeholder = "K No.", @type = "number" } })
+                            </div>
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name" } })
+                            </div>
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.FATHER_NAME, new { htmlAttributes = new { @class = "form-control", @placeholder = "Father's Name" } })
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.ADDRESS1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address 1" } })
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                @Html.EditorFor(model => model.ADDRESS2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address 2" } })
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                @Html.EditorFor(model => model.ADDRESS3, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address 3" } })
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                @Html.EditorFor(model => model.LANDMARK, new { htmlAttributes = new { @class = "form-control", @placeholder = "Landmark" } })
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12 col-lg-3">
+                                @Html.EditorFor(model => model.LANDLINE_NO, new { htmlAttributes = new { @class = "form-control", @placeholder = "Landline No." } })
+                            </div>
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.MOBILE_NO, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile No.", @type = "number" } })
+                            </div>
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.ALTERNATE_MOBILE_NO, new { htmlAttributes = new { @class = "form-control", @placeholder = "Alternate Mobile No.", @type = "number" } })
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                @Html.EditorFor(model => model.CONSUMER_STATUS, new { htmlAttributes = new { @class = "form-control", @placeholder = "Consumer Status" } })
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.EMAIL, new { htmlAttributes = new { @class = "form-control", @placeholder = "E-MailID/Social Media" } })
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                @Html.EditorFor(model => model.FEEDER_NAME, new { htmlAttributes = new { @class = "form-control", @placeholder = "Feeder Name" } })
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                @Html.EditorFor(model => model.ACCOUNT_NO, new { htmlAttributes = new { @class = "form-control", @placeholder = "Account No./Binder No." } })
+                            </div>
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.AREA_CODE, new { htmlAttributes = new { @class = "form-control", @placeholder = "Area Code" } })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Previous Complaint History</h5>
+                        @*<h6 class="card-subtitle text-muted">jQuery Plugin to make masks on form fields.</h6>*@
+                    </div>
+                    <div class="card-body">
+                        <table id="comp" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Complaint Date</th>
+                                    <th>Complaint Number</th>
+                                    <th>Complaint Type</th>
+                                    <th>Remarks</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Image</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-3">Image Upload</div>
+                            <div class="col-4 error-placeholder">
+                                @*@Html.DropDownListFor(x => Model.ComplaintSource, new SelectList(Model.ComplaintSourceCollection, "Value", "Text"), new { @class = "form-control", id = "ddlComplaintAssign" })*@
+                                <input type="file" name="ImageData" id="ImageData" onchange="fileCheck(this);" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Complaint Details</h5>
+                        @*<h6 class="card-subtitle text-muted">jQuery Plugin to make masks on form fields.</h6>*@
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.DropDownListFor(x => Model.ComplaintTypeId, new SelectList(Model.ComplaintTypeCollection, "ComplaintTypeId", "ComplaintType"), new { @class = "form-control select2", id = "ddlComplaintType" })
+                            </div>
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                <select id="ddlSubComplaintType" class="form-control select2">
+                                </select>
+                            </div>
+                            <div class="col-12 col-lg-4">
+                                @Html.EditorFor(model => model.REMARKS, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-1 align-items-center">
+            <input type="submit" value="Generate Complaint" class="btn btn-primary btn-block" id="submitComplaint" onclick="return stopMultipleSubmit();" />
+            <a class="btn btn-primary">Reset</a>
+        </div>
+
+        @Html.HiddenFor(model => model.SUB_COMPLAINT_TYPE_ID)
+        @Html.HiddenFor(model => model.UserId)
+        @Html.HiddenFor(model => model.JE_AREA)
+        @Html.HiddenFor(model => model.CONSUMER_TYPE)
+        @Html.HiddenFor(model => model.ImageData)
+        
+    </div>
+}
+
+
+<script>
+
+    function fieldValidate() {
+        // Initialize Select2 select box
+        $("select[name=\"ComplaintTypeId\"]").select2({
+            allowClear: true,
+            placeholder: "Select gear...",
+        }).change(function () {
+            $(this).valid();
+        });
+        // Trigger validation on tagsinput change
+        $("input[name=\"validation-bs-tagsinput\"]").on("itemAdded itemRemoved", function () {
+            $(this).valid();
+        });
+
+
+        // Initialize validation
+        $("#validation-form").validate({
+            ignore: '.ignore, .select2-input',
+            focusInvalid: true,
+            rules: {
+                "SDO_CODE": {
+                    required: true,
+                },
+                "searchKno": {
+                    required: false,
+                    number: true,
+                    minlength: 12,
+                    maxlength: 12
+                },
+                "searchmobileno": {
+                    required: false,
+                    number: true,
+                    minlength: 10,
+                    maxlength: 10
+                },
+                "searchmobileno1": {
+                    required: false,
+                    number: true,
+                    minlength: 10,
+                    maxlength: 10
+                },
+                "EMAIL": {
+                    required: false,
+                    email: true,
+                },
+                "FATHER_NAME": {
+                    required: false,
+                },
+                "KNO": {
+                    required: false,
+                    number: true,
+                    minlength: 12,
+                    maxlength: 12
+                },
+                "MOBILE_NO": {
+                    required: true,
+                    number: true,
+                    minlength: 10,
+                    maxlength: 10
+                },
+                "ALTERNATE_MOBILE_NO": {
+                    required: false,
+                    number: true,
+                    minlength: 10,
+                    maxlength: 10
+                },
+                "ASSIGNEEId": {
+                    required: false,
+                },
+                "OFFICE_CODE_ID": {
+                    required: true,
+                },
+                "AREA_CODE": {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 1
+                },
+                "ImageData": {
+                    required: true,
+                },
+            },
+            // Errors
+            errorPlacement: function errorPlacement(error, element) {
+                var $parent = $(element).parents(".error-placeholder");
+                // Do not duplicate errors
+                if ($parent.find(".jquery-validation-error").length) {
+                    return;
+                }
+                $parent.append(
+                    error.addClass("jquery-validation-error small form-text invalid-feedback")
+                );
+            },
+            highlight: function (element) {
+                var $el = $(element);
+                var $parent = $el.parents(".error-placeholder");
+                $el.addClass("is-invalid");
+                // Select2 and Tagsinput
+                if ($el.hasClass("select2-hidden-accessible") || $el.attr("data-role") === "tagsinput") {
+                    $el.parent().addClass("is-invalid");
+                }
+            },
+            unhighlight: function (element) {
+                $(element).parents(".error-placeholder").find(".is-invalid").removeClass("is-invalid");
+            }
+        });
+    }
+</script>

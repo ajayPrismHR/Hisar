@@ -1,0 +1,163 @@
+﻿
+@{
+    ViewBag.Title = "ReportFalseClosurePenalty";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var fromDate = (DateTime)ViewBag.fromDate;
+    var toDate = (DateTime)ViewBag.toDate;
+}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Datatables with Buttons
+        var datatablesButtons = $("#datatables-buttons").DataTable({
+            responsive: true,
+            lengthChange: !1,
+            //buttons: ["copy", 'csv', 'print'],
+            buttons: ['print'],
+
+        });
+        datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+    });
+</script>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        $('#fromDate1').datetimepicker();
+        $('#toDate1').datetimepicker();
+
+
+    });
+
+    function searchreq() {
+        var dataObject = new Object();
+        dataObject.fromdate = $('#fromDate').val();
+        dataObject.todate = $('#toDate').val();
+        $.ajax({
+            type: "GET",
+            url: '/Report/ReportFalseCloseSearch',
+            data: dataObject,
+            dataType: "json",
+            async: "true",
+            success: function (data) {
+                var datatablesButtons = $('#datatables-buttons').DataTable(
+                    {
+                        data: data,
+                        columns: [
+                            {
+                                'data': 'FalseCount',
+                            },
+                            { 'data': 'TotalPaneltyAmount' },
+
+                        ],
+                        bLengthChange: true,
+                        scrollY: '600px',
+                        scrollCollapse: true,
+                        processing: true,
+                        fixedHeader: true,
+                        fixedColumns: {
+                            leftColumns: 1,
+                            rightColumns: 1
+                        },
+                        buttons: ['print'],
+                        destroy: true,
+                    });
+                datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+        });
+        /*        datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");*/
+    }
+</script>
+<div class="header">
+    <h1 class="header-title">
+        False Closure Penalty
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">False Closure Penalty</li>
+        </ol>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Search By</h5>
+                <h6 class="card-subtitle text-muted">
+                    Search with
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-12 col-lg-3">
+                        <div class="input-group date" id="fromDate1" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#fromDate1" id="fromDate" value="@fromDate" />
+                            <div class="input-group-text" data-target="#fromDate1" data-toggle="datetimepicker">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <div class="input-group date" id="toDate1" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#toDate1" id="toDate" value="@toDate" />
+                            <div class="input-group-text" data-target="#toDate1" data-toggle="datetimepicker">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-3">
+                        <input type="submit" value="Search" class="btn btn-dark btn-block" id="btnSearch" onclick="searchreq()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">About False Closure Penalty</h5>
+                <h6 class="card-subtitle text-muted">
+                    Description of Report
+                </h6>
+            </div>
+            <div class="card-body">
+                <table id="datatables-buttons" class="table table-striped" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>False Count:</th>
+                            <th>Penalty (Rs 100/ on each default):</th>
+                        </tr>
+                    </thead>
+
+                </table>
+
+                <table class="table table-striped" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Serial No:</th>
+                            <th>False Closing of complaints</th>
+                            <th>Penalty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1)</td>
+                            <td>Number of false closed complaints</td>
+                            <td>Rs 100/ on each default</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

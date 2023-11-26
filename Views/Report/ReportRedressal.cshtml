@@ -1,0 +1,279 @@
+﻿
+@{
+    ViewBag.Title = "ReportRedressal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery.table2excel.js"></script>
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Datatables with Buttons
+        var datatablesButtons = $("#datatables-buttons").DataTable({
+            responsive: true,
+            lengthChange: !1,
+            //buttons: ["copy", 'csv', 'print'],
+            /*  buttons: ['print', 'csv'],*/
+            ordering: false,
+
+            scrollX: true,
+
+
+        });
+        datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $(function () {
+
+
+            $('#ddlOfficecode').select2({
+                selectOnClose: true,
+                //minimumInputLength: 2,
+                //maximumInputLength: 20,
+                //minimumResultsForSearch: 50,
+                theme: "classic",
+                placeholder: "Select Office Code",
+
+                /*selectOnClose: true*/
+            });
+            $.ajax({
+                type: "GET",
+                url: '/Complaint/OfficeCodeJsonCircle',
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlOfficecode").append($("<option></option>").val(this.OfficeId).html(this.OfficeCode));
+                    });
+                },
+                error: function (data) { }
+            });
+        });
+
+
+        $("#btnExport").click(function () {
+            $("#datatables-buttons").table2excel({
+                filename: "ReportRedressal"
+            });
+        });
+
+
+    });
+    function searchreq() {
+        var dataObject = new Object();
+        dataObject.fromdate = $('#fromDate').val();
+        dataObject.todate = $('#toDate').val();
+        dataObject.OfficeCode = $('#ddlOfficecode').val();
+        if ($('#SearchType').prop('checked')) {
+            dataObject.SlaType = "R";
+        } else if ($('#SearchType1').prop('checked')) {
+            dataObject.SlaType = "U";
+        } else if ($('#SearchType2').prop('checked')) {
+            dataObject.SlaType = "ALL";
+        }
+        $.ajax({
+            type: "GET",
+            url: '/Report/ReportRedressalSearch',
+            data: dataObject,
+            dataType: "json",
+            async: "true",
+            success: function (data) {
+                var datatablesButtons = $('#datatables-buttons').DataTable(
+                    {
+                        data: data,
+                        columns: [
+                            { 'data': 'OFFICE_NAME' },
+                            { 'data': 'COMPLAINTS_PENDING_TILL_FROM_DATE' },
+                            { 'data': 'COMPLAINS_RECEIEVED_UPTO_MONTH_NO_CURRENT_COMPLAINT' },
+                            { 'data': 'COMPLAINS_RECEIEVED_UPTO_MONTH_TRANSFORMER_FAILURE' },
+                            { 'data': 'COMPLAINS_RECEIEVED_UPTO_MONTH_ENERGY_THEFT' },
+                            { 'data': 'COMPLAINS_RECEIEVED_UPTO_MONTH_SAFETY_RELATED' },
+                            { 'data': 'COMPLAINS_RECEIEVED_UPTO_MONTH_HARASSMENT_BY_OFFICIALS' },
+                            { 'data': 'COMPLAINS_RECEIEVED_UPTO_MONTH_BILL_RELATED' },
+                            { 'data': 'COMPLAINS_RECEIEVED_UPTO_MONTH_METER_RELATED' },
+                            { 'data': 'COMPLAINS_RECEIEVED_UPTO_MONTH_OTHER_TRCHNICAL_COMPLAINTS' },
+                            { 'data': 'COMPLAINS_RECEIEVED_UPTO_MONTH_TOTAL' },
+                            { 'data': 'COMPLAINS_REDRESSED_UPTO_MONTH_NO_CURRENT_COMPLAINT' },
+                            { 'data': 'COMPLAINS_REDRESSED_UPTO_MONTH_TRANSFORMER_FAILURE' },
+                            { 'data': 'COMPLAINS_REDRESSED_UPTO_MONTH_ENERGY_THEFT' },
+                            { 'data': 'COMPLAINS_REDRESSED_UPTO_MONTH_SAFETY_RELATED' },
+                            { 'data': 'COMPLAINS_REDRESSED_UPTO_MONTH_HARASSMENT_BY_OFFICIALS' },
+                            { 'data': 'COMPLAINS_REDRESSED_UPTO_MONTH_BILL_RELATED' },
+                            { 'data': 'COMPLAINS_REDRESSED_UPTO_MONTH_METER_RELATED' },
+                            { 'data': 'COMPLAINS_REDRESSED_UPTO_MONTH_OTHER_TRCHNICAL_COMPLAINTS' },
+                            { 'data': 'COMPLAINS_REDRESSED_UPTO_MONTH_TOTAL' },
+                            { 'data': 'BALANCE_NO_CURRENT_COMPLAINTS_TILL_TO_DATE' },
+                            { 'data': 'BALANCE_TRANSFORMER_FAILURE_COMPLAINTS_TILL_TO_DATE' },
+                            { 'data': 'BALANCE_ENERGY_THEFT_COMPLAINTS_TILL_TO_DATE' },
+                            { 'data': 'BALANCE_SAFETY_RELATED_COMPLAINTS_TILL_TO_DATE' },
+                            { 'data': 'BALANCE_HARASSMENT_BY_OFFICIALS_COMPLAINTS_TILL_TO_DATE' },
+                            { 'data': 'BALANCE_BILL_RELATED_COMPLAINTS_TILL_TO_DATE' },
+                            { 'data': 'BALANCE_METER_RELATED_COMPLAINTS_TILL_TO_DATE' },
+                            { 'data': 'BALANCE_OTHER_TECHNICAL_COMPLAINTS_TILL_TO_DATE' },
+                            { 'data': 'TOTAL_BALANCE_COMPLAINTS_TILL_TO_DATE' },
+                            { 'data': 'NO_CURRENT_AVEG' },
+                            { 'data': 'TRANSFORMER_FAILURE_AVEG' },
+                            { 'data': 'ENERGY_THEFT' },
+                            { 'data': 'SAFETY_RELATED_AVEG' },
+                            { 'data': 'HARASSMENT_BY_OFFICIALS_AVEG' },
+                            { 'data': 'BILL_RELATED_AVEG' },
+                            { 'data': 'METER_RELATED_AVEG' },
+                            { 'data': 'OTHER_TECHNICAL_COMPLAINTS_AVEG' },
+                        ],
+                        scrollX: true,
+                        scrollY: true,
+                        scrollCollapse: true,
+                        paging: true,
+                        processing: true,
+                        pageLength: 150,
+                        fixedHeader: true,
+                        fixedColumns: {
+                            leftColumns: 1,
+                            rightColumns: 1
+                        },
+                        createdRow: function (row, data, dataIndex) {
+                            if (data['OFFICE_NAME'] == 'TOTAL') {
+
+                                $(row).css('background-color', '#BEBEBE');
+                            }
+
+                            else {
+                                $(row).css('background-color', '#F0F0F0');
+                            }
+                        },
+                        /* buttons: ['print', 'csv'],*/
+                        ordering: false,
+                        destroy: true,
+                    });
+                datatablesButtons.buttons().container().appendTo("#datatables-buttons_wrapper .col-md-6:eq(0)");
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+        });
+    }
+</script>
+<h2>ReportRedressal</h2>
+@{
+    var fromDate = (DateTime)ViewBag.fromDate;
+    var toDate = (DateTime)ViewBag.toDate;
+
+}
+<div class="header">
+    <h1 class="header-title">
+        Redressal Report
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Redressal Report</li>
+        </ol>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Search By</h5>
+                <h6 class="card-subtitle text-muted">
+                    Search with
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-12 col-lg-2">
+                        @Html.TextBox("fromDate", string.Format("{0:yyyy-MM-dd}", fromDate), new { @class = "form-control mb-1", type = "date" })
+                    </div>
+                    <div class="col-12 col-lg-2">
+                        @Html.TextBox("toDate", string.Format("{0:yyyy-MM-dd}", toDate), new { @class = "form-control mb-1", type = "date" })
+                    </div>
+                    <div class="col-12 col-lg-2">
+                        @Html.DropDownList("ddlOfficecode", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlOfficecode" })
+                    </div>
+                    <div class="col-12 col-lg-1">
+                        <input class="form-check-input" type="radio" name="SearchType" id="SearchType" value="R"> Rural
+                    </div>
+                    <div class="col-12 col-lg-1">
+                        <input class="form-check-input" type="radio" name="SearchType" id="SearchType1" value="U"> Urban
+                    </div>
+                    <div class="col-12 col-lg-1">
+                        <input class="form-check-input" type="radio" name="SearchType" id="SearchType2" value="ALL" checked="checked">ALL
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <input type="submit" value="Search" class="btn btn-dark btn-block" id="btnSearch" onclick="searchreq()" />
+                        <input type="submit" id="btnExport" value="Export" class="btn btn-secondary btn-block" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">About Redressal Report</h5>
+                <h6 class="card-subtitle text-muted">
+                    Description of Report
+                </h6>
+            </div>
+            <div class="row mb-2">
+                <table id="datatables-buttons" class="table table-bordered table-hover table-striped text-center" style="width:100%">
+                    <thead>
+                        <tr class="text-center">
+                            <th rowspan="2" class="text-center"><h5>Name of circle</h5> </th>
+                            <th rowspan="2" class="text-center"><h5>Complaints Pending Till From Date</h5></th>
+                            <th colspan="9" class="text-center"><h5>Complaints Receive upto Month</h5></th>
+                            <th colspan="9" class="text-center"><h5>Complaints Redressed upto Month</h5></th>
+                            <th colspan="9" class="text-center"><h5>Balance Complaints on To Date </h5></th>
+                            <th colspan="8" class="text-center"><h5>Average Redressal time in hours</h5></th>
+                        </tr>
+                        <tr>
+                            <td>No Current complaint</td>
+                            <td>Transformer Failure</td>
+                            <td>Energy Theft</td>
+                            <td>Safety Related</td>
+                            <td>Haresment by Officials</td>
+                            <td>Bill Related</td>
+                            <td>Meter Related</td>
+                            <td>Other Technical Complaints</td>
+                            <td><h5>Total</h5></td>
+                            <td>No Current complaint</td>
+                            <td>Transformer Failure</td>
+                            <td>Energy Theft</td>
+                            <td>Safety Related</td>
+                            <td>Haresment by Officials</td>
+                            <td>Bill Related</td>
+                            <td>Meter Related</td>
+                            <td>Other Technical Complaints</td>
+                            <td><h5>Total</h5></td>
+                            <td>No Current complaint</td>
+                            <td>Transformer Failure</td>
+                            <td>Energy Theft</td>
+                            <td>Safety Related</td>
+                            <td>Haresment by Officials</td>
+                            <td>Bill Related</td>
+                            <td>Meter Related</td>
+                            <td>Other Technical Complaints</td>
+                            <td><h5>Total</h5></td>
+                            <td>No Current complaint</td>
+                            <td>Transformer Failure</td>
+                            <td>Energy Theft</td>
+                            <td>Safety Related</td>
+                            <td>Haresment by Officials</td>
+                            <td>Bill Related</td>
+                            <td>Meter Related</td>
+                            <td>Other Technical Complaints</td>
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

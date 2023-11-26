@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <link rel="icon" type="image/x-icon" href="~/images/favicon.ico">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="AVVNL" />
+    <meta name="author" content="Ajay Mathur" />
+
+    <!--CSS-->
+    <link href="~/css/modern.css" rel="stylesheet">
+    <script type="text/javascript" src="~/js/app.js"></script>
+    <script src="~/js/sweetalert.min.js"></script>
+    @RenderSection("Scripts", required: false)
+    
+</head>
+
+<body>
+    <div class="wrapper bg-tertiary-light">
+        
+        <div class="main">
+            <!--Header Search and Notification Icon-->
+            <nav class="navbar navbar-expand navbar-theme">
+                <a class="sidebar-toggle d-flex me-2">
+                    @*<i class="hamburger align-self-center"></i>*@
+                </a>
+                <h1 class="header-title">
+                    &nbsp;&nbsp; AJMER VIDYUT VITRAN NIGAM LIMITED
+                </h1>
+
+                @*<div class="navbar-collapse collapse">
+                    <ul class="navbar-nav ms-auto">
+                    
+                        <li class="nav-item dropdown ms-lg-2">
+                            <a class="nav-link dropdown-toggle position-relative" href="#" id="userDropdown" data-bs-toggle="dropdown">
+                                <i class="align-middle fas fa-cog"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#"><i class="align-middle me-1 fas fa-fw fa-arrow-alt-circle-right"></i> out</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>*@
+            </nav>
+            <!--Welcom user Content-->
+            <main class="content" style="margin-top: 1rem; ">
+                <div class="container-fluid ">
+                    @RenderBody()
+                    <div id="loadPopUp">
+
+                    </div>
+                </div>
+            </main>
+            <!--Footer-->
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row text-muted">
+                        <div class="col-4 text-start">
+                        </div>
+                        <div class="col-4 text-md-center">
+                            <p class="mb-0">
+                                <h4>&reg; <a href="#" class="text-muted" target="_blank">All rights reserved to Sandha & Company</a></h4>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+
+</body>
+</html>
+

@@ -1,0 +1,71 @@
+﻿@model ComplaintTracker.Models.ModelSystemAvaialablity
+@{
+    ViewBag.Title = "SystemAvailability";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var fromDate = (DateTime)ViewBag.fromDate;
+    var toDate = (DateTime)ViewBag.toDate;
+}
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        $('#fromDate1').datetimepicker();
+        $('#toDate1').datetimepicker();
+    });
+</script>
+<div class="header">
+    <h1 class="header-title">
+        System Availablity Information
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">System Availablity Information</li>
+        </ol>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-12">
+        @using (Html.BeginForm("SaveSystemAvailability", "Penalty", FormMethod.Post))
+        {
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Search By</h5>
+                    <h6 class="card-subtitle text-muted">
+                        Search with
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-3">
+                            <label for="User_Name">Start Time</label>
+                            <div class="input-group date" id="fromDate1" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" data-target="#fromDate1" id="fromDate" name="fromDate" />
+                                <div class="input-group-text" data-target="#fromDate1" data-toggle="datetimepicker">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-3">
+                            <label for="User_Name">End Time</label>
+                            <div class="input-group date" id="toDate1" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" data-target="#toDate1" id="toDate" name="toDate" />
+                                <div class="input-group-text" data-target="#toDate1" data-toggle="datetimepicker">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-3">
+                            <label for="User_Name">Type</label>
+                            @Html.DropDownListFor(x => Model.SystemAvailabilityIssue_ID, new SelectList(Model.SystemAvailabilityIssueCollection, "ID", "IssueType"), new { @class = "form-control select2", id = "ddlIssueType" })
+                        </div>
+                        <div class="col-12 col-lg-3 mt-3">
+                            <input type="submit" value="Save" class="btn btn-dark btn-block" id="btnSave" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+

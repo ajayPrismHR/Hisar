@@ -1,0 +1,107 @@
+﻿@*Close Model*@
+
+
+<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.validate.min.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+@section scripts{
+    <link href="~/Content/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="~/Scripts/select2.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+
+            $(function () {
+                $('select').select2({
+                    dropdownCssClass: 'custom-dropdown'
+                });
+                $('select').on('select2:open', function (e) {
+                    $('.custom-dropdown').parent().css('z-index', 99999);
+                });
+
+                $('#ddlOutage1').select2({
+                    placeholder: "Outage Type",
+                    minimumResultsForSearch: -1,
+                    selectOnClose: true,
+                    width: '370px',
+                 });
+
+                
+            });
+
+            
+            $('#submitComplaint').click(function () {
+                $("#UserId").val(@Session["UserId"]);
+            });
+
+
+    });
+    function closeComplaint() {
+        var TeamDetailPostBackURL = '/Complaint/closeComplaint';
+        var model = new Object();
+        model.ComplaintNo = $("#ComplaintNo").val();
+        model.OutageTypeCollectionId1 = $("#ddlOutage1").val();
+        $.ajax({
+            type: "GET",
+            url: TeamDetailPostBackURL,
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+            data: model,
+            success: function (data) {
+                if (data.status == -1) {
+                    $("#ClosePopup").modal('hide');
+                    swal("error in saving", "error");
+                }
+                else {
+                    $("#ClosePopup").modal('hide');
+                    swal("Saved Successfully", "success");
+                }
+            },
+            error: function (data) {
+                $("#ClosePopup").modal('hide');
+                swal("Dynamic content load failed.!", "error");
+            }
+        });
+    }
+
+
+</script>
+@model ComplaintTracker.Models.ModelCloseComplaint
+
+    @Html.HiddenFor(model => model.IsConfirmByCustomer);
+    <div class="modal fade" id="ClosePopup" tabindex="-1" aria-hidden="true" style="display: none;" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header with-border bg-danger text-white">
+                    <h2 class="modal-title">Complaint Close</h2>
+                    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close"><span>&times;</span> </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-1">
+                        <div class="col-md-6">
+                            <label for="ComplaintNo">Complaint No.</label>
+                            @Html.EditorFor(model => model.ComplaintNo, new { htmlAttributes = new { placeholder = "Complaint No.", @class = "form-control", @disabled = "disabled" } })
+
+                            @Html.HiddenFor(model => model.ComplaintNo)
+
+                        </div>
+                        <div class="col-md-6">
+                            <label for="OutageTypeCollectionId1">Complaint Category</label>
+                            @Html.DropDownListFor(x => Model.OutageTypeCollectionId1, new SelectList(Model.OutageTypeCollection1, "Value", "Text"), new { @class = "form-control", id = "ddlOutage1" })
+
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="submitComplaint" onclick="closeComplaint()">Update</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+

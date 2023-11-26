@@ -1,0 +1,145 @@
+﻿@model ComplaintTracker.Models.ModelUser
+@{
+
+    ViewBag.Title = "Create User";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+<div class="header">
+    <h1 class="header-title">
+        User Management
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit User Profile</li>
+        </ol>
+    </nav>
+</div>
+<div class="row">
+    @using (Html.BeginForm("EditUser", "GetUsers", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="col-12">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="account" role="tabpanel">
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-actions float-end">
+                                <a href="#" class="me-1">
+                                    <i class="align-middle" data-feather="refresh-cw"></i>
+                                </a>
+
+                            </div>
+                            <h5 class="card-title mb-0">Login info</h5>
+                        </div>
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        @Html.HiddenFor(model => model.User_id)
+                                        <label for="User_Name">User name</label>
+                                        @Html.EditorFor(model => model.User_Name, new { htmlAttributes = new { @class = "form-control", placeholder = "User name" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="inputUsername" hidden >Password</label>
+                                        @Html.HiddenFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", placeholder = "Password", @type = "password" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="inputUsername" hidden>Confirm Password</label>
+                                        @Html.HiddenFor(model => model.Confirm_Password, new { htmlAttributes = new { @class = "form-control", placeholder = "Confirm assword", @type = "password" } })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="inputUsername">User Role</label>
+                                        @Html.DropDownListFor(x => Model.RoleID, new SelectList(Model.RolesCollection, "RoleID", "RoleName"), new { @class = "form-control", id = "ddlRoles" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="inputUsername" hidden>Phone Login</label>
+                                        @Html.HiddenFor(model => model.PhoneLogin, new { htmlAttributes = new { @class = "form-control", placeholder = "Phone Login" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="inputUsername" hidden>Phone Password</label>
+                                        @Html.HiddenFor(model => model.PhonePassword, new { htmlAttributes = new { @class = "form-control", placeholder = "Phone Password" } })
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-actions float-end">
+                                <a href="#" class="me-1">
+                                    <i class="align-middle" data-feather="refresh-cw"></i>
+                                </a>
+                            </div>
+                            <h5 class="card-title mb-0">Private info</h5>
+                        </div>
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="mb-3">
+                                    <label for="inputFirstName">Name</label>
+                                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", placeholder = "Name" } })
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="mb-3 col-md-6">
+                                    <label for="inputEmail4">Email</label>
+                                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", placeholder = "EMail" } })
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label for="inputEmail4">Mobile No.</label>
+                                    @Html.EditorFor(model => model.Mobile_NO, new { htmlAttributes = new { @class = "form-control", placeholder = "Mobile No." } })
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="inputAddress">Address</label>
+                                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", placeholder = "Address" } })
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+@section scripts{
+    <script type="text/javascript">
+
+        $(document).ready(() => {
+            $('select:not(.normal)').each(function () {
+                $(this).select2({
+                    dropdownParent: $(this).parent()
+                });
+            });
+        });
+       
+    </script>
+}
+
