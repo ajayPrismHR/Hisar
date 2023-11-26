@@ -35,7 +35,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Raw Complaint</li>
+            <li class="breadcrumb-item active" aria-current="page">Resolved Complaint</li>
         </ol>
     </nav>
 </div>
@@ -55,7 +55,7 @@
                 @using (Html.BeginForm("ExportToExcelRawComplaint", "Report", FormMethod.Post))
                 {
                     <div class="row mb-3">
-                        <div class="col-12 col-lg-3">
+                        @*<div class="col-12 col-lg-3">
                             <div class="input-group date" id="fromDate1" data-target-input="nearest">
                                 <input type="text" class="form-control datetimepicker-input" data-target="#fromDate1" id="fromDate" name="fromDate" />
                                 <div class="input-group-text" data-target="#fromDate1" data-toggle="datetimepicker">
@@ -73,9 +73,9 @@
                         </div>
                         <div class="col-12 col-lg-2">
                             @Html.DropDownList("ddlSource", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlSource" })
-                        </div>
+                        </div>*@
                         <div class="col-12 col-lg-3">
-                            @Html.DropDownList("ddlOfficecode", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlOfficecode" })
+                            @Html.DropDownList("ddlMY", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlMY" })  
                         </div>
 
                         <div class="col-12 col-lg-1">
@@ -83,7 +83,7 @@
                         </div>
 
                     </div>
-                    <div class="row mb-3">
+                    @*<div class="row mb-3">
                         <div class="col-12 col-lg-12">
                             <input type="hidden" id="ComplaintTypeId" name="ComplaintTypeId" value="0">
                             <div class="btn-group mb-1" style="overflow:hidden;width:100%">
@@ -107,7 +107,7 @@
                                 }
                             </div>
                         </div>
-                    </div>
+                    </div>*@
                 }
                 <div class="row mb-3">
                     <div class="col-12 col-lg-3">
@@ -132,24 +132,13 @@
                     <thead>
                         <tr>
                             <th>Complaint No.</th>
-                            <th>SDO Code</th>
-                            <th>SubDivision Name</th>
-                            <th>KNO</th>
-                            <th>Name</th>
-                            <th>Father Name</th>
-                            <th>Address</th>
-                            <th>Mobile No.</th>
-                            <th>Alternate Number</th>
-                            <th>Complaint Type</th>
-                            <th>SubComplaint Type</th>
-                            <th>Complaint Date & Time</th>
-                            <th>Closed Date & Time</th>
-                            <th>Duration</th>
-                            <th>Sub Outage Type</th>
-                            <th>Current Status</th>
-                            <th>Complaint Source</th>
-                            <th>Created By User ID</th>
-                            <th>Closed By User ID</th>
+                            <th>Customer Name</th>
+                            <th>Costumer Mobile</th>
+                            <th>Complaint Category</th>
+                            <th>Complaint Center</th>
+                            <th>Complaint DateTime</th>
+                            <th>Resolved DateTime</th>
+                            <th>Response Time</th>
                         </tr>
                     </thead>
                 </table>
@@ -163,83 +152,33 @@
     $(document).ready(function () {
 
         $(function () {
-            $('#ddlOfficecode').select2({
+            $('#ddlMY').select2({
                 selectOnClose: true,
                 //minimumInputLength: 2,
                 //maximumInputLength: 20,
                 //minimumResultsForSearch: 50,
-                placeholder: "Select Office Code",
-            });
-            $('#ddlSource').select2({
-                selectOnClose: true,
-                /*placeholder: "Select Source",*/
+                placeholder: "Select Bill Month",
             });
             $.ajax({
                 type: "GET",
-                url: '/Complaint/OfficeCodeJson',
+                url: '/Dashboard/ddlMY',
                 contentType: "application/json; charset=utf-8",
                 datatype: JSON,
                 success: function (result) {
                     $(result).each(function () {
-                        $("#ddlOfficecode").append($("<option></option>").val(this.OfficeId).html(this.OfficeCode));
+                        $("#ddlMY").append($("<option></option>").val(this.Value).html(this.Text));
                     });
                 },
                 error: function (data) { }
             });
-            $.ajax({
-                type: "GET",
-                url: '/Complaint/ComplaintSourceJson',
-                contentType: "application/json; charset=utf-8",
-                datatype: JSON,
-                success: function (result) {
-                    $(result).each(function () {
-                        $("#ddlSource").append($("<option></option>").val(this.Value).html(this.Text));
-                    });
-                },
-                error: function (data) { }
-            });
+            
         });
 
     });
     function searchreq() {
-        var Complainttype = 0;
         var dataObject = new Object();
-        if ($('#All').prop('checked')) {
-            Complainttype = 0;
-        } else if ($('#BillRelated').prop('checked')) {
-            Complainttype = 2;
-        } else if ($('#MeterRelated').prop('checked')) {
-            Complainttype = 3;
-        } else if ($('#NoCurrent').prop('checked')) {
-            Complainttype = 4;
-        } else if ($('#OtherComplaint').prop('checked')) {
-            Complainttype = 5;
-        } else if ($('#SafetyRelated').prop('checked')) {
-            Complainttype = 6;
-        } else if ($('#ServiceConnectionRelated').prop('checked')) {
-            Complainttype = 7;
-        } else if ($('#TransformerRelated').prop('checked')) {
-            Complainttype = 8;
-        } else if ($('#EnergyTheft').prop('checked')) {
-            Complainttype = 9;
-        } else if ($('#VoltageRelated').prop('checked')) {
-            Complainttype = 10;
-        } else if ($('#LineRelated').prop('checked')) {
-            Complainttype = 11;
-        } else if ($('#PoleRelated').prop('checked')) {
-            Complainttype = 12;
-        } else if ($('#HARASSMENTBYDISCOMOFFICIAL').prop('checked')) {
-            Complainttype = 13;
-        }
-        else if ($('#NewConnection').prop('checked')) {
-            Complainttype = 14;
-        }
-        dataObject.fromdate = $('#fromDate').val();
-        dataObject.todate = $('#toDate').val();
-        dataObject.OfficeCode = $('#ddlOfficecode').val();
-        dataObject.ComplaintType = Complainttype;
-        dataObject.ComplaintSource = $('#ddlSource').val();
-        $("#ComplaintTypeId").val(Complainttype);
+        
+        dataObject.Bill_Month = $('#ddlMY').val();
 
         myTable = $('#DPaging').dataTable({
             "ajax": {
@@ -247,11 +186,7 @@
                 "type": "POST",
                 "datatype": "json",
                 "data": function (d) {
-                    d.fromdate = dataObject.fromdate;
-                    d.todate = dataObject.todate;
-                    d.OfficeCode = dataObject.OfficeCode;
-                    d.ComplaintType = dataObject.ComplaintType;
-                    d.ComplaintSource = dataObject.ComplaintSource;
+                    d.Bill_Month = dataObject.Bill_Month;
                 }
             },
             "destroy": true,
@@ -274,25 +209,14 @@
                 'colvis'
             ],
             "columns": [
-                { 'data': 'COMPLAINT_NO' },
-                { 'data': 'SDO_CODE' },
-                { 'data': 'SubDivisionName' },
-                { 'data': 'KNO' },
-                { 'data': 'Name' },
-                { 'data': 'FatherName' },
-                { 'data': 'Address' },
-                { 'data': 'MobileNo' },
-                { 'data': 'AlternateNo' },
-                { 'data': 'ComplaintType' },
-                { 'data': 'SubComplaintType' },
-                { 'data': 'ComplaintDate' },
-                { 'data': 'ClosedDate' },
-                { 'data': 'Duration' },
-                { 'data': 'AreaCode' },
-                { 'data': 'CurrentStatus' },
-                { 'data': 'SOURCE_NAME' },
-                { 'data': 'CreatedUserID' },
-                { 'data': 'ClosedUserID' },
+                { 'data': 'ComplaintNo' },
+                { 'data': 'Customer_Name' },
+                { 'data': 'Mobile_no' },
+                { 'data': 'Category_Name' },
+                { 'data': 'LineMan_Name' },
+                { 'data': 'Complaint_date' },
+                { 'data': 'Resolved_Date' },
+                { 'data': 'Response_Time' },
             ],
 
         });

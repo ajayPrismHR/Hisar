@@ -18,9 +18,9 @@ namespace ComplaintTracker.Controllers
         }
         public JsonResult GetExceptions(ModelReport dataObject) //It will be fired from Jquery ajax call
         {
-            List<ModelExceptionLogger> data = new List<ModelExceptionLogger>();
-            data = Repository.GetExceptions(dataObject);
-            var jsonData = data;
+            //List<ModelExceptionLogger> data = new List<ModelExceptionLogger>();
+            //data = Repository.GetExceptions(dataObject);
+            var jsonData = "";
             return Json(jsonData, JsonRequestBehavior.AllowGet);
         }
 

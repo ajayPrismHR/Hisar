@@ -1590,442 +1590,442 @@ namespace ComplaintTracker.DAL
             return obj;
         }
 
-        #region reports
-        public static List<ModelComplaintAnalysisReport> ReportComplaintAnalysisData(ModelReport dataObject)
-        {
-            List<ModelComplaintAnalysisReport> lstReportdata = new List<ModelComplaintAnalysisReport>();
-            ModelComplaintAnalysisReport objData = new ModelComplaintAnalysisReport();
-            SqlParameter[] param ={
-                    new SqlParameter("@START_TIME",dataObject.fromdate),
-                     new SqlParameter("@END_TIME",dataObject.todate),
-                              new SqlParameter("@OFFICE_ID",dataObject.OfficeCode)
+        //#region reports
+        //public static List<ModelComplaintAnalysisReport> ReportComplaintAnalysisData(ModelReport dataObject)
+        //{
+        //    List<ModelComplaintAnalysisReport> lstReportdata = new List<ModelComplaintAnalysisReport>();
+        //    ModelComplaintAnalysisReport objData = new ModelComplaintAnalysisReport();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@START_TIME",dataObject.fromdate),
+        //             new SqlParameter("@END_TIME",dataObject.todate),
+        //                      new SqlParameter("@OFFICE_ID",dataObject.OfficeCode)
 
-            };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "COMPLAINT_ANALYSIS_RAW", param);
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new ModelComplaintAnalysisReport();
-                    objData.SDOCode = Convert.ToString(dr.ItemArray[0]);
-                    objData.KNO = Convert.ToString(dr.ItemArray[1].ToString());
-                    objData.RegistrationofComplaint = Convert.ToString(dr.ItemArray[2].ToString());
-                    objData.ComplaintNumber = Convert.ToString(dr.ItemArray[3].ToString());
-                    objData.Complaintclosedate = Convert.ToString(dr.ItemArray[4].ToString());
-                    objData.ResolutioninHHMI = Convert.ToString(dr.ItemArray[5].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "COMPLAINT_ANALYSIS_RAW", param);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new ModelComplaintAnalysisReport();
+        //            objData.SDOCode = Convert.ToString(dr.ItemArray[0]);
+        //            objData.KNO = Convert.ToString(dr.ItemArray[1].ToString());
+        //            objData.RegistrationofComplaint = Convert.ToString(dr.ItemArray[2].ToString());
+        //            objData.ComplaintNumber = Convert.ToString(dr.ItemArray[3].ToString());
+        //            objData.Complaintclosedate = Convert.ToString(dr.ItemArray[4].ToString());
+        //            objData.ResolutioninHHMI = Convert.ToString(dr.ItemArray[5].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<EsclationComplaint> ReportEscalatedComplaint(ModelReport dataObject)
-        {
-            List<EsclationComplaint> lstReportdata = new List<EsclationComplaint>();
-            EsclationComplaint objData = new EsclationComplaint();
-            SqlParameter[] param ={
-                    new SqlParameter("@FROMDATE",dataObject.fromdate),
-                     new SqlParameter("@TODATE",dataObject.todate),
-                              new SqlParameter("@OFFICE_ID",dataObject.OfficeCode)
+        //public static List<EsclationComplaint> ReportEscalatedComplaint(ModelReport dataObject)
+        //{
+        //    List<EsclationComplaint> lstReportdata = new List<EsclationComplaint>();
+        //    EsclationComplaint objData = new EsclationComplaint();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@FROMDATE",dataObject.fromdate),
+        //             new SqlParameter("@TODATE",dataObject.todate),
+        //                      new SqlParameter("@OFFICE_ID",dataObject.OfficeCode)
 
-            };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Total_Escalate_Complaint", param);
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new EsclationComplaint();
-                    objData.TotalEsclatedComplaint = Convert.ToString(dr.ItemArray[0]);
-                    objData.TotalPaneltyAmount = Convert.ToString(dr.ItemArray[1].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Total_Escalate_Complaint", param);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new EsclationComplaint();
+        //            objData.TotalEsclatedComplaint = Convert.ToString(dr.ItemArray[0]);
+        //            objData.TotalPaneltyAmount = Convert.ToString(dr.ItemArray[1].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<PerformanceTrackerModel> ReportFRTPerformance(ModelReport dataObject)
-        {
-            List<PerformanceTrackerModel> lstReportdata = new List<PerformanceTrackerModel>();
-            PerformanceTrackerModel objData = new PerformanceTrackerModel();
-            SqlParameter[] param ={
-                    new SqlParameter("@FROM_DATE",dataObject.fromdate),
-                     new SqlParameter("@TO_DATE",dataObject.todate),
-                              new SqlParameter("@OFFICE_ID",dataObject.OfficeCode),
-                              new SqlParameter("@COMPLAINT_TYPE",dataObject.ComplaintType)
+        //public static List<PerformanceTrackerModel> ReportFRTPerformance(ModelReport dataObject)
+        //{
+        //    List<PerformanceTrackerModel> lstReportdata = new List<PerformanceTrackerModel>();
+        //    PerformanceTrackerModel objData = new PerformanceTrackerModel();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@FROM_DATE",dataObject.fromdate),
+        //             new SqlParameter("@TO_DATE",dataObject.todate),
+        //                      new SqlParameter("@OFFICE_ID",dataObject.OfficeCode),
+        //                      new SqlParameter("@COMPLAINT_TYPE",dataObject.ComplaintType)
 
-            };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "FRT_Performance", param);
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new PerformanceTrackerModel();
-                    objData.SdoCode = Convert.ToString(dr.ItemArray[0]);
-                    objData.TotalComplaintsReceived = Convert.ToString(dr.ItemArray[1].ToString());
-                    objData.AverageFollowUpsPerComplaint = Convert.ToString(dr.ItemArray[2].ToString());
-                    objData.TotalFollowUps = Convert.ToString(dr.ItemArray[3].ToString());
-                    objData.AvgFollowUpTime = Convert.ToString(dr.ItemArray[4].ToString());
-                    objData.AverageResolutionHours = Convert.ToString(dr.ItemArray[5].ToString());
-                    objData.ComplaintsAcceptedByFRT = Convert.ToString(dr.ItemArray[6].ToString());
-                    objData.ComplaintClosedByFRT = Convert.ToString(dr.ItemArray[7].ToString());
-                    objData.RepeatComplaints = Convert.ToString(dr.ItemArray[8].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "FRT_Performance", param);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new PerformanceTrackerModel();
+        //            objData.SdoCode = Convert.ToString(dr.ItemArray[0]);
+        //            objData.TotalComplaintsReceived = Convert.ToString(dr.ItemArray[1].ToString());
+        //            objData.AverageFollowUpsPerComplaint = Convert.ToString(dr.ItemArray[2].ToString());
+        //            objData.TotalFollowUps = Convert.ToString(dr.ItemArray[3].ToString());
+        //            objData.AvgFollowUpTime = Convert.ToString(dr.ItemArray[4].ToString());
+        //            objData.AverageResolutionHours = Convert.ToString(dr.ItemArray[5].ToString());
+        //            objData.ComplaintsAcceptedByFRT = Convert.ToString(dr.ItemArray[6].ToString());
+        //            objData.ComplaintClosedByFRT = Convert.ToString(dr.ItemArray[7].ToString());
+        //            objData.RepeatComplaints = Convert.ToString(dr.ItemArray[8].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<HelpDeskPerformanceTrackerModel> ReportHelpdeskPerformance(ModelReport dataObject)
-        {
-            List<HelpDeskPerformanceTrackerModel> lstReportdata = new List<HelpDeskPerformanceTrackerModel>();
-            HelpDeskPerformanceTrackerModel objData = new HelpDeskPerformanceTrackerModel();
-            SqlParameter[] param ={
-                    new SqlParameter("@FROM_DATE",dataObject.fromdate),
-                     new SqlParameter("@TO_DATE",dataObject.todate),
-                              new SqlParameter("@OFFICE_ID",dataObject.OfficeCode),
-                              new SqlParameter("@COMPLAINT_TYPE",dataObject.ComplaintType)
+        //public static List<HelpDeskPerformanceTrackerModel> ReportHelpdeskPerformance(ModelReport dataObject)
+        //{
+        //    List<HelpDeskPerformanceTrackerModel> lstReportdata = new List<HelpDeskPerformanceTrackerModel>();
+        //    HelpDeskPerformanceTrackerModel objData = new HelpDeskPerformanceTrackerModel();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@FROM_DATE",dataObject.fromdate),
+        //             new SqlParameter("@TO_DATE",dataObject.todate),
+        //                      new SqlParameter("@OFFICE_ID",dataObject.OfficeCode),
+        //                      new SqlParameter("@COMPLAINT_TYPE",dataObject.ComplaintType)
 
-            };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "HELPDESK_PERFORMANCE", param);
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new HelpDeskPerformanceTrackerModel();
-                    objData.SdoCode = Convert.ToString(dr.ItemArray[0]);
-                    objData.TotalComplaintsReceived = Convert.ToString(dr.ItemArray[1].ToString());
-                    objData.AverageFollowUpsPerComplaint = Convert.ToString(dr.ItemArray[2].ToString());
-                    objData.TotalFollowUps = Convert.ToString(dr.ItemArray[3].ToString());
-                    objData.AvgFollowUpTime = Convert.ToString(dr.ItemArray[4].ToString());
-                    objData.AverageResolutionHours = Convert.ToString(dr.ItemArray[5].ToString());
-                    objData.TotalResolutionHours = Convert.ToString(dr.ItemArray[6].ToString());
-                    objData.RepeatComplaints = Convert.ToString(dr.ItemArray[7].ToString());
-                    objData.TotalNumberOfShutDowns = Convert.ToString(dr.ItemArray[8].ToString());
-                    objData.AvgShutDownTime = Convert.ToString(dr.ItemArray[9].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "HELPDESK_PERFORMANCE", param);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new HelpDeskPerformanceTrackerModel();
+        //            objData.SdoCode = Convert.ToString(dr.ItemArray[0]);
+        //            objData.TotalComplaintsReceived = Convert.ToString(dr.ItemArray[1].ToString());
+        //            objData.AverageFollowUpsPerComplaint = Convert.ToString(dr.ItemArray[2].ToString());
+        //            objData.TotalFollowUps = Convert.ToString(dr.ItemArray[3].ToString());
+        //            objData.AvgFollowUpTime = Convert.ToString(dr.ItemArray[4].ToString());
+        //            objData.AverageResolutionHours = Convert.ToString(dr.ItemArray[5].ToString());
+        //            objData.TotalResolutionHours = Convert.ToString(dr.ItemArray[6].ToString());
+        //            objData.RepeatComplaints = Convert.ToString(dr.ItemArray[7].ToString());
+        //            objData.TotalNumberOfShutDowns = Convert.ToString(dr.ItemArray[8].ToString());
+        //            objData.AvgShutDownTime = Convert.ToString(dr.ItemArray[9].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<OutBoundPerformanceTrackerModel> ReportOutboundPerformance(ModelReport dataObject)
-        {
-            List<OutBoundPerformanceTrackerModel> lstReportdata = new List<OutBoundPerformanceTrackerModel>();
-            OutBoundPerformanceTrackerModel objData = new OutBoundPerformanceTrackerModel();
-            SqlParameter[] param ={
-                    new SqlParameter("@FROM_DATE",dataObject.fromdate),
-                     new SqlParameter("@TO_DATE",dataObject.todate),
-                              new SqlParameter("@OFFICE_ID",dataObject.OfficeCode),
-                              new SqlParameter("@COMPLAINT_TYPE",dataObject.ComplaintType)
+        //public static List<OutBoundPerformanceTrackerModel> ReportOutboundPerformance(ModelReport dataObject)
+        //{
+        //    List<OutBoundPerformanceTrackerModel> lstReportdata = new List<OutBoundPerformanceTrackerModel>();
+        //    OutBoundPerformanceTrackerModel objData = new OutBoundPerformanceTrackerModel();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@FROM_DATE",dataObject.fromdate),
+        //             new SqlParameter("@TO_DATE",dataObject.todate),
+        //                      new SqlParameter("@OFFICE_ID",dataObject.OfficeCode),
+        //                      new SqlParameter("@COMPLAINT_TYPE",dataObject.ComplaintType)
 
-            };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "OUTBOUND_PERFORMANCE", param);
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new OutBoundPerformanceTrackerModel();
-                    objData.SdoCode = Convert.ToString(dr.ItemArray[0]);
-                    objData.TotalComplaintReceived = Convert.ToString(dr.ItemArray[1].ToString());
-                    objData.AverageFollowUpsPerComplaint = Convert.ToString(dr.ItemArray[2].ToString());
-                    objData.TotalFollowUps = Convert.ToString(dr.ItemArray[3].ToString());
-                    objData.AvgFollowUpTime = Convert.ToString(dr.ItemArray[4].ToString());
-                    objData.AverageResolutionHours = Convert.ToString(dr.ItemArray[5].ToString());
-                    objData.TotalShutDowns = Convert.ToString(dr.ItemArray[6].ToString());
-                    objData.AvgShutDown = Convert.ToString(dr.ItemArray[7].ToString());
-                    objData.RepeatComplaints = Convert.ToString(dr.ItemArray[8].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "OUTBOUND_PERFORMANCE", param);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new OutBoundPerformanceTrackerModel();
+        //            objData.SdoCode = Convert.ToString(dr.ItemArray[0]);
+        //            objData.TotalComplaintReceived = Convert.ToString(dr.ItemArray[1].ToString());
+        //            objData.AverageFollowUpsPerComplaint = Convert.ToString(dr.ItemArray[2].ToString());
+        //            objData.TotalFollowUps = Convert.ToString(dr.ItemArray[3].ToString());
+        //            objData.AvgFollowUpTime = Convert.ToString(dr.ItemArray[4].ToString());
+        //            objData.AverageResolutionHours = Convert.ToString(dr.ItemArray[5].ToString());
+        //            objData.TotalShutDowns = Convert.ToString(dr.ItemArray[6].ToString());
+        //            objData.AvgShutDown = Convert.ToString(dr.ItemArray[7].ToString());
+        //            objData.RepeatComplaints = Convert.ToString(dr.ItemArray[8].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<FRTPanelty> ReportFRTPanalty(ModelReport dataObject)
-        {
-            List<FRTPanelty> lstReportdata = new List<FRTPanelty>();
-            FRTPanelty objData = new FRTPanelty();
-            SqlParameter[] param1 ={
-                    new SqlParameter("@FROMDATE",dataObject.fromdate),
-                     new SqlParameter("@TODATE",dataObject.todate),
-                              new SqlParameter("@OFFICE_ID",dataObject.OfficeCode)
+        //public static List<FRTPanelty> ReportFRTPanalty(ModelReport dataObject)
+        //{
+        //    List<FRTPanelty> lstReportdata = new List<FRTPanelty>();
+        //    FRTPanelty objData = new FRTPanelty();
+        //    SqlParameter[] param1 ={
+        //            new SqlParameter("@FROMDATE",dataObject.fromdate),
+        //             new SqlParameter("@TODATE",dataObject.todate),
+        //                      new SqlParameter("@OFFICE_ID",dataObject.OfficeCode)
 
-            };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Total_FRT_Panaty", param1);
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new FRTPanelty();
-                    objData.Type = Convert.ToString(dr.ItemArray[0]);
-                    objData.NoOfDefaultsUpTo2Slots = Convert.ToString(dr.ItemArray[1].ToString());
-                    objData.NoOfDefaultsMoreThan2Slots = Convert.ToString(dr.ItemArray[2].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Total_FRT_Panaty", param1);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new FRTPanelty();
+        //            objData.Type = Convert.ToString(dr.ItemArray[0]);
+        //            objData.NoOfDefaultsUpTo2Slots = Convert.ToString(dr.ItemArray[1].ToString());
+        //            objData.NoOfDefaultsMoreThan2Slots = Convert.ToString(dr.ItemArray[2].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<CallQueueWaitingModel> ReportCallQueueWaiting(ModelReport dataObject)
-        {
-            List<CallQueueWaitingModel> lstReportdata = new List<CallQueueWaitingModel>();
-            CallQueueWaitingModel objData = new CallQueueWaitingModel();
-            SqlParameter[] param ={
-                    new SqlParameter("@FROM_DATE",dataObject.fromdate),
-                     new SqlParameter("@TO_DATE",dataObject.todate)
+        //public static List<CallQueueWaitingModel> ReportCallQueueWaiting(ModelReport dataObject)
+        //{
+        //    List<CallQueueWaitingModel> lstReportdata = new List<CallQueueWaitingModel>();
+        //    CallQueueWaitingModel objData = new CallQueueWaitingModel();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@FROM_DATE",dataObject.fromdate),
+        //             new SqlParameter("@TO_DATE",dataObject.todate)
 
-            };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Call_Queue_Waiting", param);
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new CallQueueWaitingModel();
-                    objData.TotalCallAttended = Convert.ToString(dr.ItemArray[0]);
-                    objData.TotalCallAttendedIn60Sec = Convert.ToString(dr.ItemArray[1].ToString());
-                    objData.TotalCallAttendedAfter60Sec = Convert.ToString(dr.ItemArray[2].ToString());
-                    objData.PercentageCallAttendedWithIn60Sec = Convert.ToString(dr.ItemArray[3].ToString());
-                    objData.PercentageCallAttendedAfter60Sec = Convert.ToString(dr.ItemArray[4].ToString());
-                    objData.TotalPaneltyAmount = Convert.ToString(dr.ItemArray[5].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Call_Queue_Waiting", param);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new CallQueueWaitingModel();
+        //            objData.TotalCallAttended = Convert.ToString(dr.ItemArray[0]);
+        //            objData.TotalCallAttendedIn60Sec = Convert.ToString(dr.ItemArray[1].ToString());
+        //            objData.TotalCallAttendedAfter60Sec = Convert.ToString(dr.ItemArray[2].ToString());
+        //            objData.PercentageCallAttendedWithIn60Sec = Convert.ToString(dr.ItemArray[3].ToString());
+        //            objData.PercentageCallAttendedAfter60Sec = Convert.ToString(dr.ItemArray[4].ToString());
+        //            objData.TotalPaneltyAmount = Convert.ToString(dr.ItemArray[5].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<InBoundPerformanceTrackerModel> ReportInBoundPerformance(ModelReport dataObject)
-        {
-            List<InBoundPerformanceTrackerModel> lstReportdata = new List<InBoundPerformanceTrackerModel>();
-            InBoundPerformanceTrackerModel objData = new InBoundPerformanceTrackerModel();
-            SqlParameter[] param ={
-                    new SqlParameter("@FROM_DATE",dataObject.fromdate),
-                     new SqlParameter("@TO_DATE",dataObject.todate)
+        //public static List<InBoundPerformanceTrackerModel> ReportInBoundPerformance(ModelReport dataObject)
+        //{
+        //    List<InBoundPerformanceTrackerModel> lstReportdata = new List<InBoundPerformanceTrackerModel>();
+        //    InBoundPerformanceTrackerModel objData = new InBoundPerformanceTrackerModel();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@FROM_DATE",dataObject.fromdate),
+        //             new SqlParameter("@TO_DATE",dataObject.todate)
 
-            };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "InBound_Performance", param);
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new InBoundPerformanceTrackerModel();
-                    objData.TotalCallOffered = Convert.ToString(dr.ItemArray[0]);
-                    objData.TotalCallAnswered = Convert.ToString(dr.ItemArray[1].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "InBound_Performance", param);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new InBoundPerformanceTrackerModel();
+        //            objData.TotalCallOffered = Convert.ToString(dr.ItemArray[0]);
+        //            objData.TotalCallAnswered = Convert.ToString(dr.ItemArray[1].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<NonITPanalty> ReportNonITPenalty(ModelReport dataObject)
-        {
-            List<NonITPanalty> lstReportdata = new List<NonITPanalty>();
-            NonITPanalty objData = new NonITPanalty();
-            SqlParameter[] param ={
-                    new SqlParameter("@FROMDATE",dataObject.fromdate),
-                     new SqlParameter("@TODATE",dataObject.todate)
+        //public static List<NonITPanalty> ReportNonITPenalty(ModelReport dataObject)
+        //{
+        //    List<NonITPanalty> lstReportdata = new List<NonITPanalty>();
+        //    NonITPanalty objData = new NonITPanalty();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@FROMDATE",dataObject.fromdate),
+        //             new SqlParameter("@TODATE",dataObject.todate)
 
-            };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Non_IT_Penalty", param);
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new NonITPanalty();
-                    objData.Type = Convert.ToString(dr.ItemArray[0]);
-                    objData.TotalPaneltyAmount = Convert.ToString(dr.ItemArray[1].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Non_IT_Penalty", param);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new NonITPanalty();
+        //            objData.Type = Convert.ToString(dr.ItemArray[0]);
+        //            objData.TotalPaneltyAmount = Convert.ToString(dr.ItemArray[1].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<UniformPanalty> ReportUniformPenalty(ModelReport dataObject)
-        {
-            List<UniformPanalty> lstReportdata = new List<UniformPanalty>();
-            UniformPanalty objData = new UniformPanalty();
-            SqlParameter[] param ={
-                    new SqlParameter("@FROMDATE",dataObject.fromdate),
-                     new SqlParameter("@TODATE",dataObject.todate)
+        //public static List<UniformPanalty> ReportUniformPenalty(ModelReport dataObject)
+        //{
+        //    List<UniformPanalty> lstReportdata = new List<UniformPanalty>();
+        //    UniformPanalty objData = new UniformPanalty();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@FROMDATE",dataObject.fromdate),
+        //             new SqlParameter("@TODATE",dataObject.todate)
 
-            };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Uniform_Penalty", param);
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new UniformPanalty();
-                    objData.TotalAgents = Convert.ToString(dr.ItemArray[0]);
-                    objData.TotalPaneltyAmount = Convert.ToString(dr.ItemArray[1].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Uniform_Penalty", param);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new UniformPanalty();
+        //            objData.TotalAgents = Convert.ToString(dr.ItemArray[0]);
+        //            objData.TotalPaneltyAmount = Convert.ToString(dr.ItemArray[1].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<UniformPanalty> ReportMissingAgentsPenalty(ModelReport dataObject)
-        {
-            List<UniformPanalty> lstReportdata = new List<UniformPanalty>();
-            UniformPanalty objData = new UniformPanalty();
-            SqlParameter[] param ={
-                    new SqlParameter("@FROMDATE",dataObject.fromdate),
-                     new SqlParameter("@TODATE",dataObject.todate)
+        //public static List<UniformPanalty> ReportMissingAgentsPenalty(ModelReport dataObject)
+        //{
+        //    List<UniformPanalty> lstReportdata = new List<UniformPanalty>();
+        //    UniformPanalty objData = new UniformPanalty();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@FROMDATE",dataObject.fromdate),
+        //             new SqlParameter("@TODATE",dataObject.todate)
 
-            };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Missing_Agent_Penalty", param);
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new UniformPanalty();
-                    objData.TotalAgents = Convert.ToString(dr.ItemArray[0]);
-                    objData.TotalPaneltyAmount = Convert.ToString(dr.ItemArray[1].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Missing_Agent_Penalty", param);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new UniformPanalty();
+        //            objData.TotalAgents = Convert.ToString(dr.ItemArray[0]);
+        //            objData.TotalPaneltyAmount = Convert.ToString(dr.ItemArray[1].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<SystemAvailability> ReportSystemAvailability(ModelReport dataObject)
-        {
-            List<SystemAvailability> lstReportdata = new List<SystemAvailability>();
-            SystemAvailability objData = new SystemAvailability();
-            SqlParameter[] param ={
-                    new SqlParameter("@FROM_DATE",dataObject.fromdate),
-                     new SqlParameter("@TO_DATE",dataObject.todate)
+        //public static List<SystemAvailability> ReportSystemAvailability(ModelReport dataObject)
+        //{
+        //    List<SystemAvailability> lstReportdata = new List<SystemAvailability>();
+        //    SystemAvailability objData = new SystemAvailability();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@FROM_DATE",dataObject.fromdate),
+        //             new SqlParameter("@TO_DATE",dataObject.todate)
 
-            };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "System_Availability_Penalty_Report", param);
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new SystemAvailability();
-                    objData.TotalInstance = Convert.ToString(dr.ItemArray[0]);
-                    objData.TotalPaneltyAmount = Convert.ToString(dr.ItemArray[1].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "System_Availability_Penalty_Report", param);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new SystemAvailability();
+        //            objData.TotalInstance = Convert.ToString(dr.ItemArray[0]);
+        //            objData.TotalPaneltyAmount = Convert.ToString(dr.ItemArray[1].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<FalseClouse> ReportFalseClose(ModelReport dataObject)
-        {
-            List<FalseClouse> lstReportdata = new List<FalseClouse>();
-            FalseClouse objData = new FalseClouse();
-            SqlParameter[] param ={
-                    new SqlParameter("@FROMDATE",dataObject.fromdate),
-                     new SqlParameter("@TODATE",dataObject.todate)
+        //public static List<FalseClouse> ReportFalseClose(ModelReport dataObject)
+        //{
+        //    List<FalseClouse> lstReportdata = new List<FalseClouse>();
+        //    FalseClouse objData = new FalseClouse();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@FROMDATE",dataObject.fromdate),
+        //             new SqlParameter("@TODATE",dataObject.todate)
 
-            };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "False_Close", param);
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new FalseClouse();
-                    objData.FalseCount = Convert.ToString(dr.ItemArray[0]);
-                    objData.TotalPaneltyAmount = Convert.ToString(dr.ItemArray[1].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "False_Close", param);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new FalseClouse();
+        //            objData.FalseCount = Convert.ToString(dr.ItemArray[0]);
+        //            objData.TotalPaneltyAmount = Convert.ToString(dr.ItemArray[1].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<CallQueueAbandonmentModel> ReportCallAbandonment(ModelReport dataObject)
-        {
-            List<CallQueueAbandonmentModel> lstReportdata = new List<CallQueueAbandonmentModel>();
-            CallQueueAbandonmentModel objData = new CallQueueAbandonmentModel();
-            SqlParameter[] param ={
-                    new SqlParameter("@FROM_DATE",dataObject.fromdate),
-                     new SqlParameter("@TO_DATE",dataObject.todate)
+        //public static List<CallQueueAbandonmentModel> ReportCallAbandonment(ModelReport dataObject)
+        //{
+        //    List<CallQueueAbandonmentModel> lstReportdata = new List<CallQueueAbandonmentModel>();
+        //    CallQueueAbandonmentModel objData = new CallQueueAbandonmentModel();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@FROM_DATE",dataObject.fromdate),
+        //             new SqlParameter("@TO_DATE",dataObject.todate)
 
-            };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Call_Queue_Abandonment", param);
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new CallQueueAbandonmentModel();
-                    objData.TotalCall = Convert.ToString(dr.ItemArray[0]);
-                    objData.TotalCallAbandon = Convert.ToString(dr.ItemArray[1].ToString());
-                    objData.PercentageCallAbandon = Convert.ToString(dr.ItemArray[2].ToString());
-                    objData.TotalPaneltyAmount = Convert.ToString(dr.ItemArray[3].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
-        public static List<ModelComplaintHourlyReport> ReportComplaintHourlyData(ModelReport dataObject)
-        {
+        //    };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Call_Queue_Abandonment", param);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new CallQueueAbandonmentModel();
+        //            objData.TotalCall = Convert.ToString(dr.ItemArray[0]);
+        //            objData.TotalCallAbandon = Convert.ToString(dr.ItemArray[1].ToString());
+        //            objData.PercentageCallAbandon = Convert.ToString(dr.ItemArray[2].ToString());
+        //            objData.TotalPaneltyAmount = Convert.ToString(dr.ItemArray[3].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
+        //public static List<ModelComplaintHourlyReport> ReportComplaintHourlyData(ModelReport dataObject)
+        //{
 
-            List<ModelComplaintHourlyReport> lstReportdata = new List<ModelComplaintHourlyReport>();
-            ModelComplaintHourlyReport objData = new ModelComplaintHourlyReport();
-            SqlParameter[] param ={
-                    new SqlParameter("@FROM_DATE",dataObject.fromdate),
-                     new SqlParameter("@TO_DATE",dataObject.todate),
-                     new SqlParameter("@OFFICE_ID",dataObject.OfficeCode),
-                     new SqlParameter("@COMPLAINT_STATUS",dataObject.ComplaintStatus),
-                     new SqlParameter("@COMPLAINT_SOURCE",dataObject.ComplaintSource),
-                     new SqlParameter("@COMPLAINT_TYPE",dataObject.ComplaintType)
-                       };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "COMPLAINT_HOURLY_REPORT", param);
+        //    List<ModelComplaintHourlyReport> lstReportdata = new List<ModelComplaintHourlyReport>();
+        //    ModelComplaintHourlyReport objData = new ModelComplaintHourlyReport();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@FROM_DATE",dataObject.fromdate),
+        //             new SqlParameter("@TO_DATE",dataObject.todate),
+        //             new SqlParameter("@OFFICE_ID",dataObject.OfficeCode),
+        //             new SqlParameter("@COMPLAINT_STATUS",dataObject.ComplaintStatus),
+        //             new SqlParameter("@COMPLAINT_SOURCE",dataObject.ComplaintSource),
+        //             new SqlParameter("@COMPLAINT_TYPE",dataObject.ComplaintType)
+        //               };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "COMPLAINT_HOURLY_REPORT", param);
 
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new ModelComplaintHourlyReport();
-                    objData.OFFICE_CODE = Convert.ToString(dr.ItemArray[0]);
-                    objData.OFFICE_NAME = Convert.ToString(dr.ItemArray[1].ToString());
-                    objData.ONE_HOUR = Convert.ToString(dr.ItemArray[2].ToString());
-                    objData.TWO_HOUR = Convert.ToString(dr.ItemArray[3].ToString());
-                    objData.THREE_HOUR = Convert.ToString(dr.ItemArray[4].ToString());
-                    objData.FOUR_HOUR = Convert.ToString(dr.ItemArray[5].ToString());
-                    objData.FIVE_HOUR = Convert.ToString(dr.ItemArray[6].ToString());
-                    objData.MOTE_THEN_FIVE_HOUR = Convert.ToString(dr.ItemArray[7].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new ModelComplaintHourlyReport();
+        //            objData.OFFICE_CODE = Convert.ToString(dr.ItemArray[0]);
+        //            objData.OFFICE_NAME = Convert.ToString(dr.ItemArray[1].ToString());
+        //            objData.ONE_HOUR = Convert.ToString(dr.ItemArray[2].ToString());
+        //            objData.TWO_HOUR = Convert.ToString(dr.ItemArray[3].ToString());
+        //            objData.THREE_HOUR = Convert.ToString(dr.ItemArray[4].ToString());
+        //            objData.FOUR_HOUR = Convert.ToString(dr.ItemArray[5].ToString());
+        //            objData.FIVE_HOUR = Convert.ToString(dr.ItemArray[6].ToString());
+        //            objData.MOTE_THEN_FIVE_HOUR = Convert.ToString(dr.ItemArray[7].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<COMPLAINT> ReportComplaintHourlyRawData(ModelReport dataObject)
-        {
+        //public static List<COMPLAINT> ReportComplaintHourlyRawData(ModelReport dataObject)
+        //{
 
-            List<COMPLAINT> lstReportdata = new List<COMPLAINT>();
-            COMPLAINT objData = new COMPLAINT();
-            SqlParameter[] param ={
-                    new SqlParameter("@FROM_DATE",dataObject.fromdate),
-                     new SqlParameter("@TO_DATE",dataObject.todate),
-                     new SqlParameter("@OFFICE_CODE",dataObject.OfficeCode),
-                     new SqlParameter("@COMPLAINT_STATUS",dataObject.ComplaintStatus),
-                     new SqlParameter("@COMPLAINT_SOURCE",dataObject.ComplaintSource),
-                     new SqlParameter("@COMPLAINT_TYPE",dataObject.ComplaintType),
-                      new SqlParameter("@SLA_TYPE",dataObject.SlaType),
+        //    List<COMPLAINT> lstReportdata = new List<COMPLAINT>();
+        //    COMPLAINT objData = new COMPLAINT();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@FROM_DATE",dataObject.fromdate),
+        //             new SqlParameter("@TO_DATE",dataObject.todate),
+        //             new SqlParameter("@OFFICE_CODE",dataObject.OfficeCode),
+        //             new SqlParameter("@COMPLAINT_STATUS",dataObject.ComplaintStatus),
+        //             new SqlParameter("@COMPLAINT_SOURCE",dataObject.ComplaintSource),
+        //             new SqlParameter("@COMPLAINT_TYPE",dataObject.ComplaintType),
+        //              new SqlParameter("@SLA_TYPE",dataObject.SlaType),
 
-                       };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "HOURLY_REPORT_COMPLAINT_RAW", param);
+        //               };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "HOURLY_REPORT_COMPLAINT_RAW", param);
 
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new COMPLAINT();
-                    objData.KNO = Convert.ToString(dr.ItemArray[0].ToString());
-                    objData.NAME = Convert.ToString(dr.ItemArray[1].ToString());
-                    objData.Complaintdate = Convert.ToString(dr.ItemArray[2].ToString());
-                    objData.COMPLAINT_NO = Convert.ToString(dr.ItemArray[3]);
-                    objData.ACCOUNT_NO = Convert.ToString(dr.ItemArray[4].ToString());
-                    objData.ADDRESS1 = Convert.ToString(dr.ItemArray[5].ToString());
-                    objData.ComplaintTypeName = Convert.ToString(dr.ItemArray[6].ToString());
-                    objData.ComplaintSourceName = Convert.ToString(dr.ItemArray[7].ToString());
-                    objData.COMPLAINT_status = Convert.ToString(dr.ItemArray[8].ToString());
-                    objData.ASSIGNEEName = Convert.ToString(dr.ItemArray[10].ToString());
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new COMPLAINT();
+        //            objData.KNO = Convert.ToString(dr.ItemArray[0].ToString());
+        //            objData.NAME = Convert.ToString(dr.ItemArray[1].ToString());
+        //            objData.Complaintdate = Convert.ToString(dr.ItemArray[2].ToString());
+        //            objData.COMPLAINT_NO = Convert.ToString(dr.ItemArray[3]);
+        //            objData.ACCOUNT_NO = Convert.ToString(dr.ItemArray[4].ToString());
+        //            objData.ADDRESS1 = Convert.ToString(dr.ItemArray[5].ToString());
+        //            objData.ComplaintTypeName = Convert.ToString(dr.ItemArray[6].ToString());
+        //            objData.ComplaintSourceName = Convert.ToString(dr.ItemArray[7].ToString());
+        //            objData.COMPLAINT_status = Convert.ToString(dr.ItemArray[8].ToString());
+        //            objData.ASSIGNEEName = Convert.ToString(dr.ItemArray[10].ToString());
 
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
         public static List<ModelRawComplaintReport> ReportRawComplaintData(ModelReport dataObject)
         {
             SqlParameter parmretTotalRecords = new SqlParameter();
@@ -2039,19 +2039,15 @@ namespace ComplaintTracker.DAL
             List<ModelRawComplaintReport> lstReportdata = new List<ModelRawComplaintReport>();
             ModelRawComplaintReport objData = new ModelRawComplaintReport();
             SqlParameter[] param ={
-                    new SqlParameter("@START_DATE",dataObject.fromdate),
-                    new SqlParameter("@END_DATE",dataObject.todate),
-                    new SqlParameter("@OFFICE_ID",dataObject.OfficeCode),
-                    new SqlParameter("@Complaint_source",dataObject.ComplaintSource),
-                    new SqlParameter("@Complaint_Type",dataObject.ComplaintType),
+                    new SqlParameter("@Month",dataObject.Bill_Month),
                     new SqlParameter("@STARTROWINDEX",dataObject.start),
                     new SqlParameter("@MAXIMUMROWS",dataObject.length),parmretTotalRecords};
 
             log.Debug(" RAW_COMPLAINT IP " + HelperClass.GetIPHelper() + " Proc Start Time :  " + DateTime.Now.ToString());
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "RAW_COMPLAINT", param);
+            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Resolved_Complaints", param);
             log.Debug(" RAW_COMPLAINT IP " + HelperClass.GetIPHelper() + " Proc End Time :  " + DateTime.Now.ToString());
             if (param[3].Value != DBNull.Value)// status
-                TotalRec = Convert.ToInt32(param[7].Value);
+                TotalRec = Convert.ToInt32(param[3].Value);
             else
                 TotalRec = 0;
 
@@ -2060,25 +2056,14 @@ namespace ComplaintTracker.DAL
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
                     objData = new ModelRawComplaintReport();
-                    objData.SDO_CODE = Convert.ToString(dr.ItemArray[1].ToString());
-                    objData.SubDivisionName = Convert.ToString(dr.ItemArray[2].ToString());
-                    objData.COMPLAINT_NO = Convert.ToString(dr.ItemArray[0].ToString());
-                    objData.AreaCode = Convert.ToString(dr.ItemArray[14].ToString());
-                    objData.Name = Convert.ToString(dr.ItemArray[4].ToString());
-                    objData.FatherName = Convert.ToString(dr.ItemArray[5].ToString());
-                    objData.Address = Convert.ToString(dr.ItemArray[6].ToString());
-                    objData.AlternateNo = Convert.ToString(dr.ItemArray[8].ToString());
-                    objData.MobileNo = Convert.ToString(dr.ItemArray[7].ToString());
-                    objData.KNO = Convert.ToString(dr.ItemArray[3].ToString());
-                    objData.ComplaintType = Convert.ToString(dr.ItemArray[9].ToString());
-                    objData.ComplaintDate = Convert.ToString(dr.ItemArray[11].ToString());
-                    objData.SubComplaintType = Convert.ToString(dr.ItemArray[10].ToString());
-                    objData.ClosedDate = Convert.ToString(dr.ItemArray[12].ToString());
-                    objData.Duration = Convert.ToString(dr.ItemArray[13].ToString());
-                    objData.CurrentStatus = Convert.ToString(dr.ItemArray[15].ToString());
-                    objData.SOURCE_NAME = Convert.ToString(dr.ItemArray[16].ToString());
-                    objData.CreatedUserID = Convert.ToString(dr.ItemArray[17].ToString());
-                    objData.ClosedUserID = Convert.ToString(dr.ItemArray[18].ToString());
+                    objData.ComplaintNo = Convert.ToString(dr.ItemArray[0].ToString());
+                    objData.Customer_Name = Convert.ToString(dr.ItemArray[1].ToString());
+                    objData.Mobile_no = Convert.ToInt64(dr.ItemArray[2].ToString());
+                    objData.Category_Name = Convert.ToString(dr.ItemArray[3].ToString());
+                    objData.LineMan_Name = Convert.ToString(dr.ItemArray[4].ToString());
+                    objData.Complaint_date = Convert.ToString(dr.ItemArray[5].ToString());
+                    objData.Resolved_Date = Convert.ToString(dr.ItemArray[6].ToString());
+                    objData.Response_Time = Convert.ToString(dr.ItemArray[7].ToString());
                     objData.Total = TotalRec;
                     lstReportdata.Add(objData);
                 }
@@ -2086,329 +2071,329 @@ namespace ComplaintTracker.DAL
             return lstReportdata;
         }
 
-        public static List<ModelRawComplaintReportNewConnection> ReportRawComplaintNewConnectionData(ModelReport dataObject)
-        {
-            SqlParameter parmretTotalRecords = new SqlParameter();
-            parmretTotalRecords.ParameterName = "@TOTALRECORDS";
-            parmretTotalRecords.DbType = DbType.Int32;
-            parmretTotalRecords.Size = 8;
-            parmretTotalRecords.Direction = ParameterDirection.Output;
+        //public static List<ModelRawComplaintReportNewConnection> ReportRawComplaintNewConnectionData(ModelReport dataObject)
+        //{
+        //    SqlParameter parmretTotalRecords = new SqlParameter();
+        //    parmretTotalRecords.ParameterName = "@TOTALRECORDS";
+        //    parmretTotalRecords.DbType = DbType.Int32;
+        //    parmretTotalRecords.Size = 8;
+        //    parmretTotalRecords.Direction = ParameterDirection.Output;
 
-            int TotalRec = 0;
+        //    int TotalRec = 0;
 
-            List<ModelRawComplaintReportNewConnection> lstReportdata = new List<ModelRawComplaintReportNewConnection>();
-            ModelRawComplaintReportNewConnection objData = new ModelRawComplaintReportNewConnection();
-            SqlParameter[] param ={
-                    new SqlParameter("@START_DATE",dataObject.fromdate),
-                    new SqlParameter("@END_DATE",dataObject.todate),
-                    new SqlParameter("@OFFICE_ID",dataObject.OfficeCode),
-                    new SqlParameter("@STARTROWINDEX",dataObject.start),
-                    new SqlParameter("@MAXIMUMROWS",dataObject.length),parmretTotalRecords};
+        //    List<ModelRawComplaintReportNewConnection> lstReportdata = new List<ModelRawComplaintReportNewConnection>();
+        //    ModelRawComplaintReportNewConnection objData = new ModelRawComplaintReportNewConnection();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@START_DATE",dataObject.fromdate),
+        //            new SqlParameter("@END_DATE",dataObject.todate),
+        //            new SqlParameter("@OFFICE_ID",dataObject.OfficeCode),
+        //            new SqlParameter("@STARTROWINDEX",dataObject.start),
+        //            new SqlParameter("@MAXIMUMROWS",dataObject.length),parmretTotalRecords};
 
-            log.Debug(" RAW_COMPLAINT IP " + HelperClass.GetIPHelper() + " Proc Start Time :  " + DateTime.Now.ToString());
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "RAW_COMPLAINT_NEW_CONNECTION", param);
-            log.Debug(" RAW_COMPLAINT IP " + HelperClass.GetIPHelper() + " Proc End Time :  " + DateTime.Now.ToString());
-            if (param[5].Value != DBNull.Value)// status
-                TotalRec = Convert.ToInt32(param[5].Value);
-            else
-                TotalRec = 0;
+        //    log.Debug(" RAW_COMPLAINT IP " + HelperClass.GetIPHelper() + " Proc Start Time :  " + DateTime.Now.ToString());
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "RAW_COMPLAINT_NEW_CONNECTION", param);
+        //    log.Debug(" RAW_COMPLAINT IP " + HelperClass.GetIPHelper() + " Proc End Time :  " + DateTime.Now.ToString());
+        //    if (param[5].Value != DBNull.Value)// status
+        //        TotalRec = Convert.ToInt32(param[5].Value);
+        //    else
+        //        TotalRec = 0;
 
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new ModelRawComplaintReportNewConnection();
-                    objData.SDO_CODE = Convert.ToString(dr.ItemArray[1].ToString());
-                    objData.SDO_NAME = Convert.ToString(dr.ItemArray[2].ToString());
-                    objData.COMPLAINT_NO = Convert.ToString(dr.ItemArray[0].ToString());
-                    objData.KNO = Convert.ToString(dr.ItemArray[3].ToString());
-                    objData.NAME = Convert.ToString(dr.ItemArray[4].ToString());
-                    objData.FATHER_NAME = Convert.ToString(dr.ItemArray[5].ToString());
-                    objData.ADDRESS = Convert.ToString(dr.ItemArray[6].ToString());
-                    objData.ALTERNATE_MOBILE_NO = Convert.ToString(dr.ItemArray[8].ToString());
-                    objData.MOBILE_NO = Convert.ToString(dr.ItemArray[7].ToString());
-                    objData.COMPLAINT_TYPE = Convert.ToString(dr.ItemArray[9].ToString());
-                    objData.OUTAGE_TYPE = Convert.ToString(dr.ItemArray[11].ToString());
-                    objData.SUB_COMPLAINT_TYPE = Convert.ToString(dr.ItemArray[10].ToString());
-                    objData.SUB_OUTAGE_TYPE = Convert.ToString(dr.ItemArray[12].ToString());
-                    objData.DS_NDS = Convert.ToString(dr.ItemArray[13].ToString());
-                    objData.COMPLAINT_DATE_TIME = Convert.ToString(dr.ItemArray[14].ToString());
-                    objData.CLOSED_DATE_TIME = Convert.ToString(dr.ItemArray[15].ToString());
-                    objData.DURATION = Convert.ToString(dr.ItemArray[16].ToString());
-                    objData.COMPLAINT_STATUS = Convert.ToString(dr.ItemArray[17].ToString());
-                    objData.CURRENT_STATUS = Convert.ToString(dr.ItemArray[18].ToString());
-                    objData.CREATED_BY_USER = Convert.ToString(dr.ItemArray[19].ToString());
-                    objData.CLOSED_BY_USER = Convert.ToString(dr.ItemArray[20].ToString());
-                    objData.Total = TotalRec;
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new ModelRawComplaintReportNewConnection();
+        //            objData.SDO_CODE = Convert.ToString(dr.ItemArray[1].ToString());
+        //            objData.SDO_NAME = Convert.ToString(dr.ItemArray[2].ToString());
+        //            objData.COMPLAINT_NO = Convert.ToString(dr.ItemArray[0].ToString());
+        //            objData.KNO = Convert.ToString(dr.ItemArray[3].ToString());
+        //            objData.NAME = Convert.ToString(dr.ItemArray[4].ToString());
+        //            objData.FATHER_NAME = Convert.ToString(dr.ItemArray[5].ToString());
+        //            objData.ADDRESS = Convert.ToString(dr.ItemArray[6].ToString());
+        //            objData.ALTERNATE_MOBILE_NO = Convert.ToString(dr.ItemArray[8].ToString());
+        //            objData.MOBILE_NO = Convert.ToString(dr.ItemArray[7].ToString());
+        //            objData.COMPLAINT_TYPE = Convert.ToString(dr.ItemArray[9].ToString());
+        //            objData.OUTAGE_TYPE = Convert.ToString(dr.ItemArray[11].ToString());
+        //            objData.SUB_COMPLAINT_TYPE = Convert.ToString(dr.ItemArray[10].ToString());
+        //            objData.SUB_OUTAGE_TYPE = Convert.ToString(dr.ItemArray[12].ToString());
+        //            objData.DS_NDS = Convert.ToString(dr.ItemArray[13].ToString());
+        //            objData.COMPLAINT_DATE_TIME = Convert.ToString(dr.ItemArray[14].ToString());
+        //            objData.CLOSED_DATE_TIME = Convert.ToString(dr.ItemArray[15].ToString());
+        //            objData.DURATION = Convert.ToString(dr.ItemArray[16].ToString());
+        //            objData.COMPLAINT_STATUS = Convert.ToString(dr.ItemArray[17].ToString());
+        //            objData.CURRENT_STATUS = Convert.ToString(dr.ItemArray[18].ToString());
+        //            objData.CREATED_BY_USER = Convert.ToString(dr.ItemArray[19].ToString());
+        //            objData.CLOSED_BY_USER = Convert.ToString(dr.ItemArray[20].ToString());
+        //            objData.Total = TotalRec;
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<ModelRawComplaintReport> ReportRawComplaintData()
-        {
-            ModelReport dataObject = new ModelReport();
-            List<ModelRawComplaintReport> lstReportdata = new List<ModelRawComplaintReport>();
-            ModelRawComplaintReport objData = new ModelRawComplaintReport();
-            SqlParameter[] param ={
-                    new SqlParameter("@START_DATE",dataObject.fromdate),
-                    new SqlParameter("@END_DATE",dataObject.todate),
-                    new SqlParameter("@OFFICE_ID",dataObject.OfficeCode),
-                    new SqlParameter("@Complaint_source",dataObject.ComplaintSource),
-                    new SqlParameter("@Complaint_Type",dataObject.ComplaintType)
+        //public static List<ModelRawComplaintReport> ReportRawComplaintData()
+        //{
+        //    ModelReport dataObject = new ModelReport();
+        //    List<ModelRawComplaintReport> lstReportdata = new List<ModelRawComplaintReport>();
+        //    ModelRawComplaintReport objData = new ModelRawComplaintReport();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@START_DATE",dataObject.fromdate),
+        //            new SqlParameter("@END_DATE",dataObject.todate),
+        //            new SqlParameter("@OFFICE_ID",dataObject.OfficeCode),
+        //            new SqlParameter("@Complaint_source",dataObject.ComplaintSource),
+        //            new SqlParameter("@Complaint_Type",dataObject.ComplaintType)
 
-            };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "RAW_COMPLAINT", param);
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new ModelRawComplaintReport();
-                    objData.SDO_CODE = Convert.ToString(dr.ItemArray[1].ToString());
-                    objData.SubDivisionName = Convert.ToString(dr.ItemArray[2].ToString());
-                    objData.COMPLAINT_NO = Convert.ToString(dr.ItemArray[0].ToString());
-                    objData.AreaCode = Convert.ToString(dr.ItemArray[14].ToString());
-                    objData.Name = Convert.ToString(dr.ItemArray[4].ToString());
-                    objData.FatherName = Convert.ToString(dr.ItemArray[5].ToString());
-                    objData.Address = Convert.ToString(dr.ItemArray[6].ToString());
-                    objData.AlternateNo = Convert.ToString(dr.ItemArray[8].ToString());
-                    objData.MobileNo = Convert.ToString(dr.ItemArray[7].ToString());
-                    objData.KNO = Convert.ToString(dr.ItemArray[3].ToString());
-                    objData.ComplaintType = Convert.ToString(dr.ItemArray[9].ToString());
-                    objData.ComplaintDate = Convert.ToString(dr.ItemArray[11].ToString());
-                    objData.SubComplaintType = Convert.ToString(dr.ItemArray[10].ToString());
-                    objData.ClosedDate = Convert.ToString(dr.ItemArray[12].ToString());
-                    objData.Duration = Convert.ToString(dr.ItemArray[13].ToString());
-                    objData.CurrentStatus = Convert.ToString(dr.ItemArray[15].ToString());
-                    objData.SOURCE_NAME = Convert.ToString(dr.ItemArray[16].ToString());
-                    objData.CreatedUserID = Convert.ToString(dr.ItemArray[17].ToString());
-                    objData.ClosedUserID = Convert.ToString(dr.ItemArray[18].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "RAW_COMPLAINT", param);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new ModelRawComplaintReport();
+        //            objData.SDO_CODE = Convert.ToString(dr.ItemArray[1].ToString());
+        //            objData.SubDivisionName = Convert.ToString(dr.ItemArray[2].ToString());
+        //            objData.COMPLAINT_NO = Convert.ToString(dr.ItemArray[0].ToString());
+        //            objData.AreaCode = Convert.ToString(dr.ItemArray[14].ToString());
+        //            objData.Name = Convert.ToString(dr.ItemArray[4].ToString());
+        //            objData.FatherName = Convert.ToString(dr.ItemArray[5].ToString());
+        //            objData.Address = Convert.ToString(dr.ItemArray[6].ToString());
+        //            objData.AlternateNo = Convert.ToString(dr.ItemArray[8].ToString());
+        //            objData.MobileNo = Convert.ToString(dr.ItemArray[7].ToString());
+        //            objData.KNO = Convert.ToString(dr.ItemArray[3].ToString());
+        //            objData.ComplaintType = Convert.ToString(dr.ItemArray[9].ToString());
+        //            objData.ComplaintDate = Convert.ToString(dr.ItemArray[11].ToString());
+        //            objData.SubComplaintType = Convert.ToString(dr.ItemArray[10].ToString());
+        //            objData.ClosedDate = Convert.ToString(dr.ItemArray[12].ToString());
+        //            objData.Duration = Convert.ToString(dr.ItemArray[13].ToString());
+        //            objData.CurrentStatus = Convert.ToString(dr.ItemArray[15].ToString());
+        //            objData.SOURCE_NAME = Convert.ToString(dr.ItemArray[16].ToString());
+        //            objData.CreatedUserID = Convert.ToString(dr.ItemArray[17].ToString());
+        //            objData.ClosedUserID = Convert.ToString(dr.ItemArray[18].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<ModelRedressal> ReportRedressalData(ModelReport dataObject)
-        {
-            List<ModelRedressal> lstReportdata = new List<ModelRedressal>();
-            ModelRedressal objData = new ModelRedressal();
-            SqlParameter[] param ={
-                    new SqlParameter("@FROM_DATE",dataObject.fromdate),
-                     new SqlParameter("@TO_DATE",dataObject.todate),
-                              new SqlParameter("@OFFICE_CODE",dataObject.OfficeCode),
-                              new SqlParameter("@AREA",dataObject.SlaType)
+        //public static List<ModelRedressal> ReportRedressalData(ModelReport dataObject)
+        //{
+        //    List<ModelRedressal> lstReportdata = new List<ModelRedressal>();
+        //    ModelRedressal objData = new ModelRedressal();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@FROM_DATE",dataObject.fromdate),
+        //             new SqlParameter("@TO_DATE",dataObject.todate),
+        //                      new SqlParameter("@OFFICE_CODE",dataObject.OfficeCode),
+        //                      new SqlParameter("@AREA",dataObject.SlaType)
 
-            };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "REDRESSAL_REPORT_NEW", param);
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new ModelRedressal();
-                    objData.OFFICE_NAME = Convert.ToString(dr.ItemArray[0]);
-                    objData.COMPLAINTS_PENDING_TILL_FROM_DATE = Convert.ToString(dr.ItemArray[1]);
-                    objData.COMPLAINS_RECEIEVED_UPTO_MONTH_NO_CURRENT_COMPLAINT = Convert.ToString(dr.ItemArray[2].ToString());
-                    objData.COMPLAINS_RECEIEVED_UPTO_MONTH_TRANSFORMER_FAILURE = Convert.ToString(dr.ItemArray[3].ToString());
-                    objData.COMPLAINS_RECEIEVED_UPTO_MONTH_ENERGY_THEFT = Convert.ToString(dr.ItemArray[4].ToString());
-                    objData.COMPLAINS_RECEIEVED_UPTO_MONTH_SAFETY_RELATED = Convert.ToString(dr.ItemArray[5].ToString());
-                    objData.COMPLAINS_RECEIEVED_UPTO_MONTH_HARASSMENT_BY_OFFICIALS = Convert.ToString(dr.ItemArray[6].ToString());
-                    objData.COMPLAINS_RECEIEVED_UPTO_MONTH_BILL_RELATED = Convert.ToString(dr.ItemArray[7].ToString());
-                    objData.COMPLAINS_RECEIEVED_UPTO_MONTH_METER_RELATED = Convert.ToString(dr.ItemArray[8].ToString());
-                    objData.COMPLAINS_RECEIEVED_UPTO_MONTH_OTHER_TRCHNICAL_COMPLAINTS = Convert.ToString(dr.ItemArray[9].ToString());
-                    objData.COMPLAINS_RECEIEVED_UPTO_MONTH_TOTAL = Convert.ToString(dr.ItemArray[10].ToString());
-                    objData.COMPLAINS_REDRESSED_UPTO_MONTH_NO_CURRENT_COMPLAINT = Convert.ToString(dr.ItemArray[11].ToString());
-                    objData.COMPLAINS_REDRESSED_UPTO_MONTH_TRANSFORMER_FAILURE = Convert.ToString(dr.ItemArray[12].ToString());
-                    objData.COMPLAINS_REDRESSED_UPTO_MONTH_ENERGY_THEFT = Convert.ToString(dr.ItemArray[13].ToString());
-                    objData.COMPLAINS_REDRESSED_UPTO_MONTH_SAFETY_RELATED = Convert.ToString(dr.ItemArray[14].ToString());
-                    objData.COMPLAINS_REDRESSED_UPTO_MONTH_HARASSMENT_BY_OFFICIALS = Convert.ToString(dr.ItemArray[15].ToString());
-                    objData.COMPLAINS_REDRESSED_UPTO_MONTH_BILL_RELATED = Convert.ToString(dr.ItemArray[16].ToString());
-                    objData.COMPLAINS_REDRESSED_UPTO_MONTH_METER_RELATED = Convert.ToString(dr.ItemArray[17].ToString());
-                    objData.COMPLAINS_REDRESSED_UPTO_MONTH_OTHER_TRCHNICAL_COMPLAINTS = Convert.ToString(dr.ItemArray[18].ToString());
-                    objData.COMPLAINS_REDRESSED_UPTO_MONTH_TOTAL = Convert.ToString(dr.ItemArray[19].ToString());
-                    objData.BALANCE_NO_CURRENT_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[20].ToString());
-                    objData.BALANCE_TRANSFORMER_FAILURE_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[21].ToString());
-                    objData.BALANCE_ENERGY_THEFT_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[22].ToString());
-                    objData.BALANCE_SAFETY_RELATED_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[23].ToString());
-                    objData.BALANCE_HARASSMENT_BY_OFFICIALS_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[24].ToString());
-                    objData.BALANCE_BILL_RELATED_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[25].ToString());
-                    objData.BALANCE_METER_RELATED_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[26].ToString());
-                    objData.BALANCE_OTHER_TECHNICAL_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[27].ToString());
-                    objData.TOTAL_BALANCE_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[28].ToString());
-                    objData.NO_CURRENT_AVEG = Convert.ToString(dr.ItemArray[29].ToString());
-                    objData.TRANSFORMER_FAILURE_AVEG = Convert.ToString(dr.ItemArray[30].ToString());
-                    objData.ENERGY_THEFT = Convert.ToString(dr.ItemArray[31].ToString());
-                    objData.SAFETY_RELATED_AVEG = Convert.ToString(dr.ItemArray[32].ToString());
-                    objData.HARASSMENT_BY_OFFICIALS_AVEG = Convert.ToString(dr.ItemArray[33].ToString());
+        //    };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "REDRESSAL_REPORT_NEW", param);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new ModelRedressal();
+        //            objData.OFFICE_NAME = Convert.ToString(dr.ItemArray[0]);
+        //            objData.COMPLAINTS_PENDING_TILL_FROM_DATE = Convert.ToString(dr.ItemArray[1]);
+        //            objData.COMPLAINS_RECEIEVED_UPTO_MONTH_NO_CURRENT_COMPLAINT = Convert.ToString(dr.ItemArray[2].ToString());
+        //            objData.COMPLAINS_RECEIEVED_UPTO_MONTH_TRANSFORMER_FAILURE = Convert.ToString(dr.ItemArray[3].ToString());
+        //            objData.COMPLAINS_RECEIEVED_UPTO_MONTH_ENERGY_THEFT = Convert.ToString(dr.ItemArray[4].ToString());
+        //            objData.COMPLAINS_RECEIEVED_UPTO_MONTH_SAFETY_RELATED = Convert.ToString(dr.ItemArray[5].ToString());
+        //            objData.COMPLAINS_RECEIEVED_UPTO_MONTH_HARASSMENT_BY_OFFICIALS = Convert.ToString(dr.ItemArray[6].ToString());
+        //            objData.COMPLAINS_RECEIEVED_UPTO_MONTH_BILL_RELATED = Convert.ToString(dr.ItemArray[7].ToString());
+        //            objData.COMPLAINS_RECEIEVED_UPTO_MONTH_METER_RELATED = Convert.ToString(dr.ItemArray[8].ToString());
+        //            objData.COMPLAINS_RECEIEVED_UPTO_MONTH_OTHER_TRCHNICAL_COMPLAINTS = Convert.ToString(dr.ItemArray[9].ToString());
+        //            objData.COMPLAINS_RECEIEVED_UPTO_MONTH_TOTAL = Convert.ToString(dr.ItemArray[10].ToString());
+        //            objData.COMPLAINS_REDRESSED_UPTO_MONTH_NO_CURRENT_COMPLAINT = Convert.ToString(dr.ItemArray[11].ToString());
+        //            objData.COMPLAINS_REDRESSED_UPTO_MONTH_TRANSFORMER_FAILURE = Convert.ToString(dr.ItemArray[12].ToString());
+        //            objData.COMPLAINS_REDRESSED_UPTO_MONTH_ENERGY_THEFT = Convert.ToString(dr.ItemArray[13].ToString());
+        //            objData.COMPLAINS_REDRESSED_UPTO_MONTH_SAFETY_RELATED = Convert.ToString(dr.ItemArray[14].ToString());
+        //            objData.COMPLAINS_REDRESSED_UPTO_MONTH_HARASSMENT_BY_OFFICIALS = Convert.ToString(dr.ItemArray[15].ToString());
+        //            objData.COMPLAINS_REDRESSED_UPTO_MONTH_BILL_RELATED = Convert.ToString(dr.ItemArray[16].ToString());
+        //            objData.COMPLAINS_REDRESSED_UPTO_MONTH_METER_RELATED = Convert.ToString(dr.ItemArray[17].ToString());
+        //            objData.COMPLAINS_REDRESSED_UPTO_MONTH_OTHER_TRCHNICAL_COMPLAINTS = Convert.ToString(dr.ItemArray[18].ToString());
+        //            objData.COMPLAINS_REDRESSED_UPTO_MONTH_TOTAL = Convert.ToString(dr.ItemArray[19].ToString());
+        //            objData.BALANCE_NO_CURRENT_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[20].ToString());
+        //            objData.BALANCE_TRANSFORMER_FAILURE_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[21].ToString());
+        //            objData.BALANCE_ENERGY_THEFT_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[22].ToString());
+        //            objData.BALANCE_SAFETY_RELATED_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[23].ToString());
+        //            objData.BALANCE_HARASSMENT_BY_OFFICIALS_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[24].ToString());
+        //            objData.BALANCE_BILL_RELATED_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[25].ToString());
+        //            objData.BALANCE_METER_RELATED_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[26].ToString());
+        //            objData.BALANCE_OTHER_TECHNICAL_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[27].ToString());
+        //            objData.TOTAL_BALANCE_COMPLAINTS_TILL_TO_DATE = Convert.ToString(dr.ItemArray[28].ToString());
+        //            objData.NO_CURRENT_AVEG = Convert.ToString(dr.ItemArray[29].ToString());
+        //            objData.TRANSFORMER_FAILURE_AVEG = Convert.ToString(dr.ItemArray[30].ToString());
+        //            objData.ENERGY_THEFT = Convert.ToString(dr.ItemArray[31].ToString());
+        //            objData.SAFETY_RELATED_AVEG = Convert.ToString(dr.ItemArray[32].ToString());
+        //            objData.HARASSMENT_BY_OFFICIALS_AVEG = Convert.ToString(dr.ItemArray[33].ToString());
 
-                    objData.BILL_RELATED_AVEG = Convert.ToString(dr.ItemArray[34].ToString());
-                    objData.METER_RELATED_AVEG = Convert.ToString(dr.ItemArray[35].ToString());
-                    objData.OTHER_TECHNICAL_COMPLAINTS_AVEG = Convert.ToString(dr.ItemArray[36].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //            objData.BILL_RELATED_AVEG = Convert.ToString(dr.ItemArray[34].ToString());
+        //            objData.METER_RELATED_AVEG = Convert.ToString(dr.ItemArray[35].ToString());
+        //            objData.OTHER_TECHNICAL_COMPLAINTS_AVEG = Convert.ToString(dr.ItemArray[36].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<ModelPendingComplaint> ReporttPendingComplaint(ModelReport dataObject)
-        {
-            List<ModelPendingComplaint> lstReportdata = new List<ModelPendingComplaint>();
-            ModelPendingComplaint objData = new ModelPendingComplaint();
-            SqlParameter[] param ={
-                    new SqlParameter("@OFFICE_FILTER",dataObject.SlaType),
-                     new SqlParameter("@OFFICE_ID",dataObject.OfficeCode),
-                              new SqlParameter("@COMPLAINT_SOURCE",dataObject.ComplaintSource),
-                              new SqlParameter("@COMPLAINT_TYPE",dataObject.ComplaintType)
+        //public static List<ModelPendingComplaint> ReporttPendingComplaint(ModelReport dataObject)
+        //{
+        //    List<ModelPendingComplaint> lstReportdata = new List<ModelPendingComplaint>();
+        //    ModelPendingComplaint objData = new ModelPendingComplaint();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@OFFICE_FILTER",dataObject.SlaType),
+        //             new SqlParameter("@OFFICE_ID",dataObject.OfficeCode),
+        //                      new SqlParameter("@COMPLAINT_SOURCE",dataObject.ComplaintSource),
+        //                      new SqlParameter("@COMPLAINT_TYPE",dataObject.ComplaintType)
 
-            };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "COMPLAINT_STATUS", param);
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new ModelPendingComplaint();
-                    objData.OfficeName = Convert.ToString(dr.ItemArray[0]);
-                    objData.TotalComplaintReceived = Convert.ToString(dr.ItemArray[1]);
-                    objData.TodayPending = Convert.ToString(dr.ItemArray[2].ToString());
-                    objData.PreviousDayPending = Convert.ToString(dr.ItemArray[3].ToString());
-                    objData.TodayResolved = Convert.ToString(dr.ItemArray[4].ToString());
-                    objData.OverAllPending = Convert.ToString(dr.ItemArray[5].ToString());
-                    objData.OverAllResolved = Convert.ToString(dr.ItemArray[6].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
-
-
-        public static List<ModelOutageReport> ReportOutageData(ModelReport dataObject)
-        {
-            List<ModelOutageReport> lstReportdata = new List<ModelOutageReport>();
-            ModelOutageReport objData = new ModelOutageReport();
-            SqlParameter[] param ={
-                               new SqlParameter("@ID",dataObject.ID),
-                    new SqlParameter("@OFFICE_ID",dataObject.OfficeCode),
-                    new SqlParameter("@START_TIME",dataObject.fromdate),
-                     new SqlParameter("@END_TIME",dataObject.todate),
-                     new SqlParameter("@COMPLAINT_TYPE",dataObject.ComplaintType),
-                     new SqlParameter("@COLONIES",dataObject.COLONIES),
-                      new SqlParameter("@INFORMATION_SOURCE",dataObject.INFORMATION_SOURCE),
-                     new SqlParameter("@PROCESS_TYPE",dataObject.PROCESS_TYPE),
-                     new SqlParameter("@SHUTDOWN_INFORMATION",dataObject.SHUTDOWN_INFORMATION)
-
-           };
-            if (dataObject.PROCESS_TYPE == "I" || dataObject.PROCESS_TYPE == "U")
-            {
-                DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "POWER_OUTAGE", param);
-            }
-            else if (dataObject.PROCESS_TYPE == "S")
-            {
-                DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "POWER_OUTAGE", param);
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new ModelOutageReport();
-                    objData.ID = Convert.ToString(dr.ItemArray[0].ToString());
-                    objData.OFFICE_CODE = Convert.ToString(dr.ItemArray[1]);
-                    objData.StartTime = Convert.ToString(dr.ItemArray[2]);
+        //    };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "COMPLAINT_STATUS", param);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new ModelPendingComplaint();
+        //            objData.OfficeName = Convert.ToString(dr.ItemArray[0]);
+        //            objData.TotalComplaintReceived = Convert.ToString(dr.ItemArray[1]);
+        //            objData.TodayPending = Convert.ToString(dr.ItemArray[2].ToString());
+        //            objData.PreviousDayPending = Convert.ToString(dr.ItemArray[3].ToString());
+        //            objData.TodayResolved = Convert.ToString(dr.ItemArray[4].ToString());
+        //            objData.OverAllPending = Convert.ToString(dr.ItemArray[5].ToString());
+        //            objData.OverAllResolved = Convert.ToString(dr.ItemArray[6].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
 
-                    objData.EndTime = Convert.ToString(dr.ItemArray[3].ToString());
-                    objData.COMPLAINT_TYPE = Convert.ToString(dr.ItemArray[4].ToString());
-                    objData.COLONIES = Convert.ToString(dr.ItemArray[5].ToString());
-                    objData.SHUT_DOWN_INFORMATION = Convert.ToString(dr.ItemArray[6].ToString());
-                    objData.INFORMATION_SOURCE = Convert.ToString(dr.ItemArray[7].ToString());
+        //public static List<ModelOutageReport> ReportOutageData(ModelReport dataObject)
+        //{
+        //    List<ModelOutageReport> lstReportdata = new List<ModelOutageReport>();
+        //    ModelOutageReport objData = new ModelOutageReport();
+        //    SqlParameter[] param ={
+        //                       new SqlParameter("@ID",dataObject.ID),
+        //            new SqlParameter("@OFFICE_ID",dataObject.OfficeCode),
+        //            new SqlParameter("@START_TIME",dataObject.fromdate),
+        //             new SqlParameter("@END_TIME",dataObject.todate),
+        //             new SqlParameter("@COMPLAINT_TYPE",dataObject.ComplaintType),
+        //             new SqlParameter("@COLONIES",dataObject.COLONIES),
+        //              new SqlParameter("@INFORMATION_SOURCE",dataObject.INFORMATION_SOURCE),
+        //             new SqlParameter("@PROCESS_TYPE",dataObject.PROCESS_TYPE),
+        //             new SqlParameter("@SHUTDOWN_INFORMATION",dataObject.SHUTDOWN_INFORMATION)
 
-                    lstReportdata.Add(objData);
-                }
-
-            }
-            else if (dataObject.PROCESS_TYPE == "SA")
-            {
-                DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "POWER_OUTAGE", param);
-                if (ds.Tables.Count > 0)
-                {
-                    foreach (DataRow dr in ds.Tables[0].Rows)
-                    {
-                        objData = new ModelOutageReport();
-                        objData.ID = Convert.ToString(dr.ItemArray[0].ToString());
-                        objData.OFFICE_CODE = Convert.ToString(dr.ItemArray[1]);
-                        objData.StartTime = Convert.ToString(dr.ItemArray[2]);
-
-
-                        objData.EndTime = Convert.ToString(dr.ItemArray[3].ToString());
-                        objData.COMPLAINT_TYPE = Convert.ToString(dr.ItemArray[4].ToString());
-                        objData.COLONIES = Convert.ToString(dr.ItemArray[5].ToString());
-                        objData.SHUT_DOWN_INFORMATION = Convert.ToString(dr.ItemArray[6].ToString());
-                        objData.INFORMATION_SOURCE = Convert.ToString(dr.ItemArray[7].ToString());
-
-                        lstReportdata.Add(objData);
-                    }
-                }
-
-            }
-            return lstReportdata;
-        }
+        //   };
+        //    if (dataObject.PROCESS_TYPE == "I" || dataObject.PROCESS_TYPE == "U")
+        //    {
+        //        DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "POWER_OUTAGE", param);
+        //    }
+        //    else if (dataObject.PROCESS_TYPE == "S")
+        //    {
+        //        DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "POWER_OUTAGE", param);
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new ModelOutageReport();
+        //            objData.ID = Convert.ToString(dr.ItemArray[0].ToString());
+        //            objData.OFFICE_CODE = Convert.ToString(dr.ItemArray[1]);
+        //            objData.StartTime = Convert.ToString(dr.ItemArray[2]);
 
 
+        //            objData.EndTime = Convert.ToString(dr.ItemArray[3].ToString());
+        //            objData.COMPLAINT_TYPE = Convert.ToString(dr.ItemArray[4].ToString());
+        //            objData.COLONIES = Convert.ToString(dr.ItemArray[5].ToString());
+        //            objData.SHUT_DOWN_INFORMATION = Convert.ToString(dr.ItemArray[6].ToString());
+        //            objData.INFORMATION_SOURCE = Convert.ToString(dr.ItemArray[7].ToString());
+
+        //            lstReportdata.Add(objData);
+        //        }
+
+        //    }
+        //    else if (dataObject.PROCESS_TYPE == "SA")
+        //    {
+        //        DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "POWER_OUTAGE", param);
+        //        if (ds.Tables.Count > 0)
+        //        {
+        //            foreach (DataRow dr in ds.Tables[0].Rows)
+        //            {
+        //                objData = new ModelOutageReport();
+        //                objData.ID = Convert.ToString(dr.ItemArray[0].ToString());
+        //                objData.OFFICE_CODE = Convert.ToString(dr.ItemArray[1]);
+        //                objData.StartTime = Convert.ToString(dr.ItemArray[2]);
+
+
+        //                objData.EndTime = Convert.ToString(dr.ItemArray[3].ToString());
+        //                objData.COMPLAINT_TYPE = Convert.ToString(dr.ItemArray[4].ToString());
+        //                objData.COLONIES = Convert.ToString(dr.ItemArray[5].ToString());
+        //                objData.SHUT_DOWN_INFORMATION = Convert.ToString(dr.ItemArray[6].ToString());
+        //                objData.INFORMATION_SOURCE = Convert.ToString(dr.ItemArray[7].ToString());
+
+        //                lstReportdata.Add(objData);
+        //            }
+        //        }
+
+        //    }
+        //    return lstReportdata;
+        //}
 
 
 
-        public static List<ModelRandomizerReport> ReportRandomizerData(ModelReport dataObject)
-        {
 
 
-            List<ModelRandomizerReport> lstReportdata = new List<ModelRandomizerReport>();
-            ModelRandomizerReport objData = new ModelRandomizerReport();
-
-            SqlParameter parmretTotalRecords = new SqlParameter();
-            parmretTotalRecords.ParameterName = "@TOTALRECORDS";
-            parmretTotalRecords.DbType = DbType.Int32;
-            parmretTotalRecords.Size = 8;
-            parmretTotalRecords.Direction = ParameterDirection.Output;
-
-            int TotalRec = 0;
-
-            SqlParameter[] param ={
-                    new SqlParameter("@FROM_DATE",dataObject.fromdate),
-                     new SqlParameter("@TO_DATE",dataObject.todate),
-                     new SqlParameter("@COUNT",string.IsNullOrEmpty( dataObject.count) ? "0": dataObject.count),
-                     new SqlParameter("@STARTROWINDEX",dataObject.start),
-                    new SqlParameter("@MAXIMUMROWS",dataObject.length),parmretTotalRecords};
+        //public static List<ModelRandomizerReport> ReportRandomizerData(ModelReport dataObject)
+        //{
 
 
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "RANDOMIZER", param);
-            if (param[5].Value != DBNull.Value)// status
-                TotalRec = Convert.ToInt32(param[5].Value);
-            else
-                TotalRec = 0;
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new ModelRandomizerReport();
-                    objData.KNO = Convert.ToString(dr.ItemArray[1].ToString());
-                    objData.OFFICE_CODE = Convert.ToString(dr.ItemArray[2]);
-                    objData.SDOCode = Convert.ToString(dr.ItemArray[3]);
+        //    List<ModelRandomizerReport> lstReportdata = new List<ModelRandomizerReport>();
+        //    ModelRandomizerReport objData = new ModelRandomizerReport();
+
+        //    SqlParameter parmretTotalRecords = new SqlParameter();
+        //    parmretTotalRecords.ParameterName = "@TOTALRECORDS";
+        //    parmretTotalRecords.DbType = DbType.Int32;
+        //    parmretTotalRecords.Size = 8;
+        //    parmretTotalRecords.Direction = ParameterDirection.Output;
+
+        //    int TotalRec = 0;
+
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@FROM_DATE",dataObject.fromdate),
+        //             new SqlParameter("@TO_DATE",dataObject.todate),
+        //             new SqlParameter("@COUNT",string.IsNullOrEmpty( dataObject.count) ? "0": dataObject.count),
+        //             new SqlParameter("@STARTROWINDEX",dataObject.start),
+        //            new SqlParameter("@MAXIMUMROWS",dataObject.length),parmretTotalRecords};
 
 
-                    objData.CONSUMER_NAME = Convert.ToString(dr.ItemArray[4].ToString());
-                    objData.MOBILE_NO = Convert.ToString(dr.ItemArray[5].ToString());
-                    objData.TIME_STAMP = Convert.ToString(dr.ItemArray[6].ToString());
-                    objData.CLOSE_DATE = Convert.ToString(dr.ItemArray[7].ToString());
-                    objData.DURATION = Convert.ToString(dr.ItemArray[8].ToString());
-                    objData.COMPLAINT_NO = Convert.ToString(dr.ItemArray[9].ToString());
-                    objData.COMPLAINT_TYPE = Convert.ToString(dr.ItemArray[10].ToString());
-                    objData.SUB_COMPLAINT_TYPE = Convert.ToString(dr.ItemArray[11].ToString());
-                    objData.COMPLAINT_SOURCE = Convert.ToString(dr.ItemArray[12].ToString());
-                    objData.REMARKS = Convert.ToString(dr.ItemArray[13].ToString());
-                    objData.Total = TotalRec;
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
-        #endregion
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "RANDOMIZER", param);
+        //    if (param[5].Value != DBNull.Value)// status
+        //        TotalRec = Convert.ToInt32(param[5].Value);
+        //    else
+        //        TotalRec = 0;
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new ModelRandomizerReport();
+        //            objData.KNO = Convert.ToString(dr.ItemArray[1].ToString());
+        //            objData.OFFICE_CODE = Convert.ToString(dr.ItemArray[2]);
+        //            objData.SDOCode = Convert.ToString(dr.ItemArray[3]);
+
+
+        //            objData.CONSUMER_NAME = Convert.ToString(dr.ItemArray[4].ToString());
+        //            objData.MOBILE_NO = Convert.ToString(dr.ItemArray[5].ToString());
+        //            objData.TIME_STAMP = Convert.ToString(dr.ItemArray[6].ToString());
+        //            objData.CLOSE_DATE = Convert.ToString(dr.ItemArray[7].ToString());
+        //            objData.DURATION = Convert.ToString(dr.ItemArray[8].ToString());
+        //            objData.COMPLAINT_NO = Convert.ToString(dr.ItemArray[9].ToString());
+        //            objData.COMPLAINT_TYPE = Convert.ToString(dr.ItemArray[10].ToString());
+        //            objData.SUB_COMPLAINT_TYPE = Convert.ToString(dr.ItemArray[11].ToString());
+        //            objData.COMPLAINT_SOURCE = Convert.ToString(dr.ItemArray[12].ToString());
+        //            objData.REMARKS = Convert.ToString(dr.ItemArray[13].ToString());
+        //            objData.Total = TotalRec;
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
+        //#endregion
 
         #region Dashboard
         public static ModelDashboard GetDashBoardData(String OFFICE_ID)
@@ -2604,46 +2589,46 @@ namespace ComplaintTracker.DAL
         }
         #endregion
 
-        #region ExceptionsLog
-        public static List<ModelExceptionLogger> GetExceptions(ModelReport dataObject)
-        {
-            List<ModelExceptionLogger> lstExceptions = new List<ModelExceptionLogger>();
-            ModelExceptionLogger objBlank = new ModelExceptionLogger();
-            SqlParameter[] param ={
-                    new SqlParameter("@FromDate",dataObject.fromdate),
-                     new SqlParameter("@ToDate",dataObject.todate)};
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "GetExceptions", param);
+        //#region ExceptionsLog
+        //public static List<ModelExceptionLogger> GetExceptions(ModelReport dataObject)
+        //{
+        //    List<ModelExceptionLogger> lstExceptions = new List<ModelExceptionLogger>();
+        //    ModelExceptionLogger objBlank = new ModelExceptionLogger();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@FromDate",dataObject.fromdate),
+        //             new SqlParameter("@ToDate",dataObject.todate)};
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "GetExceptions", param);
 
-            foreach (DataRow dr in ds.Tables[0].Rows)
-            {
-                objBlank = new ModelExceptionLogger();
-                objBlank.ExceptionId = Convert.ToInt32(dr.ItemArray[0]);
-                objBlank.ExceptionMessage = Convert.ToString(dr.ItemArray[1].ToString());
-                objBlank.ControllerName = Convert.ToString(dr.ItemArray[2].ToString());
-                objBlank.ActionName = Convert.ToString(dr.ItemArray[3].ToString());
-                objBlank.ExceptionStackTrack = Convert.ToString(dr.ItemArray[4].ToString());
-                objBlank.ExceptionLogTime = Convert.ToString(dr.ItemArray[5].ToString());
-                lstExceptions.Add(objBlank);
-            }
-            return lstExceptions;
-        }
+        //    foreach (DataRow dr in ds.Tables[0].Rows)
+        //    {
+        //        objBlank = new ModelExceptionLogger();
+        //        objBlank.ExceptionId = Convert.ToInt32(dr.ItemArray[0]);
+        //        objBlank.ExceptionMessage = Convert.ToString(dr.ItemArray[1].ToString());
+        //        objBlank.ControllerName = Convert.ToString(dr.ItemArray[2].ToString());
+        //        objBlank.ActionName = Convert.ToString(dr.ItemArray[3].ToString());
+        //        objBlank.ExceptionStackTrack = Convert.ToString(dr.ItemArray[4].ToString());
+        //        objBlank.ExceptionLogTime = Convert.ToString(dr.ItemArray[5].ToString());
+        //        lstExceptions.Add(objBlank);
+        //    }
+        //    return lstExceptions;
+        //}
 
-        public static void SaveUnhandeledExceptions(ModelExceptionLogger dataObject)
-        {
+        //public static void SaveUnhandeledExceptions(ModelExceptionLogger dataObject)
+        //{
 
-            SqlParameter[] param ={
-                    new SqlParameter("@ExceptionMessage",dataObject.ExceptionMessage),
-                     new SqlParameter("@ControllerName",dataObject.ControllerName),
-                     new SqlParameter("@ActionName",dataObject.ActionName),
-                     new SqlParameter("@ExceptionStackTrack",dataObject.ExceptionStackTrack)
-            };
-
-
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "SaveUnhandeledExceptions", param);
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@ExceptionMessage",dataObject.ExceptionMessage),
+        //             new SqlParameter("@ControllerName",dataObject.ControllerName),
+        //             new SqlParameter("@ActionName",dataObject.ActionName),
+        //             new SqlParameter("@ExceptionStackTrack",dataObject.ExceptionStackTrack)
+        //    };
 
 
-        }
-        #endregion
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "SaveUnhandeledExceptions", param);
+
+
+        //}
+        //#endregion
 
 
         public static int PUSH_SMS_DETAIL_Consumer(COMPLAINT modelRemark, string response)
@@ -2768,258 +2753,258 @@ namespace ComplaintTracker.DAL
             }
             return obj;
         }
-        public static List<ModelComplaintWiseDetailReport> ReportComplaintWiseDetail(ModelReport dataObject)
-        {
+        //public static List<ModelComplaintWiseDetailReport> ReportComplaintWiseDetail(ModelReport dataObject)
+        //{
 
-            List<ModelComplaintWiseDetailReport> lstReportdata = new List<ModelComplaintWiseDetailReport>();
-            ModelComplaintWiseDetailReport objData = new ModelComplaintWiseDetailReport();
-            SqlParameter[] param ={
-                    new SqlParameter("@BILL_MONTH",dataObject.BILL_MONTH),
-                     new SqlParameter("@BILL_YEAR",dataObject.BILL_YEAR),
-                     new SqlParameter("@CIRCLE",dataObject.OfficeCode),
-                     new SqlParameter("@COMPLAINT_TYPE",dataObject.ComplaintType)
-                       };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "COMPLAINT_WISE_DETAIL_REPORT", param);
+        //    List<ModelComplaintWiseDetailReport> lstReportdata = new List<ModelComplaintWiseDetailReport>();
+        //    ModelComplaintWiseDetailReport objData = new ModelComplaintWiseDetailReport();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@BILL_MONTH",dataObject.BILL_MONTH),
+        //             new SqlParameter("@BILL_YEAR",dataObject.BILL_YEAR),
+        //             new SqlParameter("@CIRCLE",dataObject.OfficeCode),
+        //             new SqlParameter("@COMPLAINT_TYPE",dataObject.ComplaintType)
+        //               };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "COMPLAINT_WISE_DETAIL_REPORT", param);
 
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new ModelComplaintWiseDetailReport();
-                    objData.CIRCLE = Convert.ToString(dr.ItemArray[0]);
-                    objData.TOTAL_RECEIEVED_IN_SELECTED_MONTH = Convert.ToString(dr.ItemArray[1].ToString());
-                    objData.TOTAL_REDERSSAL_COMPLAINTS_WITHIN_TIME_IN_SELECTED_MONTH = Convert.ToString(dr.ItemArray[2].ToString());
-                    objData.BALANCE_COMPLAINTS_IN_SELECTED_MONTH = Convert.ToString(dr.ItemArray[3].ToString());
-                    objData.AVERAGE_REDRESSAL_TIME_IN_SELECTED_MONTH = Convert.ToString(dr.ItemArray[4].ToString());
-                    objData.TOTAL_RECEIEVED_BEFORE_SELECTED_MONTH = Convert.ToString(dr.ItemArray[5].ToString());
-                    objData.TOTAL_REDERSSAL_COMPLAINTS_WITHIN_TIME_BEFORE_SELECTED_MONTH = Convert.ToString(dr.ItemArray[6].ToString());
-                    objData.BALANCE_COMPLAINTS_BEFORE_SELECTED_MONTH = Convert.ToString(dr.ItemArray[7].ToString());
-                    objData.AVERAGE_REDRESSAL_TIME_BEFORE_SELECTED_MONTH = Convert.ToString(dr.ItemArray[8].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new ModelComplaintWiseDetailReport();
+        //            objData.CIRCLE = Convert.ToString(dr.ItemArray[0]);
+        //            objData.TOTAL_RECEIEVED_IN_SELECTED_MONTH = Convert.ToString(dr.ItemArray[1].ToString());
+        //            objData.TOTAL_REDERSSAL_COMPLAINTS_WITHIN_TIME_IN_SELECTED_MONTH = Convert.ToString(dr.ItemArray[2].ToString());
+        //            objData.BALANCE_COMPLAINTS_IN_SELECTED_MONTH = Convert.ToString(dr.ItemArray[3].ToString());
+        //            objData.AVERAGE_REDRESSAL_TIME_IN_SELECTED_MONTH = Convert.ToString(dr.ItemArray[4].ToString());
+        //            objData.TOTAL_RECEIEVED_BEFORE_SELECTED_MONTH = Convert.ToString(dr.ItemArray[5].ToString());
+        //            objData.TOTAL_REDERSSAL_COMPLAINTS_WITHIN_TIME_BEFORE_SELECTED_MONTH = Convert.ToString(dr.ItemArray[6].ToString());
+        //            objData.BALANCE_COMPLAINTS_BEFORE_SELECTED_MONTH = Convert.ToString(dr.ItemArray[7].ToString());
+        //            objData.AVERAGE_REDRESSAL_TIME_BEFORE_SELECTED_MONTH = Convert.ToString(dr.ItemArray[8].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<DTModel> ReportDT(ModelReport dataObject)
-        {
+        //public static List<DTModel> ReportDT(ModelReport dataObject)
+        //{
 
-            List<DTModel> lstReportdata = new List<DTModel>();
-            DTModel objData = new DTModel();
-            SqlParameter[] param ={
-                    new SqlParameter("@BILL_MONTH",dataObject.BILL_MONTH),
-                     new SqlParameter("@BILL_YEAR",dataObject.BILL_YEAR),
-                     new SqlParameter("@CIRCLE",dataObject.OfficeCode)
-                       };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "DT_REPORT", param);
+        //    List<DTModel> lstReportdata = new List<DTModel>();
+        //    DTModel objData = new DTModel();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@BILL_MONTH",dataObject.BILL_MONTH),
+        //             new SqlParameter("@BILL_YEAR",dataObject.BILL_YEAR),
+        //             new SqlParameter("@CIRCLE",dataObject.OfficeCode)
+        //               };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "DT_REPORT", param);
 
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new DTModel();
-                    objData.CIRCLE = Convert.ToString(dr.ItemArray[0]);
-                    objData.DT_FAILED_FOR_SELECTED_MONTH = Convert.ToString(dr.ItemArray[1].ToString());
-                    objData.DT_REPLACE_FOR_SELECTED_MONTH = Convert.ToString(dr.ItemArray[2].ToString());
-                    objData.BALANCE_FOR_SELECTED_MONTH = Convert.ToString(dr.ItemArray[3].ToString());
-                    objData.AVERAGE_REDRESSAL_TIME_IN_SELECTED_MONTH = Convert.ToString(dr.ItemArray[4].ToString());
-                    objData.DT_FAILED_UPTO_SELECTED_MONTH = Convert.ToString(dr.ItemArray[5].ToString());
-                    objData.DT_REPLACE_UPTO_SELECTED_MONTH = Convert.ToString(dr.ItemArray[6].ToString());
-                    objData.BALANCE_FOR_UPTO_SELECTED_MONTH = Convert.ToString(dr.ItemArray[7].ToString());
-                    objData.AVERAGE_REDRESSAL_TIME_UPTO_SELECTED_MONTH = Convert.ToString(dr.ItemArray[8].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new DTModel();
+        //            objData.CIRCLE = Convert.ToString(dr.ItemArray[0]);
+        //            objData.DT_FAILED_FOR_SELECTED_MONTH = Convert.ToString(dr.ItemArray[1].ToString());
+        //            objData.DT_REPLACE_FOR_SELECTED_MONTH = Convert.ToString(dr.ItemArray[2].ToString());
+        //            objData.BALANCE_FOR_SELECTED_MONTH = Convert.ToString(dr.ItemArray[3].ToString());
+        //            objData.AVERAGE_REDRESSAL_TIME_IN_SELECTED_MONTH = Convert.ToString(dr.ItemArray[4].ToString());
+        //            objData.DT_FAILED_UPTO_SELECTED_MONTH = Convert.ToString(dr.ItemArray[5].ToString());
+        //            objData.DT_REPLACE_UPTO_SELECTED_MONTH = Convert.ToString(dr.ItemArray[6].ToString());
+        //            objData.BALANCE_FOR_UPTO_SELECTED_MONTH = Convert.ToString(dr.ItemArray[7].ToString());
+        //            objData.AVERAGE_REDRESSAL_TIME_UPTO_SELECTED_MONTH = Convert.ToString(dr.ItemArray[8].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
-        public static List<NewConnectionModel> ReportNewConnection(ModelReport dataObject)
-        {
+        //public static List<NewConnectionModel> ReportNewConnection(ModelReport dataObject)
+        //{
 
-            List<NewConnectionModel> lstReportdata = new List<NewConnectionModel>();
-            NewConnectionModel objData = new NewConnectionModel();
-            SqlParameter[] param ={
-                    new SqlParameter("@OFFICE_ID",dataObject.OfficeCode)
-                       };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "NEW_CONNECTION_REPORT",param);
+        //    List<NewConnectionModel> lstReportdata = new List<NewConnectionModel>();
+        //    NewConnectionModel objData = new NewConnectionModel();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@OFFICE_ID",dataObject.OfficeCode)
+        //               };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "NEW_CONNECTION_REPORT",param);
             
-            if (ds.Tables.Count > 0)
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    objData = new NewConnectionModel();
-                    objData.ZONE = Convert.ToString(dr.ItemArray[0]);
-                    objData.CIRCLE = Convert.ToString(dr.ItemArray[1]);
-                    objData.DIVISION = Convert.ToString(dr.ItemArray[2].ToString());
-                    objData.SUB_DIVISION = Convert.ToString(dr.ItemArray[3].ToString());
-                    objData.DS_COMPLAINT_RECEIVED = Convert.ToString(dr.ItemArray[4].ToString());
-                    objData.NDS_COMPLAINT_RECEIVED = Convert.ToString(dr.ItemArray[5].ToString());
-                    objData.TOTAL_REQUEST_RECEIVED = Convert.ToString(dr.ItemArray[6].ToString());
-                    objData.DS_COMPLAINT_RESOLVED = Convert.ToString(dr.ItemArray[7].ToString());
-                    objData.NDS_COMPLAINT_RESOLVED = Convert.ToString(dr.ItemArray[8].ToString());
-                    objData.TOTAL_REQUEST_RESOLVED = Convert.ToString(dr.ItemArray[9].ToString());
-                    objData.REQUEST_WITHDRAW_BY_CONSUMER = Convert.ToString(dr.ItemArray[10].ToString());
-                    objData.FIle_Pending_Request_Pending = Convert.ToString(dr.ItemArray[11].ToString());
-                    objData.FIle_Deposited_Request_Pending = Convert.ToString(dr.ItemArray[12].ToString());
-                    objData.Demand_Issued_Request_Pending = Convert.ToString(dr.ItemArray[13].ToString());
-                    objData.Demand_Deposited_Request_Pending = Convert.ToString(dr.ItemArray[14].ToString());
-                    objData.SJO_Complated_Request_Pending = Convert.ToString(dr.ItemArray[15].ToString());
-                    objData.SCO_Complated = Convert.ToString(dr.ItemArray[16].ToString());
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
-        public static List<ModelComplaintSourceWiseDetailReport> ReportComplaintSourceWiseDetail(ModelReport dataObject)
-        {
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        foreach (DataRow dr in ds.Tables[0].Rows)
+        //        {
+        //            objData = new NewConnectionModel();
+        //            objData.ZONE = Convert.ToString(dr.ItemArray[0]);
+        //            objData.CIRCLE = Convert.ToString(dr.ItemArray[1]);
+        //            objData.DIVISION = Convert.ToString(dr.ItemArray[2].ToString());
+        //            objData.SUB_DIVISION = Convert.ToString(dr.ItemArray[3].ToString());
+        //            objData.DS_COMPLAINT_RECEIVED = Convert.ToString(dr.ItemArray[4].ToString());
+        //            objData.NDS_COMPLAINT_RECEIVED = Convert.ToString(dr.ItemArray[5].ToString());
+        //            objData.TOTAL_REQUEST_RECEIVED = Convert.ToString(dr.ItemArray[6].ToString());
+        //            objData.DS_COMPLAINT_RESOLVED = Convert.ToString(dr.ItemArray[7].ToString());
+        //            objData.NDS_COMPLAINT_RESOLVED = Convert.ToString(dr.ItemArray[8].ToString());
+        //            objData.TOTAL_REQUEST_RESOLVED = Convert.ToString(dr.ItemArray[9].ToString());
+        //            objData.REQUEST_WITHDRAW_BY_CONSUMER = Convert.ToString(dr.ItemArray[10].ToString());
+        //            objData.FIle_Pending_Request_Pending = Convert.ToString(dr.ItemArray[11].ToString());
+        //            objData.FIle_Deposited_Request_Pending = Convert.ToString(dr.ItemArray[12].ToString());
+        //            objData.Demand_Issued_Request_Pending = Convert.ToString(dr.ItemArray[13].ToString());
+        //            objData.Demand_Deposited_Request_Pending = Convert.ToString(dr.ItemArray[14].ToString());
+        //            objData.SJO_Complated_Request_Pending = Convert.ToString(dr.ItemArray[15].ToString());
+        //            objData.SCO_Complated = Convert.ToString(dr.ItemArray[16].ToString());
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
+        //public static List<ModelComplaintSourceWiseDetailReport> ReportComplaintSourceWiseDetail(ModelReport dataObject)
+        //{
 
-            List<ModelComplaintSourceWiseDetailReport> lstReportdata = new List<ModelComplaintSourceWiseDetailReport>();
-            ModelComplaintSourceWiseDetailReport objData = new ModelComplaintSourceWiseDetailReport();
-            SqlParameter[] param ={
-                    new SqlParameter("@BILL_MONTH",dataObject.BILL_MONTH),
-                     new SqlParameter("@BILL_YEAR",dataObject.BILL_YEAR),
-                     new SqlParameter("@OFFICE_CODE",dataObject.OfficeCode),
-                     new SqlParameter("@COMPLAINT_SOURCE",dataObject.ComplaintSource)
-                       };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "SOURCE_WISE_COMPLAINT_COUNT", param);
+        //    List<ModelComplaintSourceWiseDetailReport> lstReportdata = new List<ModelComplaintSourceWiseDetailReport>();
+        //    ModelComplaintSourceWiseDetailReport objData = new ModelComplaintSourceWiseDetailReport();
+        //    SqlParameter[] param ={
+        //            new SqlParameter("@BILL_MONTH",dataObject.BILL_MONTH),
+        //             new SqlParameter("@BILL_YEAR",dataObject.BILL_YEAR),
+        //             new SqlParameter("@OFFICE_CODE",dataObject.OfficeCode),
+        //             new SqlParameter("@COMPLAINT_SOURCE",dataObject.ComplaintSource)
+        //               };
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "SOURCE_WISE_COMPLAINT_COUNT", param);
 
-            if (ds.Tables.Count > 0)
-            {
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                {
-                    objData = new ModelComplaintSourceWiseDetailReport();
-                    objData.OfficeCode = Convert.ToString(ds.Tables[0].Rows[i]["OFFICE_CODE"].ToString());
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+        //        {
+        //            objData = new ModelComplaintSourceWiseDetailReport();
+        //            objData.OfficeCode = Convert.ToString(ds.Tables[0].Rows[i]["OFFICE_CODE"].ToString());
 
-                    for (int j = 1; j < ds.Tables[0].Columns.Count; j++)
-                    {
-                        if (ds.Tables[0].Columns[j].ColumnName == "1")
-                        {
-                            objData.One = Convert.ToString(ds.Tables[0].Rows[i]["1"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "2")
-                        {
-                            objData.Two = Convert.ToString(ds.Tables[0].Rows[i]["2"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "3")
-                        {
-                            objData.Three = Convert.ToString(ds.Tables[0].Rows[i]["3"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "4")
-                        {
-                            objData.Four = Convert.ToString(ds.Tables[0].Rows[i]["4"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "5")
-                        {
-                            objData.Five = Convert.ToString(ds.Tables[0].Rows[i]["5"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "6")
-                        {
-                            objData.Six = Convert.ToString(ds.Tables[0].Rows[i]["16"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "7")
-                        {
-                            objData.Seven = Convert.ToString(ds.Tables[0].Rows[i]["7"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "8")
-                        {
-                            objData.Eight = Convert.ToString(ds.Tables[0].Rows[i]["8"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "9")
-                        {
-                            objData.Nine = Convert.ToString(ds.Tables[0].Rows[i]["9"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "10")
-                        {
-                            objData.Ten = Convert.ToString(ds.Tables[0].Rows[i]["10"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "11")
-                        {
-                            objData.Eleven = Convert.ToString(ds.Tables[0].Rows[i]["11"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "12")
-                        {
-                            objData.Twelve = Convert.ToString(ds.Tables[0].Rows[i]["12"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "13")
-                        {
-                            objData.Thirteen = Convert.ToString(ds.Tables[0].Rows[i]["13"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "14")
-                        {
-                            objData.Fourteen = Convert.ToString(ds.Tables[0].Rows[i]["14"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "15")
-                        {
-                            objData.Fifteen = Convert.ToString(ds.Tables[0].Rows[i]["15"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "16")
-                        {
-                            objData.Sixteen = Convert.ToString(ds.Tables[0].Rows[i]["16"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "17")
-                        {
-                            objData.Seventeen = Convert.ToString(ds.Tables[0].Rows[i]["17"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "18")
-                        {
-                            objData.Eighteen = Convert.ToString(ds.Tables[0].Rows[i]["18"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "19")
-                        {
-                            objData.Nineteen = Convert.ToString(ds.Tables[0].Rows[i]["19"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "20")
-                        {
-                            objData.Twenty = Convert.ToString(ds.Tables[0].Rows[i]["20"].ToString());
-                        }
+        //            for (int j = 1; j < ds.Tables[0].Columns.Count; j++)
+        //            {
+        //                if (ds.Tables[0].Columns[j].ColumnName == "1")
+        //                {
+        //                    objData.One = Convert.ToString(ds.Tables[0].Rows[i]["1"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "2")
+        //                {
+        //                    objData.Two = Convert.ToString(ds.Tables[0].Rows[i]["2"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "3")
+        //                {
+        //                    objData.Three = Convert.ToString(ds.Tables[0].Rows[i]["3"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "4")
+        //                {
+        //                    objData.Four = Convert.ToString(ds.Tables[0].Rows[i]["4"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "5")
+        //                {
+        //                    objData.Five = Convert.ToString(ds.Tables[0].Rows[i]["5"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "6")
+        //                {
+        //                    objData.Six = Convert.ToString(ds.Tables[0].Rows[i]["16"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "7")
+        //                {
+        //                    objData.Seven = Convert.ToString(ds.Tables[0].Rows[i]["7"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "8")
+        //                {
+        //                    objData.Eight = Convert.ToString(ds.Tables[0].Rows[i]["8"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "9")
+        //                {
+        //                    objData.Nine = Convert.ToString(ds.Tables[0].Rows[i]["9"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "10")
+        //                {
+        //                    objData.Ten = Convert.ToString(ds.Tables[0].Rows[i]["10"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "11")
+        //                {
+        //                    objData.Eleven = Convert.ToString(ds.Tables[0].Rows[i]["11"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "12")
+        //                {
+        //                    objData.Twelve = Convert.ToString(ds.Tables[0].Rows[i]["12"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "13")
+        //                {
+        //                    objData.Thirteen = Convert.ToString(ds.Tables[0].Rows[i]["13"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "14")
+        //                {
+        //                    objData.Fourteen = Convert.ToString(ds.Tables[0].Rows[i]["14"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "15")
+        //                {
+        //                    objData.Fifteen = Convert.ToString(ds.Tables[0].Rows[i]["15"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "16")
+        //                {
+        //                    objData.Sixteen = Convert.ToString(ds.Tables[0].Rows[i]["16"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "17")
+        //                {
+        //                    objData.Seventeen = Convert.ToString(ds.Tables[0].Rows[i]["17"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "18")
+        //                {
+        //                    objData.Eighteen = Convert.ToString(ds.Tables[0].Rows[i]["18"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "19")
+        //                {
+        //                    objData.Nineteen = Convert.ToString(ds.Tables[0].Rows[i]["19"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "20")
+        //                {
+        //                    objData.Twenty = Convert.ToString(ds.Tables[0].Rows[i]["20"].ToString());
+        //                }
 
-                        if (ds.Tables[0].Columns[j].ColumnName == "21")
-                        {
-                            objData.TwentyOne = Convert.ToString(ds.Tables[0].Rows[i]["21"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "22")
-                        {
-                            objData.TwentyTwo = Convert.ToString(ds.Tables[0].Rows[i]["22"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "23")
-                        {
-                            objData.TwentyThree = Convert.ToString(ds.Tables[0].Rows[i]["23"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "24")
-                        {
-                            objData.TwentyFour = Convert.ToString(ds.Tables[0].Rows[i]["24"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "25")
-                        {
-                            objData.TwentyFive = Convert.ToString(ds.Tables[0].Rows[i]["25"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "26")
-                        {
-                            objData.TwentySix = Convert.ToString(ds.Tables[0].Rows[i]["26"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "27")
-                        {
-                            objData.TwentySeven = Convert.ToString(ds.Tables[0].Rows[i]["27"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "28")
-                        {
-                            objData.TwentyEight = Convert.ToString(ds.Tables[0].Rows[i]["28"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "29")
-                        {
-                            objData.TwentyNine = Convert.ToString(ds.Tables[0].Rows[i]["29"].ToString());
-                        }
-                        if (ds.Tables[0].Columns[j].ColumnName == "30")
-                        {
-                            objData.Thirty = Convert.ToString(ds.Tables[0].Rows[i]["30"].ToString());
-                        }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "21")
+        //                {
+        //                    objData.TwentyOne = Convert.ToString(ds.Tables[0].Rows[i]["21"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "22")
+        //                {
+        //                    objData.TwentyTwo = Convert.ToString(ds.Tables[0].Rows[i]["22"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "23")
+        //                {
+        //                    objData.TwentyThree = Convert.ToString(ds.Tables[0].Rows[i]["23"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "24")
+        //                {
+        //                    objData.TwentyFour = Convert.ToString(ds.Tables[0].Rows[i]["24"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "25")
+        //                {
+        //                    objData.TwentyFive = Convert.ToString(ds.Tables[0].Rows[i]["25"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "26")
+        //                {
+        //                    objData.TwentySix = Convert.ToString(ds.Tables[0].Rows[i]["26"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "27")
+        //                {
+        //                    objData.TwentySeven = Convert.ToString(ds.Tables[0].Rows[i]["27"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "28")
+        //                {
+        //                    objData.TwentyEight = Convert.ToString(ds.Tables[0].Rows[i]["28"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "29")
+        //                {
+        //                    objData.TwentyNine = Convert.ToString(ds.Tables[0].Rows[i]["29"].ToString());
+        //                }
+        //                if (ds.Tables[0].Columns[j].ColumnName == "30")
+        //                {
+        //                    objData.Thirty = Convert.ToString(ds.Tables[0].Rows[i]["30"].ToString());
+        //                }
 
-                    }
-                    lstReportdata.Add(objData);
-                }
-            }
-            return lstReportdata;
-        }
+        //            }
+        //            lstReportdata.Add(objData);
+        //        }
+        //    }
+        //    return lstReportdata;
+        //}
 
         public static List<ModelComplaintSourceWiseDetailReport> ComplaintSourceWiseDetailPopUp(string sDate, string ComplaintSource, string OfficeCode)
         {
@@ -3047,26 +3032,26 @@ namespace ComplaintTracker.DAL
             return lstReportdata;
         }
 
-        public static DataTable ComplaintRepeat(ModelReport modelReport)
-        {
-            DataTable dt = new DataTable();
-            try
-            {
-                SqlParameter[] param ={
-                    new SqlParameter("@FROM_DATE",Convert.ToDateTime(modelReport.fromdate)),
-                     new SqlParameter("@TO_DATE",Convert.ToDateTime(modelReport.todate)),
-                     new SqlParameter("@OFFICE_CODE",modelReport.OfficeCode),
-                     new SqlParameter("@COMPLAINT_TYPE",modelReport.ComplaintType)
-                       };
+        //public static DataTable ComplaintRepeat(ModelReport modelReport)
+        //{
+        //    DataTable dt = new DataTable();
+        //    try
+        //    {
+        //        SqlParameter[] param ={
+        //            new SqlParameter("@FROM_DATE",Convert.ToDateTime(modelReport.fromdate)),
+        //             new SqlParameter("@TO_DATE",Convert.ToDateTime(modelReport.todate)),
+        //             new SqlParameter("@OFFICE_CODE",modelReport.OfficeCode),
+        //             new SqlParameter("@COMPLAINT_TYPE",modelReport.ComplaintType)
+        //               };
 
-                dt = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "GetRepeatedComplaints", param).Tables[0];
-                return dt;
-            }
-            catch
-            {
-                return dt;
-            }
-        }
+        //        dt = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "GetRepeatedComplaints", param).Tables[0];
+        //        return dt;
+        //    }
+        //    catch
+        //    {
+        //        return dt;
+        //    }
+        //}
 
         public static List<SystemAvailabilityIssue> GETSystemAvailabilityIssue()
         {
@@ -3252,36 +3237,36 @@ namespace ComplaintTracker.DAL
         }
         #endregion
 
-        #region GetRepeatedComplaints_RAW
-        public static List<ModelDashboardHaresment> GetRepeatedComplaints_RAW(ModelReport modelReport)
-        {
-            List<ModelDashboardHaresment> modelDashboardHaresments = new List<ModelDashboardHaresment>();
-            ModelDashboardHaresment objBlank = new ModelDashboardHaresment();
-            SqlParameter[] param ={
-                new SqlParameter("@COMPLAINT_TYPE",modelReport.ComplaintType),
-                new SqlParameter("@OFFICE_CODE",modelReport.OfficeCode),
-                new SqlParameter("@FROM_DATE",modelReport.fromdate),
-                new SqlParameter("@TO_DATE",modelReport.todate),
-                new SqlParameter("@REPEATE_COUNT",modelReport.count)
-            };
+        //#region GetRepeatedComplaints_RAW
+        //public static List<ModelDashboardHaresment> GetRepeatedComplaints_RAW(ModelReport modelReport)
+        //{
+        //    List<ModelDashboardHaresment> modelDashboardHaresments = new List<ModelDashboardHaresment>();
+        //    ModelDashboardHaresment objBlank = new ModelDashboardHaresment();
+        //    SqlParameter[] param ={
+        //        new SqlParameter("@COMPLAINT_TYPE",modelReport.ComplaintType),
+        //        new SqlParameter("@OFFICE_CODE",modelReport.OfficeCode),
+        //        new SqlParameter("@FROM_DATE",modelReport.fromdate),
+        //        new SqlParameter("@TO_DATE",modelReport.todate),
+        //        new SqlParameter("@REPEATE_COUNT",modelReport.count)
+        //    };
 
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "GetRepeatedComplaints_RAW", param);
+        //    DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "GetRepeatedComplaints_RAW", param);
 
-            foreach (DataRow dr in ds.Tables[0].Rows)
-            {
-                objBlank = new ModelDashboardHaresment();
-                objBlank.KNO = Convert.ToString(dr.ItemArray[0].ToString());
-                objBlank.COMPLAINT_DATE = Convert.ToString(dr.ItemArray[1].ToString());
-                objBlank.NAME = Convert.ToString(dr.ItemArray[2].ToString());
-                objBlank.COMPLAINT_TYPE = Convert.ToString(dr.ItemArray[3].ToString());
-                objBlank.MOBILE_NO = Convert.ToString(dr.ItemArray[4].ToString());
-                objBlank.ADDRESS = Convert.ToString(dr.ItemArray[5]);
+        //    foreach (DataRow dr in ds.Tables[0].Rows)
+        //    {
+        //        objBlank = new ModelDashboardHaresment();
+        //        objBlank.KNO = Convert.ToString(dr.ItemArray[0].ToString());
+        //        objBlank.COMPLAINT_DATE = Convert.ToString(dr.ItemArray[1].ToString());
+        //        objBlank.NAME = Convert.ToString(dr.ItemArray[2].ToString());
+        //        objBlank.COMPLAINT_TYPE = Convert.ToString(dr.ItemArray[3].ToString());
+        //        objBlank.MOBILE_NO = Convert.ToString(dr.ItemArray[4].ToString());
+        //        objBlank.ADDRESS = Convert.ToString(dr.ItemArray[5]);
 
-                modelDashboardHaresments.Add(objBlank);
-            }
-            return modelDashboardHaresments;
-        }
-        #endregion
+        //        modelDashboardHaresments.Add(objBlank);
+        //    }
+        //    return modelDashboardHaresments;
+        //}
+        //#endregion
 
         #region GET_CC_MOBILE_NO
         public static string GET_CC_MOBILE_NO(string sdoCode)

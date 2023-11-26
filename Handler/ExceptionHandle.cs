@@ -22,7 +22,7 @@ namespace ComplaintTracker
             };
             filterContext.ExceptionHandled = true;
 
-            Repository.SaveUnhandeledExceptions(logger);
+            //Repository.SaveUnhandeledExceptions(logger);
             //Redirect to action
             
             filterContext.Result = new ViewResult()
