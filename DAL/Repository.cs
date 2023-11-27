@@ -2408,15 +2408,22 @@ namespace ComplaintTracker.DAL
             ComplaintSummaryGraph objBlank = null;
             CircleWiseComplaintSummary objBlank1 = null;
 
-            SqlParameter[] param = { new SqlParameter("@OFFICE_ID", OFFICE_ID) };
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "DASHBOARD_new", param);
+            SqlParameter[] param = { new SqlParameter("@Month","2023-11"),
+            new SqlParameter("@div", 1),
+            new SqlParameter("@Subdiv", 0)};
+
+
+
+
+            //DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "DASHBOARD_new", param);
+            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Dashboard_NewAjay");
 
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
                 objBlank = new ComplaintSummaryGraph();
                 objBlank.Month = dr.ItemArray[0].ToString();
                 objBlank.TotalComplaint = dr.ItemArray[1].ToString();
-                objBlank.ResolveComplaint = dr.ItemArray[2].ToString();
+                //objBlank.ResolveComplaint = dr.ItemArray[2].ToString();
                 lstComplaintSummary.Add(objBlank);
             }
             dashboard.ComplaintSummaries = lstComplaintSummary;

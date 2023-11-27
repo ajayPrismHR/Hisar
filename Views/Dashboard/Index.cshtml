@@ -38,7 +38,7 @@
                         </div>
                         <div class="col-12 col-lg-3">
                             <label>Sub Division</label>
-                            <select id="ddlSubDivision" class="form-control" required>
+                            <select id="ddlSubDivision" class="form-control select2" required>
                             </select>
                         </div>
                         <div class="col-12 col-lg-3">
@@ -197,7 +197,43 @@
 
     </div>
     <script>
-    $(document).ready(function () {
+        $(document).ready(function () {
+
+            $('select:not(.normal)').each(function () {
+                $(this).select2({
+                    dropdownParent: $(this).parent()
+                });
+            });
+
+            $('#ddlDivision').select2({
+                selectOnClose: true,
+                placeholder: "Select Division",
+            });
+
+
+            $('#ddlSubDivision').select2({
+                selectOnClose: true,
+                placeholder: "Select Sub Division",
+                allowClear: true,
+            });
+            $('#ddlDivision').change(function () {
+                var selectedDivision = $("#ddlDivision").val();
+                $.ajax({
+                    type: "GET",
+                    url: '/Dashboard/GetSubDivision',
+                    contentType: "application/json; charset=utf-8",
+                    data: { "divisionId" : selectedDivision },
+                    dataType: "json",
+                    success: function (result) {
+                        $(result).each(function () {
+                            $("#ddlSubDivision").append($("<option></option>").val(this.Value).html(this.Text));
+                        });
+                    },
+                    error: function (data) { }
+                });
+
+            });
+
         $.ajax({
             type: "GET",
             url: '/Dashboard/ddlMY',
@@ -225,7 +261,21 @@
             error: function (data) { }
         });
 
-        //loadpage();
+         $.ajax({
+                type: "GET",
+                url: '/Dashboard/GetSubDivision',
+                contentType: "application/json; charset=utf-8",
+                data: { "divisionId": 1 },
+                dataType: "json",
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlSubDivision").append($("<option></option>").val(this.Value).html(this.Text));
+                    });
+                },
+                error: function (data) { }
+            });
+
+       // loadpage();
         @*if (@Session["Roll_ID"]== 8) {
             dashboardLoad = setInterval("loadpage()", 3000
             );
@@ -413,26 +463,11 @@
         });
 
 
-        $('#ddlDivision').select2({
-            selectOnClose: true,
-            placeholder: "Select Division",
-        });
-
-
-        $('#ddlSubDivision').select2({
-            selectOnClose: true,
-            placeholder: "Select Sub Division",
-            allowClear: true,
-        });
-
+      
 
 
     
-        $('#ddlDivision').change(function () {
-            var selectedDivision = $("#ddlDivision").val();
-            alert(selectedDivision);
 
-        });
 
     });
 

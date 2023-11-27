@@ -71,7 +71,7 @@ namespace ComplaintTracker.Controllers
             var jsonData = data;
             return Json(jsonData, JsonRequestBehavior.AllowGet);
         }
-
+        [HttpGet]
         public JsonResult GetSubDivision(string divisionId) //It will be fired from Jquery ajax call
         {
             List<SelectListItem> data = new List<SelectListItem>();
