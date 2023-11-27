@@ -576,6 +576,7 @@
     <Content Include="Views\Settings\EncoderDecoder.cshtml" />
     <Content Include="Views\Complaint\_newConnection.cshtml" />
     <Content Include="Views\Complaint\_powerOutage.cshtml" />
+    <Content Include="Views\Report\ReportGetPendingComplaint.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

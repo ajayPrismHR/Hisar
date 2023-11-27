@@ -720,9 +720,10 @@ namespace ComplaintTracker.DAL
                     objBlank.ADDRESS = dr.ItemArray[3].ToString();
                     objBlank.MOBILE_NO = dr.ItemArray[4].ToString();
                     objBlank.LineMan_Name = dr.ItemArray[5].ToString();
-                    objBlank.Consumer_no = dr.ItemArray[6].ToString();
-                    objBlank.REMARK = dr.ItemArray[7].ToString();
-                    objBlank.COMPLAINT_NO1 = Convert.ToInt64(dr.ItemArray[8].ToString());
+                    objBlank.Consumer_no = dr.ItemArray[8].ToString();
+                    objBlank.LineMan_No = dr.ItemArray[6].ToString();
+                    objBlank.SDO = dr.ItemArray[7].ToString();
+                    objBlank.COMPLAINT_NO1 = Convert.ToInt64(dr.ItemArray[10].ToString());
                     objBlank.Total = TotalRec;
                     lstComplaintSource.Add(objBlank);
                 }

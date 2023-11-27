@@ -1,0 +1,201 @@
+﻿
+@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<style type="text/css">
+    #DPaging_previous a {
+        background-color: transparent;
+    }
+
+    #DPaging_next a {
+        background-color: transparent;
+    }
+
+    .paginate_button.active .page-link {
+        background-color: grey !important;
+        border: 1px solid black !important;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        $('#fromDate1').datetimepicker();
+        $('#toDate1').datetimepicker();
+    });
+</script>
+
+
+<div class="header">
+    <h1 class="header-title">
+        Raw Complaint
+    </h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="~/Dashboard/Index">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Pending Complaint</li>
+        </ol>
+    </nav>
+</div>
+@*<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Search By</h5>
+                <h6 class="card-subtitle text-muted">
+                    Search with
+                </h6>
+            </div>
+
+
+
+            <div class="card-body">
+                
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-3">
+                                <div class="input-group date" id="fromDate1" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" data-target="#fromDate1" id="fromDate" name="fromDate" />
+                                    <div class="input-group-text" data-target="#fromDate1" data-toggle="datetimepicker">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                <div class="input-group date" id="toDate1" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" data-target="#toDate1" id="toDate" name="toDate" />
+                                    <div class="input-group-text" data-target="#toDate1" data-toggle="datetimepicker">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-2">
+                                @Html.DropDownList("ddlSource", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlSource" })
+                            </div>
+                        <div class="col-12 col-lg-3">
+                            @Html.DropDownList("ddlMY", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlMY" })
+                        </div>
+
+                        <div class="col-12 col-lg-1">
+                            <input type="submit" value="Excel Export" class="btn btn-dark btn-block" />
+                        </div>
+
+                    </div>
+                    <div class="row mb-3">
+                            <div class="col-12 col-lg-12">
+                                <input type="hidden" id="ComplaintTypeId" name="ComplaintTypeId" value="0">
+                                <div class="btn-group mb-1" style="overflow:hidden;width:100%">
+                                    @foreach (var item in Model.ComplaintTypeCollection)
+                                    {
+                                        if (item.ComplaintTypeId <= 8)
+                                        {
+                                            <input class="btn-check" type="radio" name="options" id="@item.ComplaintType.Replace(" ", "")" autocomplete="off">
+                                            <label class="btn text-white" for="@item.ComplaintType.Replace(" ", "")" style="background-color:@item.ComplaintTileColor">@item.ComplaintType</label>
+                                        }
+                                    }
+                                </div>
+                                <div class="btn-group" style="overflow:hidden;width:100%">
+                                    @foreach (var item in Model.ComplaintTypeCollection)
+                                    {
+                                        if (item.ComplaintTypeId > 8)
+                                        {
+                                            <input class="btn-check" type="radio" name="options" id="@item.ComplaintType.Replace(" ", "")" autocomplete="off">
+                                            <label class="btn text-white" for="@item.ComplaintType.Replace(" ", "")" style="background-color:@item.ComplaintTileColor">@item.ComplaintType</label>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                <div class="row mb-3">
+                    <div class="col-12 col-lg-3">
+                        <input type="submit" value="Search" class="btn btn-dark btn-block" id="btnSearch" onclick="searchreq()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>*@
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">About Raw Complaint</h5>
+                <h6 class="card-subtitle text-muted">
+                    Description of Report
+                </h6>
+            </div>
+            <div class="card-body">
+                <table id="DPaging" class="table table-striped table-sm" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Complaint No.</th>
+                            <th>Customer Name</th>
+                            <th>Costumer Mobile</th>
+                            <th>Complaint Center</th>
+                            <th>Complaint Center Mobile No.</th>
+                            <th>Complaint DateTime</th>
+                            <th>Resolved DateTime</th>
+                            <th>Response Time</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        searchreq();
+        
+
+    });
+    function searchreq() {
+        var dataObject = new Object();
+
+        myTable = $('#DPaging').dataTable({
+            "ajax": {
+                "url": "/Report/ReportGetPendingComplaintSearch/",
+                "type": "POST",
+                "datatype": "json",
+                "data": function (d) {
+                }
+            },
+            "destroy": true,
+            "lengthMenu": [[10, 20, 50, 100, 150], [10, 20, 50, 100, 150]],
+            "pageLength": 50,
+            "processing": true,
+            "serverSide": true,
+            scrollY: true,
+            scrollX: true,
+            "searching": false,
+            ordering: false,
+            "language": {
+                "processing": '<i class="fa fa-spinner fa-spin fa-4x fa-fw" style="color:#3B3B96;"></i><span class="sr-only">Loading...</span>'
+                /*"processing": '<div class="spinner-border text-primary" role="status" ><span class="visually-hidden">Loading...</span></div>'*/
+                /* "processing":  '<div class= "d-flex align-items-center" >  <strong>Loading...</strong>  <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div></div>'*/
+                /*"processing": "<div class='overlay custom-loader-background'><i class='fa fa-cog fa-spin custom-loader-color'></i></div>"  */
+            },
+            dom: 'Blfrtip',
+            buttons: [
+                'colvis'
+            ],
+            "columns": [
+                { 'data': 'ComplaintNo' },
+                { 'data': 'Customer_Name' },
+                { 'data': 'Mobile_no' },
+                { 'data': 'Category_Name' },
+                { 'data': 'LineMan_Name' },
+                { 'data': 'Complaint_date' },
+                { 'data': 'Resolved_Date' },
+                { 'data': 'Response_Time' },
+            ],
+
+        });
+    }
+
+
+
+</script>
