@@ -474,6 +474,7 @@ namespace ComplaintTracker.Controllers
                     dataObject.length = model.length;
 
                     // Initialization.   
+                    dataObject.UserID = Convert.ToInt64(Session["UserID"].ToString());
                     dataObject.Bill_Month = Convert.ToString(Request.Form.GetValues("Bill_Month")[0]);
                     data = Repository.ReportRawComplaintData(dataObject);
                     int count = data.Count() > 0 ? data[0].Total : 0;
@@ -744,7 +745,7 @@ namespace ComplaintTracker.Controllers
             dataObject.draw = 0;
             dataObject.start = 0;
             dataObject.length = 10000000;
-
+            dataObject.UserID = Convert.ToInt64(Session["UserID"].ToString());
             // Initialization.   
             dataObject.Bill_Month = ddlMY;
             lstdata = Repository.ReportRawComplaintData(dataObject);

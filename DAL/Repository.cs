@@ -269,6 +269,7 @@ namespace ComplaintTracker.DAL
                     new SqlParameter("@OFFICE_CODE",modelComplaint.OFFICE_CODE_ID),
                     new SqlParameter("@Complaint_Center",modelComplaint.JE_AREA),
                     new SqlParameter("@CustomerName",modelComplaint.NAME),
+                    new SqlParameter("@Complaint_no",modelComplaint.COMPLAINT_NO),
 
                     new SqlParameter("@MobileNo",modelComplaint.MOBILE_NO),
                     new SqlParameter("@Consumer_No",modelComplaint.ACCOUNT_NO),
@@ -283,8 +284,8 @@ namespace ComplaintTracker.DAL
 
 
 
-                if (param[10].Value != DBNull.Value)// status
-                    retStatus = Convert.ToString(param[10].Value);
+                if (param[11].Value != DBNull.Value)// status
+                    retStatus = Convert.ToString(param[11].Value);
 
                 log.Information(retStatus.ToString());
 
@@ -697,6 +698,7 @@ namespace ComplaintTracker.DAL
             List<ModelSearchComplaint> lstComplaintSource = new List<ModelSearchComplaint>();
             ModelSearchComplaint objBlank = new ModelSearchComplaint();
             SqlParameter[] param ={
+                new SqlParameter("@User_ID",dataObject.UserID),
                     new SqlParameter("@STARTROWINDEX",dataObject.start),
                     new SqlParameter("@MAXIMUMROWS",dataObject.length)};
 
@@ -2041,6 +2043,7 @@ namespace ComplaintTracker.DAL
             ModelRawComplaintReport objData = new ModelRawComplaintReport();
             SqlParameter[] param ={
                     new SqlParameter("@Month",dataObject.Bill_Month),
+                    new SqlParameter("@UserID",dataObject.UserID),
                     new SqlParameter("@STARTROWINDEX",dataObject.start),
                     new SqlParameter("@MAXIMUMROWS",dataObject.length),parmretTotalRecords};
 

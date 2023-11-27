@@ -46,7 +46,7 @@ namespace ComplaintTracker.Controllers
         {
             COMPLAINT obj = new COMPLAINT();
 
-            obj.OfficeCodeCollection = Repository.GetOfficeList_Create(Session["OFFICE_ID"].ToString());
+            obj.OfficeCodeCollection = Repository.GetOfficeList_Create(Session["UserID"].ToString());
             return View(obj);
         }
 
@@ -218,7 +218,7 @@ namespace ComplaintTracker.Controllers
             {
                 try
                 {
-
+                    dataObject.UserID = Convert.ToInt64(Session["UserID"].ToString());
                     dataObject.draw = model.draw;
                     dataObject.start = model.start;
                     dataObject.length = model.length;

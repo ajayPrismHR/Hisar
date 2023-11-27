@@ -26,7 +26,7 @@ namespace ComplaintTracker.Controllers
         public ActionResult AccountLogin()
         {
            
-            ViewBag.Title = "AVVNL Account login";
+            ViewBag.Title = "Hariyana Account login";
             if (TempData["loginmsg"] != null)
             {
                 Session.RemoveAll();

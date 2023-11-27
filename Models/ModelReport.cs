@@ -21,7 +21,9 @@ namespace ComplaintTracker.Models
         public string Resolved_Date { get; set; }
 
         public string Response_Time { get; set; }
-        
+
+        public Int64 UserID { get; set; }
+
 
     }
 }

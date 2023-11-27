@@ -116,7 +116,9 @@
                 
                 $("#ddlJEArea").empty().trigger('change');
                  $.ajax({
-                    type: "GET",
+                     type: "GET",
+                     //url: '/Complaint/GetOfficeListByParentOffice',
+
                      url: '/HRPDSS/Complaint/GetOfficeListByParentOffice',
                     data: { parentOfficeId: selectedCountry },
                     contentType: "application/json;charset=utf-8",
@@ -475,9 +477,12 @@
                     </div>
                     <div class="card-body">
                         <div class="row mb-3">
-                           
+
                             <div class="col-12 col-lg-3 error-placeholder">
                                 @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name" } })
+                            </div>
+                            <div class="col-12 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.COMPLAINT_NO, new { htmlAttributes = new { @class = "form-control", @placeholder = "Complaint No." } })
                             </div>
                             <div class="col-12 col-lg-3 error-placeholder">
                                 @Html.EditorFor(model => model.MOBILE_NO, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile No.", @type = "number" } })
@@ -485,14 +490,14 @@
                             <div class="col-12 col-lg-3">
                                 @Html.EditorFor(model => model.ACCOUNT_NO, new { htmlAttributes = new { @class = "form-control", @placeholder = "Consumer No." } })
                             </div>
-                            <div class="col-12 col-lg-3 error-placeholder">
-                                @Html.EditorFor(model => model.ADDRESS1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address" } })
-                            </div>
-                          
+
+
                         </div>
                         <div class="row mb-3">
-                            
-                            <div class="col-12 col-lg-12">
+                            <div class="col-6 col-lg-3 error-placeholder">
+                                @Html.EditorFor(model => model.ADDRESS1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address" } })
+                            </div>
+                            <div class="col-12 col-lg-6">
                                 @Html.EditorFor(model => model.REMARKS, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
                             </div>
                             
@@ -539,6 +544,9 @@
             focusInvalid: true,
             rules: {
                 "NAME": {
+                    required: true,
+                },
+                "COMPLAINT_NO": {
                     required: true,
                 },
                 //"searchKno": {
