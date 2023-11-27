@@ -182,10 +182,10 @@ namespace ComplaintTracker.Controllers
             modelUser.User_Name = Session["User_Name"].ToString();
 
             //userAPI.LoginAgentUser(modelUser);
-            if (userAPI.LogOutAgentUser(modelUser))
-            {
-                Repository.AgentLogin(Session["User_Name"].ToString(), Session["Roll_Name"].ToString(), DateTime.Now, DateTime.Now, DateTime.Now, DateTime.Now, "OUT");
-            }
+            //if (userAPI.LogOutAgentUser(modelUser))
+            //{
+            //    Repository.AgentLogin(Session["User_Name"].ToString(), Session["Roll_Name"].ToString(), DateTime.Now, DateTime.Now, DateTime.Now, DateTime.Now, "OUT");
+            //}
  
             message = "Logout Successfully! " + modelUser.User_Name;
             TempData["loginmsg"] = message;

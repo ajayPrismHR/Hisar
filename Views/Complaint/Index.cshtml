@@ -52,7 +52,7 @@
             var dataObject = new Object();
             myTable = $('#datatables-buttons').dataTable({
                 "ajax": {
-                    "url": "/Complaint/GetComplaintSearch/",
+                    "url": "/HRPDSS/Complaint/GetComplaintSearch/",
                     "type": "POST",
                     "datatype": "json",
                     "data": function (d) {
@@ -119,7 +119,7 @@
     </script>
     <script>
         var Close = function (recordId) {
-            var TeamDetailPostBackURL = '/Complaint/DetailsSaveClose';
+            var TeamDetailPostBackURL = '/HRPDSS/Complaint/DetailsSaveClose';
             
             $.ajax({
                 type: "GET",
