@@ -12,6 +12,11 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 }
 <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        $('#toDate1').datetimepicker();
+
+
+    });
     $(document).ready(function () {
 
             $(function () {
@@ -81,14 +86,22 @@
                 </div>
                 <div class="modal-body">
                     <div class="row mb-1">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label for="ComplaintNo">Complaint No.</label>
                             @Html.EditorFor(model => model.ComplaintNo, new { htmlAttributes = new { placeholder = "Complaint No.", @class = "form-control", @disabled = "disabled" } })
 
                             @Html.HiddenFor(model => model.ComplaintNo)
 
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <div class="input-group date" id="toDate1" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" data-target="#toDate1" id="toDate" />
+                                <div class="input-group-text" data-target="#toDate1" data-toggle="datetimepicker">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <label for="OutageTypeCollectionId1">Complaint Category</label>
                             @Html.DropDownListFor(x => Model.OutageTypeCollectionId1, new SelectList(Model.OutageTypeCollection1, "Value", "Text"), new { @class = "form-control", id = "ddlOutage1" })
 
