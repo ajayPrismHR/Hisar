@@ -135,18 +135,9 @@
                     </div>
                     <h5 class="card-title mb-0">Current Month Complaint Count</h5>
                 </div>
-                <table id="datatables-dashboard-projects" class="table table-striped my-0">
-                    <thead>
-                        <tr>
-                            <th>Circle Name</th>
-                            <th class="d-none d-xl-table-cell">Total Complaints</th>
-                            <th class="d-none d-xl-table-cell">Pending Complaints</th>
-                            <th>Reopen</th>
-                            <th class="d-none d-md-table-cell">Resolved</th>
-                        </tr>
-                    </thead>
-
-                </table>
+                <div class="align-self-center chart chart-lg">
+                    <canvas id="chartjs-dashboard-bar"></canvas>
+                </div>
             </div>
         </div>
         <div class="col-12 col-md-6 col-xxl-3 d-flex order-2 order-xxl-3">
@@ -275,7 +266,7 @@
                 error: function (data) { }
             });
 
-       // loadpage();
+        loadpage();
         @*if (@Session["Roll_ID"]== 8) {
             dashboardLoad = setInterval("loadpage()", 3000
             );
@@ -304,6 +295,10 @@
         var arrM = [];
         var arrTC = [];
         var arrTR = [];
+
+        var arrCS1=[];
+        var arrCS2=[];
+
         $.ajax({
             type: "GET",
             url: '/Dashboard/ComplaintSourceJson',
@@ -317,26 +312,23 @@
                     arrTC.push(value.TotalComplaint);
                     arrTR.push(value.ResolveComplaint);
                 });
+                $.each(result.ComplaintSummaries1, function (index, value) {
+                    arrCS1.push(value.Month);
+                    arrCS2.push(value.TotalComplaint);
+                });
                 new Chart(document.getElementById("chartjs-dashboard-line"), {
                     type: 'line',
                     data: {
-                        labels: arrM,
+                        labels: arrTC,
 
-                        datasets: [{
-                            label: "Resolved Complaints",
-                            fill: true,
-                            backgroundColor: window.theme.primary,
-                            borderColor: window.theme.primary,
-                            borderWidth: 2,
-                            data: arrTR
-                        },
-                        {
+                        datasets: [
+                      {
                             label: "Register Complaints",
                             fill: true,
                             backgroundColor: "rgba(255,0,255,0.3)",
                             borderColor: "rgba(255,0,255,0.3)",
                             borderWidth: 2,
-                            data: arrTC
+                            data: arrTR
                         }
                         ]
                     },
@@ -360,90 +352,106 @@
                             point: {
                                 radius: 0
                             }
-                        },
-                        scales: {
-                            xAxes: [{
-                                reverse: true,
-                                gridLines: {
-                                    color: "rgba(0,0,0,0.0)"
-                                }
-                            }],
-                            yAxes: [{
-                                ticks: {
-                                    stepSize: 5
-                                },
-                                display: true,
-                                gridLines: {
-                                    color: "rgba(0,0,0,0)",
-                                    fontColor: "#fff"
-                                }
-                            }]
                         }
+
+
                     }
                 });
 
-                //Tiles
-                $('#cmTc').text(result.CurrentMonthTotalComplaint);
-                $('#cmRc').text(result.CurrentMonthResolvedComplaint);
-                $('#pmTc').text(result.PreviousMonthTotalComplaint);
-                $('#pmRc').text(result.PreviousMonthResolvedComplaint);
+              
+			// Bar chart
+			new Chart(document.getElementById("chartjs-dashboard-bar"), {
+				type: 'bar',
+				data: {
+					labels: arrCS1,
+					datasets: [{
+						label: "This year",
+						backgroundColor: window.theme.primary,
+						borderColor: window.theme.primary,
+						hoverBackgroundColor: window.theme.primary,
+                        hoverBorderColor: window.theme.primary,
+                        data: arrCS2,
+						barPercentage: .75,
+						categoryPercentage: .5
+					}]
+				},
+				options: {
+					maintainAspectRatio: false,
+					legend: {
+						display: false
+					},
+					scales: {
+						yAxes: [{
+							gridLines: {
+								display: false
+							},
+							stacked: false,
+							ticks: {
+								stepSize: 20
+							}
+						}],
+						xAxes: [{
+							stacked: false,
+							gridLines: {
+								color: "transparent"
+							}
+						}]
+					}
+				}
+			});
+	
 
-                $('#hct').text(result.Hares_TOTAL_COMPLAINTS_TILL_DATE);
-                $('#hcr').text(result.Hares_TOTAL_COMPLAINTS_RESOLVED_TILL_DATE);
-                $('#hccm').text(result.Hares_TOTAL_COMPLAINTS_FOR_CURRENT_MONTH);
-                $('#hcrm').text(result.Hares_TOTAL_COMPLAINTS_RESOLVED_IN_CURRENT_MONTH);
+            
+                ////Grid
+                //var datatablesButtons = $('#datatables-dashboard-projects').DataTable(
+                //    {
+                //        data: result.CircleWiseComplaintSummaryData,
+                //        columns: [
+                //            { 'data': 'CircleName' },
+                //            { 'data': 'TotalComplaint' },
+                //            { 'data': 'TotalPendingComplaints' },
+                //            { 'data': 'TotalReopenComplaint' },
+                //            { 'data': 'TotalResolvedComplaints' },
+                //        ],
+                //        processing: true,
+                //        fixedHeader: true,
+                //        destroy: true,
+                //        bFilter: false,
+                //        pageLength: 3,
+                //        lengthChange: false,
+                //        bFilter: false,
+                //        autoWidth: true
+                //    });
 
-
-                //Grid
-                var datatablesButtons = $('#datatables-dashboard-projects').DataTable(
-                    {
-                        data: result.CircleWiseComplaintSummaryData,
-                        columns: [
-                            { 'data': 'CircleName' },
-                            { 'data': 'TotalComplaint' },
-                            { 'data': 'TotalPendingComplaints' },
-                            { 'data': 'TotalReopenComplaint' },
-                            { 'data': 'TotalResolvedComplaints' },
-                        ],
-                        processing: true,
-                        fixedHeader: true,
-                        destroy: true,
-                        bFilter: false,
-                        pageLength: 3,
-                        lengthChange: false,
-                        bFilter: false,
-                        autoWidth: true
-                    });
-
-                // Pie chart and Data
-                PendingComplaints = result.CurrentMonthTotalComplaint - result.CurrentMonthResolvedComplaint;
-                $('#TotalComplaints').text(result.CurrentMonthTotalComplaint);
-                $('#ResolvedComplaints').text(result.CurrentMonthResolvedComplaint);
-                $('#PendingComplaints').text(PendingComplaints);
-                new Chart(document.getElementById("chartjs-dashboard-pie"), {
-                    type: 'pie',
-                    data: {
-                        labels: ["Total Complaints", "Resolved Complaints", "Pending Complaints"],
-                        datasets: [{
-                            data: [result.CurrentMonthTotalComplaint, result.CurrentMonthResolvedComplaint, PendingComplaints],
-                            backgroundColor: [
-                                window.theme.primary,
-                                window.theme.warning,
-                                window.theme.danger,
-                                "#E8EAED"
-                            ],
-                            borderColor: "transparent"
-                        }]
-                    },
-                    options: {
-                        responsive: !window.MSInputMethodContext,
-                        maintainAspectRatio: false,
-                        legend: {
-                            display: false
-                        },
-                        cutoutPercentage: 75
-                    }
-                });
+                //// Pie chart and Data
+                //PendingComplaints = result.CurrentMonthTotalComplaint - result.CurrentMonthResolvedComplaint;
+                //$('#TotalComplaints').text(result.CurrentMonthTotalComplaint);
+                //$('#ResolvedComplaints').text(result.CurrentMonthResolvedComplaint);
+                //$('#PendingComplaints').text(PendingComplaints);
+                //new Chart(document.getElementById("chartjs-dashboard-pie"), {
+                //    type: 'pie',
+                //    data: {
+                //        labels: ["Total Complaints", "Resolved Complaints", "Pending Complaints"],
+                //        datasets: [{
+                //            data: [result.CurrentMonthTotalComplaint, result.CurrentMonthResolvedComplaint, PendingComplaints],
+                //            backgroundColor: [
+                //                window.theme.primary,
+                //                window.theme.warning,
+                //                window.theme.danger,
+                //                "#E8EAED"
+                //            ],
+                //            borderColor: "transparent"
+                //        }]
+                //    },
+                //    options: {
+                //        responsive: !window.MSInputMethodContext,
+                //        maintainAspectRatio: false,
+                //        legend: {
+                //            display: false
+                //        },
+                //        cutoutPercentage: 75
+                //    }
+                //});
 
             },
             error: function (data) { }

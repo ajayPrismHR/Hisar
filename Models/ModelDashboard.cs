@@ -20,6 +20,7 @@ namespace ComplaintTracker.Models
 
 
         public List<ComplaintSummaryGraph> ComplaintSummaries { get; set; }
+        public List<ComplaintSummaryGraph> ComplaintSummaries1 { get; set; }
         public List<CircleWiseComplaintSummary> CircleWiseComplaintSummaryData { get; set; }
 
 

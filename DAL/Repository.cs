@@ -2404,8 +2404,10 @@ namespace ComplaintTracker.DAL
         {
             ModelDashboard dashboard = new ModelDashboard();
             List<ComplaintSummaryGraph> lstComplaintSummary = new List<ComplaintSummaryGraph>();
+            List<ComplaintSummaryGraph> lstComplaintSummaryTotal = new List<ComplaintSummaryGraph>();
             List<CircleWiseComplaintSummary> lstComplaintSummary1 = new List<CircleWiseComplaintSummary>();
             ComplaintSummaryGraph objBlank = null;
+            ComplaintSummaryGraph objBlanksummary = null;
             CircleWiseComplaintSummary objBlank1 = null;
 
             SqlParameter[] param = { new SqlParameter("@Month","2023-11"),
@@ -2423,38 +2425,48 @@ namespace ComplaintTracker.DAL
                 objBlank = new ComplaintSummaryGraph();
                 objBlank.Month = dr.ItemArray[0].ToString();
                 objBlank.TotalComplaint = dr.ItemArray[1].ToString();
-                //objBlank.ResolveComplaint = dr.ItemArray[2].ToString();
+                objBlank.ResolveComplaint = dr.ItemArray[2].ToString();
                 lstComplaintSummary.Add(objBlank);
             }
             dashboard.ComplaintSummaries = lstComplaintSummary;
 
-            foreach (DataRow dr in ds.Tables[1].Rows)
-            {
-                dashboard.Hares_TOTAL_COMPLAINTS_TILL_DATE = dr.ItemArray[0].ToString();
-                dashboard.Hares_TOTAL_COMPLAINTS_RESOLVED_TILL_DATE = dr.ItemArray[1].ToString();
-                dashboard.Hares_TOTAL_COMPLAINTS_FOR_CURRENT_MONTH = dr.ItemArray[2].ToString();
-                dashboard.Hares_TOTAL_COMPLAINTS_RESOLVED_IN_CURRENT_MONTH = dr.ItemArray[3].ToString();
-            }
-
             foreach (DataRow dr in ds.Tables[2].Rows)
             {
-                dashboard.CurrentMonthTotalComplaint = dr.ItemArray[0].ToString();
-                dashboard.CurrentMonthResolvedComplaint = dr.ItemArray[1].ToString();
-                dashboard.PreviousMonthTotalComplaint = dr.ItemArray[2].ToString();
-                dashboard.PreviousMonthResolvedComplaint = dr.ItemArray[3].ToString();
-            }
+                objBlanksummary = new ComplaintSummaryGraph();
+                objBlanksummary.Month = dr.ItemArray[0].ToString();
+                objBlanksummary.TotalComplaint = dr.ItemArray[1].ToString();
 
-            foreach (DataRow dr in ds.Tables[3].Rows)
-            {
-                objBlank1 = new CircleWiseComplaintSummary();
-                objBlank1.CircleName = dr.ItemArray[0].ToString();
-                objBlank1.TotalComplaint = dr.ItemArray[1].ToString();
-                objBlank1.TotalPendingComplaints = dr.ItemArray[2].ToString();
-                objBlank1.TotalReopenComplaint = dr.ItemArray[3].ToString();
-                objBlank1.TotalResolvedComplaints = dr.ItemArray[4].ToString();
-                lstComplaintSummary1.Add(objBlank1);
+                lstComplaintSummaryTotal.Add(objBlanksummary);
             }
-            dashboard.CircleWiseComplaintSummaryData = lstComplaintSummary1;
+            dashboard.ComplaintSummaries1 = lstComplaintSummaryTotal;
+
+            //foreach (DataRow dr in ds.Tables[1].Rows)
+            //{
+            //    dashboard.Hares_TOTAL_COMPLAINTS_TILL_DATE = dr.ItemArray[0].ToString();
+            //    dashboard.Hares_TOTAL_COMPLAINTS_RESOLVED_TILL_DATE = dr.ItemArray[1].ToString();
+            //    dashboard.Hares_TOTAL_COMPLAINTS_FOR_CURRENT_MONTH = dr.ItemArray[2].ToString();
+            //    dashboard.Hares_TOTAL_COMPLAINTS_RESOLVED_IN_CURRENT_MONTH = dr.ItemArray[3].ToString();
+            //}
+
+            //foreach (DataRow dr in ds.Tables[2].Rows)
+            //{
+            //    dashboard.CurrentMonthTotalComplaint = dr.ItemArray[0].ToString();
+            //    dashboard.CurrentMonthResolvedComplaint = dr.ItemArray[1].ToString();
+            //    dashboard.PreviousMonthTotalComplaint = dr.ItemArray[2].ToString();
+            //    dashboard.PreviousMonthResolvedComplaint = dr.ItemArray[3].ToString();
+            //}
+
+            //foreach (DataRow dr in ds.Tables[3].Rows)
+            //{
+            //    objBlank1 = new CircleWiseComplaintSummary();
+            //    objBlank1.CircleName = dr.ItemArray[0].ToString();
+            //    objBlank1.TotalComplaint = dr.ItemArray[1].ToString();
+            //    objBlank1.TotalPendingComplaints = dr.ItemArray[2].ToString();
+            //    objBlank1.TotalReopenComplaint = dr.ItemArray[3].ToString();
+            //    objBlank1.TotalResolvedComplaints = dr.ItemArray[4].ToString();
+            //    lstComplaintSummary1.Add(objBlank1);
+            //}
+            //dashboard.CircleWiseComplaintSummaryData = lstComplaintSummary1;
             return dashboard;
         }
         #endregion
