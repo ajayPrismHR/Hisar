@@ -17,9 +17,10 @@
 
 
     });
-    $(document).ready(function () {
 
-            $(function () {
+    $(document).ready(function () {
+        $(function () {
+
                 $('select').select2({
                     dropdownCssClass: 'custom-dropdown'
                 });
@@ -34,20 +35,23 @@
                     width: '370px',
                  });
 
-                
+
             });
 
-            
+
             $('#submitComplaint').click(function () {
                 $("#UserId").val(@Session["UserId"]);
+                $("#TO_DATE").val($('#toDate').val());
             });
 
 
     });
     function closeComplaint() {
-        var TeamDetailPostBackURL = '/HRPDSS/Complaint/closeComplaint';
+        //var TeamDetailPostBackURL = '/HRPDSS/Complaint/closeComplaint';
+        var TeamDetailPostBackURL = '/Complaint/closeComplaint';
         var model = new Object();
         model.ComplaintNo = $("#ComplaintNo").val();
+        model.TO_DATE = $('#toDate').val();
         model.OutageTypeCollectionId1 = $("#ddlOutage1").val();
         $.ajax({
             type: "GET",
@@ -74,47 +78,57 @@
 
 
 </script>
+@{
+    var fromDate = (DateTime)ViewBag.fromDate;
+    var toDate = (DateTime)ViewBag.toDate;
+
+}
 @model ComplaintTracker.Models.ModelCloseComplaint
 
-    @Html.HiddenFor(model => model.IsConfirmByCustomer);
-    <div class="modal fade" id="ClosePopup" tabindex="-1" aria-hidden="true" style="display: none;" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header with-border bg-danger text-white">
-                    <h2 class="modal-title">Complaint Close</h2>
-                    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close"><span>&times;</span> </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-1">
-                        <div class="col-md-4">
-                            <label for="ComplaintNo">Complaint No.</label>
-                            @Html.EditorFor(model => model.ComplaintNo, new { htmlAttributes = new { placeholder = "Complaint No.", @class = "form-control", @disabled = "disabled" } })
+@Html.HiddenFor(model => model.TO_DATE);
 
-                            @Html.HiddenFor(model => model.ComplaintNo)
+<div class="modal fade" id="ClosePopup" tabindex="-1" aria-hidden="true" style="display: none;" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header with-border bg-danger text-white">
+                <h2 class="modal-title">Complaint Close</h2>
+                <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close"><span>&times;</span> </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-1">
+                    <div class="col-md-4">
+                        <label for="ComplaintNo">Complaint No.</label>
+                        @Html.EditorFor(model => model.ComplaintNo, new { htmlAttributes = new { placeholder = "Complaint No.", @class = "form-control", @disabled = "disabled" } })
 
-                        </div>
-                        <div class="col-md-4">
-                            <div class="input-group date" id="toDate1" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input" data-target="#toDate1" id="toDate" />
-                                <div class="input-group-text" data-target="#toDate1" data-toggle="datetimepicker">
-                                    <i class="fa fa-calendar"></i>
-                                </div>
+                        @Html.HiddenFor(model => model.ComplaintNo)
+
+                    </div>
+                    <div class="col-md-4">
+                        <label for="toDate1">Resolved Date</label>
+                        <div class="input-group date" id="toDate1" data-target-input="nearest">
+
+                            <input type="text" class="form-control datetimepicker-input" data-target="#toDate1" id="toDate" />
+
+
+                            <div class="input-group-text" data-target="#toDate1" data-toggle="datetimepicker">
+                                <i class="fa fa-calendar"></i>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <label for="OutageTypeCollectionId1">Complaint Category</label>
-                            @Html.DropDownListFor(x => Model.OutageTypeCollectionId1, new SelectList(Model.OutageTypeCollection1, "Value", "Text"), new { @class = "form-control", id = "ddlOutage1" })
-
-                        </div>
                     </div>
-                    
+                    <div class="col-md-4">
+                        <label for="OutageTypeCollectionId1">Complaint Category</label>
+                        @Html.DropDownListFor(x => Model.OutageTypeCollectionId1, new SelectList(Model.OutageTypeCollection1, "Value", "Text"), new { @class = "form-control", id = "ddlOutage1" })
+
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success" id="submitComplaint" onclick="closeComplaint()">Update</button>
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Close</button>
-                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="submitComplaint" onclick="closeComplaint()">Update</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Close</button>
             </div>
         </div>
     </div>
+</div>
 
 

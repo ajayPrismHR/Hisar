@@ -45,7 +45,8 @@ namespace ComplaintTracker.Controllers
         public ActionResult Create()
         {
             COMPLAINT obj = new COMPLAINT();
-
+            ViewBag.fromDate = DateTime.Now;
+            ViewBag.toDate = DateTime.Now.AddDays(1);
             obj.OfficeCodeCollection = Repository.GetOfficeList_Create(Session["UserID"].ToString());
             return View(obj);
         }
@@ -429,6 +430,9 @@ namespace ComplaintTracker.Controllers
         [HttpGet]
         public ActionResult DetailsSaveClose(string Id) //It will be fired from Jquery ajax call
         {
+
+            ViewBag.fromDate = DateTime.Now;
+            ViewBag.toDate = DateTime.Now.AddDays(1);
             List<SelectList> _list = new List<SelectList>();
             ModelCloseComplaint objClose = new ModelCloseComplaint();
             if(Id.Substring(0,3)=="111")

@@ -97,6 +97,8 @@ namespace ComplaintTracker.Models
         public int ComplaintSource { get; set; }
         public string ComplaintSourceName { get; set; }
         public int currentStatus { get; set; }
+        public string FROM_DATE { get; set; }
+        public string TO_DATE { get; set; }
         public DateTime fromdate { get; set; }
         public DateTime todate { get; set; }
         public string SMS { get; set; }

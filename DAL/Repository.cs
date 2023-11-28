@@ -267,6 +267,8 @@ namespace ComplaintTracker.DAL
 
             SqlParameter[] param ={
                     new SqlParameter("@OFFICE_CODE",modelComplaint.OFFICE_CODE_ID),
+
+                    new SqlParameter("@Complaint_Date",modelComplaint.FROM_DATE),
                     new SqlParameter("@Complaint_Center",modelComplaint.JE_AREA),
                     new SqlParameter("@CustomerName",modelComplaint.NAME),
                     new SqlParameter("@Complaint_no",modelComplaint.COMPLAINT_NO),
@@ -284,8 +286,8 @@ namespace ComplaintTracker.DAL
 
 
 
-                if (param[11].Value != DBNull.Value)// status
-                    retStatus = Convert.ToString(param[11].Value);
+                if (param[12].Value != DBNull.Value)// status
+                    retStatus = Convert.ToString(param[12].Value);
 
                 log.Information(retStatus.ToString());
 
@@ -1468,6 +1470,7 @@ namespace ComplaintTracker.DAL
 
             SqlParameter[] param ={
                 new SqlParameter("@complaint_no",modelRemark.ComplaintNo),
+                new SqlParameter("@Resolved_Date",modelRemark.TO_DATE),
                     new SqlParameter("@Complaint_CategoryID",modelRemark.OutageTypeCollectionId1),
                     parmretStatus,parmretMsg};
 
@@ -1476,8 +1479,8 @@ namespace ComplaintTracker.DAL
             {
                 SqlHelper.ExecuteNonQuery(HelperClass.Connection, CommandType.StoredProcedure, "Save_Complaint_Close", param);
 
-                if (param[2].Value != DBNull.Value)// status
-                    retStatus = Convert.ToInt32(param[2].Value);
+                if (param[3].Value != DBNull.Value)// status
+                    retStatus = Convert.ToInt32(param[3].Value);
                 else
                     retStatus = 0;
             }

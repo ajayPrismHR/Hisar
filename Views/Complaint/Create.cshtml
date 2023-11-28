@@ -58,7 +58,7 @@
             });
 
 
-            
+
             var count = 0;
             $('#ddlOfficecode').change(function () {
                 var selectedOffice = $("#ddlOfficecode").val();
@@ -67,11 +67,11 @@
                 }
             });
 
-           
+
 
 
             function filljendd(selectedCountry) {
-                
+
                 $("#ddlJEArea").empty().trigger('change');
                  $.ajax({
                      type: "GET",
@@ -136,8 +136,7 @@
             $('#submitComplaint').click(function () {
                 var officecode = $("#ddlOfficecode").val();
                 var ddlJEArea = $("#ddlJEArea").val();
-
-
+                $("#FROM_DATE").val($('#fromDate').val());
             //$("#SUB_COMPLAINT_TYPE_ID").val($("#ddlSubComplaintType").val());
             $("#JE_AREA").val($('#ddlJEArea').val());
             //$("#CONSUMER_TYPE").val($("#Consumertype").val());
@@ -168,13 +167,18 @@
         }
     </script>
 }
+@{
+    var fromDate = (DateTime)ViewBag.fromDate;
+    var toDate = (DateTime)ViewBag.toDate;
 
+}
 @using (Html.BeginForm("Create", "Complaint", FormMethod.Post, new { name = "frm", id = "validation-form" }))
 {
     @Html.AntiForgeryToken()
     <div id="loadRemarkPopUp">
 
     </div>
+
     <div class="header">
         <h1 class="header-title">
             Register Complaint
@@ -220,13 +224,14 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-12 col-lg-3">
-                                <div class="input-group date" id="fromDate1" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input" data-target="#fromDate1" id="fromDate" />
-                                    <div class="input-group-text" data-target="#fromDate1" data-toggle="datetimepicker">
-                                        <i class="fa fa-calendar"></i>
+                                    <div class="input-group date" id="fromDate1" data-target-input="nearest">
+                                        <input type="text" class="form-control datetimepicker-input" data-target="#fromDate1" id="fromDate" />
+                                        <div class="input-group-text" data-target="#fromDate1" data-toggle="datetimepicker">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            
                             <div class="col-12 col-lg-3 error-placeholder">
                                 @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name" } })
                             </div>
@@ -236,7 +241,7 @@
                             <div class="col-12 col-lg-3 error-placeholder">
                                 @Html.EditorFor(model => model.MOBILE_NO, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile No.", @type = "number" } })
                             </div>
-                            
+
 
 
                         </div>
@@ -252,7 +257,7 @@
                             </div>
 
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
@@ -267,7 +272,7 @@
         @*@Html.HiddenFor(model => model.SUB_COMPLAINT_TYPE_ID)*@
         @Html.HiddenFor(model => model.UserId)
         @Html.HiddenFor(model => model.JE_AREA)
-        @*@Html.HiddenFor(model => model.CONSUMER_TYPE)*@
+        @Html.HiddenFor(model => model.FROM_DATE)
     </div>
 }
 

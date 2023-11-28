@@ -27,6 +27,7 @@ namespace ComplaintTracker.Models
         public int CauseCollectionId { get; set; }
         public List<SelectListItem> CauseCollection { get; set; }
 
+        public string TO_DATE { get; set; }
 
 
 
