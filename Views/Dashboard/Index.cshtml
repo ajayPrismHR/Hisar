@@ -168,22 +168,27 @@
                                 <tr>
                                     <td><i class="fas fa-circle text-primary fa-fw"></i> Total Complaints</td>
                                     <td class="text-end"><label id="r1" /></td>
+                                    <td class="text-end"><label id="rp1" />0%</td>
                                 </tr>
                                 <tr>
                                     <td><i class="fas fa-circle text-secondary fa-fw"></i> Resolved Complaints</td>
                                     <td class="text-end"><label id="r2" /></td>
+                                    <td class="text-end"><label id="rp2" />0%</td>
                                 </tr>
                                 <tr>
                                     <td><i class="fas fa-circle text-info fa-fw"></i> Pending Complaints</td>
                                     <td class="text-end"><label id="r3" /></td>
+                                    <td class="text-end"><label id="rp3" />0%</td>
                                 </tr>
                                 <tr>
                                     <td><i class="fas fa-circle text-danger fa-fw"></i> Total Complaints</td>
                                     <td class="text-end"><label id="r4" /></td>
+                                    <td class="text-end"><label id="rp4" />0%</td>
                                 </tr>
                                 <tr>
                                     <td><i class="fas fa-circle text-warning fa-fw"></i> Resolved Complaints</td>
                                     <td class="text-end"><label id="r5" /></td>
+                                    <td class="text-end"><label id="rp5" />0%</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -435,10 +440,14 @@
                 $('#r1').text(result.CircleWiseComplaintSummaryData[0].TotalReopenComplaint);
                 $('#r2').text(result.CircleWiseComplaintSummaryData[1].TotalReopenComplaint);
                 $('#r3').text(result.CircleWiseComplaintSummaryData[2].TotalReopenComplaint);
-                $('#r4').text(result.CircleWiseComplaintSummaryData[4].TotalReopenComplaint);
-                $('#r5').text(result.CircleWiseComplaintSummaryData[5].TotalReopenComplaint);
+                $('#r4').text(result.CircleWiseComplaintSummaryData[3].TotalReopenComplaint);
+                $('#r5').text(result.CircleWiseComplaintSummaryData[4].TotalReopenComplaint);
 
-
+                $('#rp1').text(result.CircleWiseComplaintSummaryData[0].TotalPendingComplaints);
+                $('#rp2').text(result.CircleWiseComplaintSummaryData[1].TotalPendingComplaints);
+                $('#rp3').text(result.CircleWiseComplaintSummaryData[2].TotalPendingComplaints);
+                $('#rp4').text(result.CircleWiseComplaintSummaryData[3].TotalPendingComplaints);
+                $('#rp5').text(result.CircleWiseComplaintSummaryData[4].TotalPendingComplaints);
 
 
 
@@ -451,9 +460,11 @@
                             data: [result.CircleWiseComplaintSummaryData[0].TotalReopenComplaint, result.CircleWiseComplaintSummaryData[1].TotalReopenComplaint, result.CircleWiseComplaintSummaryData[2].TotalReopenComplaint, result.CircleWiseComplaintSummaryData[3].TotalReopenComplaint, result.CircleWiseComplaintSummaryData[4].TotalReopenComplaint],
                             backgroundColor: [
                                 window.theme.primary,
-                                window.theme.warning,
+                                window.theme.secondary,
+                                window.theme.info,
                                 window.theme.danger,
-                                "#E8EAED"
+                                window.theme.warning,
+/*                                "#E8EAED"*/
                             ],
                             borderColor: "transparent"
                         }]

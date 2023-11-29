@@ -2451,7 +2451,7 @@ namespace ComplaintTracker.DAL
                 objBlank1 = new CircleWiseComplaintSummary();
                 objBlank1.TotalComplaint = dr.ItemArray[0].ToString();
                 objBlank1.TotalReopenComplaint = dr.ItemArray[1].ToString();
-                objBlank1.TotalPendingComplaints = dr.ItemArray[2].ToString();
+                objBlank1.TotalPendingComplaints = dr.ItemArray[2].ToString()  + "%";
 
 
                 lstComplaintSummary1.Add(objBlank1);
