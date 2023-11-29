@@ -167,15 +167,23 @@
                             <tbody>
                                 <tr>
                                     <td><i class="fas fa-circle text-primary fa-fw"></i> Total Complaints</td>
-                                    <td class="text-end"><label id="TotalComplaints" /></td>
+                                    <td class="text-end"><label id="r1" /></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-circle text-secondary fa-fw"></i> Resolved Complaints</td>
+                                    <td class="text-end"><label id="r2" /></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-circle text-info fa-fw"></i> Pending Complaints</td>
+                                    <td class="text-end"><label id="r3" /></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-circle text-danger fa-fw"></i> Total Complaints</td>
+                                    <td class="text-end"><label id="r4" /></td>
                                 </tr>
                                 <tr>
                                     <td><i class="fas fa-circle text-warning fa-fw"></i> Resolved Complaints</td>
-                                    <td class="text-end"><label id="ResolvedComplaints" /></td>
-                                </tr>
-                                <tr>
-                                    <td><i class="fas fa-circle text-danger fa-fw"></i> Pending Complaints</td>
-                                    <td class="text-end"><label id="PendingComplaints" /></td>
+                                    <td class="text-end"><label id="r5" /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -423,35 +431,42 @@
                 //        autoWidth: true
                 //    });
 
-                //// Pie chart and Data
-                //PendingComplaints = result.CurrentMonthTotalComplaint - result.CurrentMonthResolvedComplaint;
-                //$('#TotalComplaints').text(result.CurrentMonthTotalComplaint);
-                //$('#ResolvedComplaints').text(result.CurrentMonthResolvedComplaint);
-                //$('#PendingComplaints').text(PendingComplaints);
-                //new Chart(document.getElementById("chartjs-dashboard-pie"), {
-                //    type: 'pie',
-                //    data: {
-                //        labels: ["Total Complaints", "Resolved Complaints", "Pending Complaints"],
-                //        datasets: [{
-                //            data: [result.CurrentMonthTotalComplaint, result.CurrentMonthResolvedComplaint, PendingComplaints],
-                //            backgroundColor: [
-                //                window.theme.primary,
-                //                window.theme.warning,
-                //                window.theme.danger,
-                //                "#E8EAED"
-                //            ],
-                //            borderColor: "transparent"
-                //        }]
-                //    },
-                //    options: {
-                //        responsive: !window.MSInputMethodContext,
-                //        maintainAspectRatio: false,
-                //        legend: {
-                //            display: false
-                //        },
-                //        cutoutPercentage: 75
-                //    }
-                //});
+                // Pie chart and Data
+                $('#r1').text(result.CircleWiseComplaintSummaryData[0].TotalReopenComplaint);
+                $('#r2').text(result.CircleWiseComplaintSummaryData[1].TotalReopenComplaint);
+                $('#r3').text(result.CircleWiseComplaintSummaryData[2].TotalReopenComplaint);
+                $('#r4').text(result.CircleWiseComplaintSummaryData[4].TotalReopenComplaint);
+                $('#r5').text(result.CircleWiseComplaintSummaryData[5].TotalReopenComplaint);
+
+
+
+
+
+
+                new Chart(document.getElementById("chartjs-dashboard-pie"), {
+                    type: 'pie',
+                    data: {
+                        labels: [result.CircleWiseComplaintSummaryData[0].TotalComplaint, result.CircleWiseComplaintSummaryData[1].TotalComplaint, result.CircleWiseComplaintSummaryData[2].TotalComplaint, result.CircleWiseComplaintSummaryData[3].TotalComplaint, result.CircleWiseComplaintSummaryData[4].TotalComplaint],
+                        datasets: [{
+                            data: [result.CircleWiseComplaintSummaryData[0].TotalReopenComplaint, result.CircleWiseComplaintSummaryData[1].TotalReopenComplaint, result.CircleWiseComplaintSummaryData[2].TotalReopenComplaint, result.CircleWiseComplaintSummaryData[3].TotalReopenComplaint, result.CircleWiseComplaintSummaryData[4].TotalReopenComplaint],
+                            backgroundColor: [
+                                window.theme.primary,
+                                window.theme.warning,
+                                window.theme.danger,
+                                "#E8EAED"
+                            ],
+                            borderColor: "transparent"
+                        }]
+                    },
+                    options: {
+                        responsive: !window.MSInputMethodContext,
+                        maintainAspectRatio: false,
+                        legend: {
+                            display: false
+                        },
+                        cutoutPercentage: 75
+                    }
+                });
 
             },
             error: function (data) { }
