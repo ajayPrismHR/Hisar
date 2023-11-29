@@ -7,10 +7,12 @@ namespace ComplaintTracker.Models
 {
     public class ModelDashboard
     {
-        public string CurrentMonthTotalComplaint { get; set; }
-        public string CurrentMonthResolvedComplaint { get; set; }
-        public string PreviousMonthTotalComplaint { get; set; }
-        public string PreviousMonthResolvedComplaint { get; set; }
+        public string row0 { get; set; }
+        public string row1 { get; set; }
+        public string row2 { get; set; }
+        public string row3 { get; set; }
+        public string row4 { get; set; }
+
 
         public string Hares_TOTAL_COMPLAINTS_TILL_DATE { get; set; }
         public string Hares_TOTAL_COMPLAINTS_RESOLVED_TILL_DATE { get; set; }
