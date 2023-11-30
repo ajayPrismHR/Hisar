@@ -858,6 +858,53 @@ namespace ComplaintTracker.Controllers
         //    modelDashboardHaresments = Repository.GetRepeatedComplaints_RAW(modelReport);
         //    return PartialView("_repetedComplaintDetails", modelDashboardHaresments);
         //}
+
+
+        public ActionResult ReportMonthlyComplaint()
+        {
+            ViewBag.fromDate = DateTime.Now;
+            ViewBag.toDate = DateTime.Now.AddDays(1);
+            COMPLAINT objComplaint = new COMPLAINT();
+            return View(objComplaint);
+        }
+
+        [HttpPost]
+        public JsonResult ReportMonthlyComplaintSearch(DataTableAjaxPostModel model)
+        {
+            ModelReport dataObject = new ModelReport();
+            List<ModelRawComplaintReport> data = new List<ModelRawComplaintReport>();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+
+                    dataObject.draw = model.draw;
+                    dataObject.start = model.start;
+                    dataObject.length = model.length;
+
+                    // Initialization.   
+                    dataObject.UserID = Convert.ToInt64(Session["UserID"].ToString());
+                    dataObject.Bill_Month = Convert.ToString(Request.Form.GetValues("My")[0]);
+                    dataObject.divisionn = Convert.ToString(Request.Form.GetValues("division")[0]);
+                    dataObject.subdivisionn = Convert.ToString(Request.Form.GetValues("subdivsion")[0]);
+
+                    data = Repository.ReportMonthlyComplaintData(dataObject);
+                    int count = data.Count() > 0 ? data[0].Total : 0;
+                    return Json(new { draw = dataObject.draw, recordsFiltered = count, recordsTotal = count, data = data }, JsonRequestBehavior.AllowGet);
+
+                }
+                catch
+                {
+                    return Json(new { draw = dataObject.draw, recordsFiltered = 0, recordsTotal = 0, data = data }, JsonRequestBehavior.AllowGet);
+                }
+
+            }
+            else
+            {
+                return Json("error", JsonRequestBehavior.AllowGet);
+            }
+
+        }
     }
 }
 
