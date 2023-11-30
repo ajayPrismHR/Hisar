@@ -161,7 +161,8 @@
             });
             $.ajax({
                 type: "GET",
-                url: '/HRPDSS/Dashboard/ddlMY',
+                //url: '/HRPDSS/Dashboard/ddlMY',
+                url: '/Dashboard/ddlMY',
                 contentType: "application/json; charset=utf-8",
                 datatype: JSON,
                 success: function (result) {
@@ -182,7 +183,8 @@
 
         myTable = $('#DPaging').dataTable({
             "ajax": {
-                "url": "/HRPDSS/Report/ReportRawComplaintSearch/",
+                //"url": "/HRPDSS/Report/ReportRawComplaintSearch/",
+                "url": "/Report/ReportRawComplaintSearch/",
                 "type": "POST",
                 "datatype": "json",
                 "data": function (d) {
