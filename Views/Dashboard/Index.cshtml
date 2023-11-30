@@ -29,19 +29,21 @@
                     <div class="row mb-3">
                         <div class="col-12 col-lg-3">
                             <label>Bill Year</label>
-                            @Html.DropDownList("ddlMY", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlMY" })
+                            @Html.DropDownList("ddlMY", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control select2", id = "ddlMY" })
 
                         </div>
                         <div class="col-12 col-lg-3">
                             <label>Division</label>
-                            @Html.DropDownList("ddlDivision", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control", id = "ddlDivision" })
+                            @Html.DropDownList("ddlDivision", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control select2", id = "ddlDivision" , disabled = "disabled" })
                         </div>
                         <div class="col-12 col-lg-3">
                             <label>Sub Division</label>
                             <select id="ddlSubDivision" class="form-control select2" required>
                             </select>
                         </div>
-                        <div class="col-12 col-lg-3">
+                        <div class="col-12 col-lg-3 mt-3">
+                          
+                            <input type="submit" value="Load Dashboard" class="btn btn-dark btn-block" id="btnSave" onclick="loadpage('1')" />
 
 
                         </div>
@@ -209,17 +211,63 @@
                 });
             });
 
+            $('#ddlMY').select2({
+                selectOnClose: true,
+                /*placeholder: "Select Division",*/
+            });
+
             $('#ddlDivision').select2({
                 selectOnClose: true,
-                placeholder: "Select Division",
+                /*placeholder: "Select Division",*/
             });
 
 
             $('#ddlSubDivision').select2({
                 selectOnClose: true,
-                placeholder: "Select Sub Division",
-                allowClear: true,
+                //placeholder: "Select Sub Division",
             });
+
+            $.ajax({
+                type: "GET",
+                url: '/Dashboard/ddlMY',
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlMY").append($("<option></option>").val(this.Value).html(this.Text));
+                    });
+                },
+                error: function (data) { }
+            });
+
+
+            $.ajax({
+                type: "GET",
+                url: '/Dashboard/GetDivision',
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlDivision").append($("<option></option>").val(this.Value).html(this.Text));
+                    });
+                },
+                error: function (data) { }
+            });
+
+            $.ajax({
+                type: "GET",
+                url: '/Dashboard/GetSubDivision',
+                contentType: "application/json; charset=utf-8",
+                data: { "divisionId": 1 },
+                dataType: "json",
+                success: function (result) {
+                    $(result).each(function () {
+                        $("#ddlSubDivision").append($("<option></option>").val(this.Value).html(this.Text));
+                    });
+                },
+                error: function (data) { }
+            });
+
             $('#ddlDivision').change(function () {
                 var selectedDivision = $("#ddlDivision").val();
                 $.ajax({
@@ -235,49 +283,18 @@
                     },
                     error: function (data) { }
                 });
+            });
+
+            $('#ddlSubDivision').change(function () {
+                var selectedSubDivision = $("#ddlSubDivision").val();
+                var selectedDivision = $("#ddlDivision").val();
+                var selectedPeriod = $("#ddlMY option:selected").val();
+      
 
             });
 
-        $.ajax({
-            type: "GET",
-            url: '/Dashboard/ddlMY',
-            contentType: "application/json; charset=utf-8",
-            datatype: JSON,
-            success: function (result) {
-                $(result).each(function () {
-                    $("#ddlMY").append($("<option></option>").val(this.Value).html(this.Text));
-                });
-            },
-            error: function (data) { }
-        });
 
-
-        $.ajax({
-            type: "GET",
-            url: '/Dashboard/GetDivision',
-            contentType: "application/json; charset=utf-8",
-            datatype: JSON,
-            success: function (result) {
-                $(result).each(function () {
-                    $("#ddlDivision").append($("<option></option>").val(this.Value).html(this.Text));
-                });
-            },
-            error: function (data) { }
-        });
-
-         $.ajax({
-                type: "GET",
-                url: '/Dashboard/GetSubDivision',
-                contentType: "application/json; charset=utf-8",
-                data: { "divisionId": 1 },
-                dataType: "json",
-                success: function (result) {
-                    $(result).each(function () {
-                        $("#ddlSubDivision").append($("<option></option>").val(this.Value).html(this.Text));
-                    });
-                },
-                error: function (data) { }
-            });
+       
 
         loadpage();
         @*if (@Session["Roll_ID"]== 8) {
@@ -301,9 +318,17 @@
                 rtl: $("body").attr("dir") === "rtl" || $("html").attr("dir") === "rtl",
                 timeOut: 5000
             });
-    }
+        }
 
-    function loadpage() {
+    
+
+        function loadpage() {
+
+            var selectedSubDivision = $("#ddlSubDivision").val();
+            var selectedDivision = $("#ddlDivision").val();
+            var selectedPeriod = $("#ddlMY option:selected").val();
+
+
         var PendingComplaints = 0;
         var arrM = [];
         var arrTC = [];
@@ -316,6 +341,7 @@
             type: "GET",
             url: '/Dashboard/ComplaintSourceJson',
             contentType: "application/json; charset=utf-8",
+            data: { "Month": selectedPeriod, "division": selectedDivision, "subdivision": selectedSubDivision },
             datatype: JSON,
             async: true,
             success: function (result) {

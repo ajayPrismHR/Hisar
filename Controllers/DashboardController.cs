@@ -45,11 +45,11 @@ namespace ComplaintTracker.Controllers
             return View();
         }
 
-        public JsonResult ComplaintSourceJson() //It will be fired from Jquery ajax call
+        public JsonResult ComplaintSourceJson(string Month, string division, string subdivision) //It will be fired from Jquery ajax call
         {
            
             ModelDashboard modelDashboard = new ModelDashboard();
-            modelDashboard = Repository.GetDashBoardData(Session["OFFICE_ID"].ToString());
+            modelDashboard = Repository.GetDashBoardData(Month,division,subdivision);
             var jsonData = modelDashboard;
             return Json(jsonData, JsonRequestBehavior.AllowGet);
         }
