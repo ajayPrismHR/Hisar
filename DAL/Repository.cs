@@ -2403,7 +2403,7 @@ namespace ComplaintTracker.DAL
         //#endregion
 
         #region Dashboard
-        public static ModelDashboard GetDashBoardData(String OFFICE_ID)
+        public static ModelDashboard GetDashBoardData(string Month,string division,string subdivision)
         {
             ModelDashboard dashboard = new ModelDashboard();
             List<ComplaintSummaryGraph> lstComplaintSummary = new List<ComplaintSummaryGraph>();
@@ -2414,14 +2414,14 @@ namespace ComplaintTracker.DAL
             ComplaintSummaryGraph objBlanksummary = null;
             CircleWiseComplaintSummary objBlank1 = null;
 
-            SqlParameter[] param = { new SqlParameter("@Month","2023-11"),
-            new SqlParameter("@div", 1),
-            new SqlParameter("@Subdiv", 0)};
+            SqlParameter[] param = { new SqlParameter("@Month",Month),
+            new SqlParameter("@div",division ),
+            new SqlParameter("@Subdiv", subdivision)};
 
 
 
 
-            //DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "DASHBOARD_new", param);
+           // DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "DASHBOARD_new", param);
             DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Dashboard_NewAjay");
 
             foreach (DataRow dr in ds.Tables[0].Rows)
