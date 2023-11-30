@@ -25,5 +25,9 @@ namespace ComplaintTracker.Models
         public Int64 UserID { get; set; }
 
 
+        public string divisionn { get; set; }
+        public string subdivisionn { get; set; }
+
+
     }
 }

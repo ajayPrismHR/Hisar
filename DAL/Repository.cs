@@ -3470,5 +3470,47 @@ namespace ComplaintTracker.DAL
             return lstComplaintSource;
         }
 
+        public static List<ModelRawComplaintReport> ReportMonthlyComplaintData(ModelReport dataObject)
+        {
+            SqlParameter parmretTotalRecords = new SqlParameter();
+            parmretTotalRecords.ParameterName = "@TOTALRECORDS";
+            parmretTotalRecords.DbType = DbType.Int32;
+            parmretTotalRecords.Size = 8;
+            parmretTotalRecords.Direction = ParameterDirection.Output;
+
+            int TotalRec = 0;
+
+            List<ModelRawComplaintReport> lstReportdata = new List<ModelRawComplaintReport>();
+            ModelRawComplaintReport objData = new ModelRawComplaintReport();
+            SqlParameter[] param ={
+                    new SqlParameter("@Month",dataObject.Bill_Month),
+                    new SqlParameter("@UserID",dataObject.UserID),
+                    new SqlParameter("@sdiv",dataObject.subdivisionn)};
+
+            log.Debug(" RAW_COMPLAINT IP " + HelperClass.GetIPHelper() + " Proc Start Time :  " + DateTime.Now.ToString());
+            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "ExcelExportData", param);
+            log.Debug(" RAW_COMPLAINT IP " + HelperClass.GetIPHelper() + " Proc End Time :  " + DateTime.Now.ToString());
+            //if (param[3].Value != DBNull.Value)// status
+            //    TotalRec = Convert.ToInt32(param[3].Value);
+            //else
+            //    TotalRec = 0;
+
+            if (ds.Tables.Count > 0)
+            {
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    objData = new ModelRawComplaintReport();
+                    objData.ComplaintNo = Convert.ToString(dr.ItemArray[0].ToString());
+                    objData.Category_Name = Convert.ToString(dr.ItemArray[1].ToString());
+                    objData.Customer_Name = Convert.ToString(dr.ItemArray[2].ToString());
+
+
+                    objData.Total = TotalRec;
+                    lstReportdata.Add(objData);
+                }
+            }
+            return lstReportdata;
+        }
+
     }
 }
