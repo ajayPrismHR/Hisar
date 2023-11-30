@@ -2403,7 +2403,7 @@ namespace ComplaintTracker.DAL
         //#endregion
 
         #region Dashboard
-        public static ModelDashboard GetDashBoardData(string Month,string division,string subdivision)
+        public static ModelDashboard GetDashBoardData(string Month,string division,string subdivision,Int64 userid)
         {
             ModelDashboard dashboard = new ModelDashboard();
             List<ComplaintSummaryGraph> lstComplaintSummary = new List<ComplaintSummaryGraph>();
@@ -2416,13 +2416,14 @@ namespace ComplaintTracker.DAL
 
             SqlParameter[] param = { new SqlParameter("@Month",Month),
             new SqlParameter("@div",division ),
-            new SqlParameter("@Subdiv", subdivision)};
+            new SqlParameter("@Subdiv", subdivision),
+            new SqlParameter("@userID", userid)};
 
 
 
 
-           // DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "DASHBOARD_new", param);
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Dashboard_NewAjay");
+           DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "DASHBOARD_new", param);
+            //DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "Dashboard_NewAjay");
 
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
@@ -3447,12 +3448,12 @@ namespace ComplaintTracker.DAL
             return lstComplaintSource;
         }
 
-        public static List<SelectListItem> FillGetSubDivision(string Division_ID)
+        public static List<SelectListItem> FillGetSubDivision(string Division_ID,Int64 userid)
         {
             List<SelectListItem> lstComplaintSource = new List<SelectListItem>();
             SelectListItem objBlank = new SelectListItem();
-            SqlParameter[] param ={new SqlParameter("@Division_ID",Division_ID)
-
+            SqlParameter[] param ={new SqlParameter("@Division_ID",Division_ID),
+                new SqlParameter("@userID",userid)
 
 
             };

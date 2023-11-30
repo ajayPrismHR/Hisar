@@ -49,7 +49,7 @@ namespace ComplaintTracker.Controllers
         {
            
             ModelDashboard modelDashboard = new ModelDashboard();
-            modelDashboard = Repository.GetDashBoardData(Month,division,subdivision);
+            modelDashboard = Repository.GetDashBoardData(Month,division,subdivision, Convert.ToInt64(Session["UserID"].ToString()));
             var jsonData = modelDashboard;
             return Json(jsonData, JsonRequestBehavior.AllowGet);
         }
@@ -75,7 +75,7 @@ namespace ComplaintTracker.Controllers
         public JsonResult GetSubDivision(string divisionId) //It will be fired from Jquery ajax call
         {
             List<SelectListItem> data = new List<SelectListItem>();
-            data = Repository.FillGetSubDivision(divisionId);
+            data = Repository.FillGetSubDivision(divisionId, Convert.ToInt64(Session["UserID"].ToString()));
 
             var jsonData = data;
             return Json(jsonData, JsonRequestBehavior.AllowGet);

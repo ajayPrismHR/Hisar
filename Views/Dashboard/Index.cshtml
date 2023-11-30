@@ -58,7 +58,7 @@
 
 
     <div class="row">
-        <div class="col-xl-6 col-xxl-7">
+        <div class="col-xl-6 col-xxl-12">
             <div class="card flex-fill w-100">
                 <div class="card-header">
                     <div class="card-actions float-end">
@@ -81,7 +81,7 @@
             </div>
         </div>
 
-        <div class="col-xl-6 col-xxl-5 d-flex">
+        @*<div class="col-xl-6 col-xxl-5 d-flex">
             <div class="w-100">
                 <div class="row">
                     <div class="col-sm-6">
@@ -92,7 +92,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>*@
     </div>
 
 
@@ -135,7 +135,7 @@
                             </a>
                         </div>
                     </div>
-                    <h5 class="card-title mb-0">Current Month Complaint Count</h5>
+                    <h5 class="card-title mb-0">Top 5 Complaint Categories</h5>
                 </div>
                 <div class="align-self-center chart chart-lg">
                     <canvas id="chartjs-dashboard-bar"></canvas>
@@ -168,27 +168,27 @@
                         <table class="table mb-0">
                             <tbody>
                                 <tr>
-                                    <td><i class="fas fa-circle text-primary fa-fw"></i> Total Complaints</td>
+                                    <td><i class="fas fa-circle text-primary fa-fw"></i> Complaint Closed in <1 hrs</td>
                                     <td class="text-end"><label id="r1" /></td>
                                     <td class="text-end"><label id="rp1" />0%</td>
                                 </tr>
                                 <tr>
-                                    <td><i class="fas fa-circle text-secondary fa-fw"></i> Resolved Complaints</td>
+                                    <td><i class="fas fa-circle text-secondary fa-fw"></i> Complaints Closed between 1-2 hrs</td>
                                     <td class="text-end"><label id="r2" /></td>
                                     <td class="text-end"><label id="rp2" />0%</td>
                                 </tr>
                                 <tr>
-                                    <td><i class="fas fa-circle text-info fa-fw"></i> Pending Complaints</td>
+                                    <td><i class="fas fa-circle text-info fa-fw"></i> Complaints Closed between 2-3 hrs</td>
                                     <td class="text-end"><label id="r3" /></td>
                                     <td class="text-end"><label id="rp3" />0%</td>
                                 </tr>
                                 <tr>
-                                    <td><i class="fas fa-circle text-danger fa-fw"></i> Total Complaints</td>
+                                    <td><i class="fas fa-circle text-danger fa-fw"></i> Complaints Closed between 3-4 hrs</td>
                                     <td class="text-end"><label id="r4" /></td>
                                     <td class="text-end"><label id="rp4" />0%</td>
                                 </tr>
                                 <tr>
-                                    <td><i class="fas fa-circle text-warning fa-fw"></i> Resolved Complaints</td>
+                                    <td><i class="fas fa-circle text-warning fa-fw"></i> Complaint Closed in >4 hrs</td>
                                     <td class="text-end"><label id="r5" /></td>
                                     <td class="text-end"><label id="rp5" />0%</td>
                                 </tr>
@@ -362,7 +362,7 @@
 
                         datasets: [
                       {
-                            label: "Register Complaints",
+                            label: "Resolved Complaints",
                             fill: true,
                             backgroundColor: "rgba(255,0,255,0.3)",
                             borderColor: "rgba(255,0,255,0.3)",
