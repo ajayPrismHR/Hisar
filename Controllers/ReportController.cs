@@ -905,6 +905,44 @@ namespace ComplaintTracker.Controllers
             }
 
         }
+
+
+
+        [HttpPost]
+        public ActionResult ExportToExcelMonthlyComplaint()
+        {
+
+            List<ModelRawComplaintReport> lstdata = new List<ModelRawComplaintReport>();
+            ModelReport dataObject = new ModelReport();
+
+            dataObject.draw = 0;
+            dataObject.start = 0;
+            dataObject.length = 10000000;
+            dataObject.UserID = Convert.ToInt64(Session["UserID"].ToString());
+            // Initialization.   
+            dataObject.Bill_Month = "2011-03";
+            DataSet ds = Repository.ReportRawMonthExcelComplaintData(dataObject);
+            var gv = new GridView();
+            gv.DataSource = ds;
+            gv.DataBind();
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=Raw_Complaint.xls");
+            Response.ContentType = "application/ms-excel";
+            Response.Charset = "";
+
+            using (StringWriter sw = new StringWriter())
+            {
+                using (HtmlTextWriter htw = new HtmlTextWriter(sw))
+                {
+                    gv.RenderControl(htw);
+                    Response.Output.Write(sw.ToString());
+                    Response.Flush();
+                    Response.End();
+                }
+            }
+            return View("Index");
+        }
     }
 }
 

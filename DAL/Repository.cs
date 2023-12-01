@@ -3512,5 +3512,53 @@ namespace ComplaintTracker.DAL
             return lstReportdata;
         }
 
+        public static DataSet ReportRawMonthExcelComplaintData(ModelReport dataObject)
+        {
+            SqlParameter parmretTotalRecords = new SqlParameter();
+            parmretTotalRecords.ParameterName = "@TOTALRECORDS";
+            parmretTotalRecords.DbType = DbType.Int32;
+            parmretTotalRecords.Size = 8;
+            parmretTotalRecords.Direction = ParameterDirection.Output;
+
+            int TotalRec = 0;
+
+            List<ModelRawComplaintReport> lstReportdata = new List<ModelRawComplaintReport>();
+            ModelRawComplaintReport objData = new ModelRawComplaintReport();
+            SqlParameter[] param ={
+                    new SqlParameter("@Month",dataObject.Bill_Month),
+                    new SqlParameter("@UserID",dataObject.UserID),
+                    new SqlParameter("@STARTROWINDEX",dataObject.start),
+                    new SqlParameter("@MAXIMUMROWS",dataObject.length),parmretTotalRecords};
+
+            log.Debug(" RAW_COMPLAINT IP " + HelperClass.GetIPHelper() + " Proc Start Time :  " + DateTime.Now.ToString());
+            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "SP_Monthly_Complaint_Report_New");
+            log.Debug(" RAW_COMPLAINT IP " + HelperClass.GetIPHelper() + " Proc End Time :  " + DateTime.Now.ToString());
+            if (param[3].Value != DBNull.Value)// status
+                TotalRec = Convert.ToInt32(param[3].Value);
+            else
+                TotalRec = 0;
+
+            return ds;
+
+            //if (ds.Tables.Count > 0)
+            //{
+            //    foreach (DataRow dr in ds.Tables[0].Rows)
+            //    {
+            //        objData = new ModelRawComplaintReport();
+            //        objData.ComplaintNo = Convert.ToString(dr.ItemArray[0].ToString());
+            //        objData.Customer_Name = Convert.ToString(dr.ItemArray[1].ToString());
+            //        //objData.Mobile_no = Convert.ToInt64(dr.ItemArray[2].ToString());
+            //        //objData.Category_Name = Convert.ToString(dr.ItemArray[3].ToString());
+            //        //objData.LineMan_Name = Convert.ToString(dr.ItemArray[4].ToString());
+            //        //objData.Complaint_date = Convert.ToString(dr.ItemArray[5].ToString());
+            //        //objData.Resolved_Date = Convert.ToString(dr.ItemArray[6].ToString());
+            //        //objData.Response_Time = Convert.ToString(dr.ItemArray[7].ToString());
+            //        objData.Total = TotalRec;
+            //        lstReportdata.Add(objData);
+            //    }
+            //}
+            //return lstReportdata;
+        }
+
     }
 }
