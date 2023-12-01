@@ -431,8 +431,8 @@ namespace ComplaintTracker.Controllers
         public ActionResult DetailsSaveClose(string Id) //It will be fired from Jquery ajax call
         {
 
-            ViewBag.fromDate = DateTime.Now;
-            ViewBag.toDate = DateTime.Now.AddDays(1);
+            //ViewBag.fromDate = DateTime.Now;
+            ViewBag.toDate = DateTime.Now;
             List<SelectList> _list = new List<SelectList>();
             ModelCloseComplaint objClose = new ModelCloseComplaint();
             if(Id.Substring(0,3)=="111")
