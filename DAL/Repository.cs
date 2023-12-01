@@ -3514,6 +3514,8 @@ namespace ComplaintTracker.DAL
 
         public static DataSet ReportRawMonthExcelComplaintData(ModelReport dataObject)
         {
+
+
             SqlParameter parmretTotalRecords = new SqlParameter();
             parmretTotalRecords.ParameterName = "@TOTALRECORDS";
             parmretTotalRecords.DbType = DbType.Int32;
@@ -3522,21 +3524,16 @@ namespace ComplaintTracker.DAL
 
             int TotalRec = 0;
 
-            List<ModelRawComplaintReport> lstReportdata = new List<ModelRawComplaintReport>();
             ModelRawComplaintReport objData = new ModelRawComplaintReport();
             SqlParameter[] param ={
-                    new SqlParameter("@Month",dataObject.Bill_Month),
-                    new SqlParameter("@UserID",dataObject.UserID),
-                    new SqlParameter("@STARTROWINDEX",dataObject.start),
-                    new SqlParameter("@MAXIMUMROWS",dataObject.length),parmretTotalRecords};
+                    new SqlParameter("@YearMonth",dataObject.Bill_Month),
+                    new SqlParameter("@userID",dataObject.UserID),
+                    new SqlParameter("@Sdiv",dataObject.subdivisionn)};
 
             log.Debug(" RAW_COMPLAINT IP " + HelperClass.GetIPHelper() + " Proc Start Time :  " + DateTime.Now.ToString());
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "SP_Monthly_Complaint_Report_New");
+            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "SP_Monthly_Complaint_Report_New", param);
             log.Debug(" RAW_COMPLAINT IP " + HelperClass.GetIPHelper() + " Proc End Time :  " + DateTime.Now.ToString());
-            if (param[3].Value != DBNull.Value)// status
-                TotalRec = Convert.ToInt32(param[3].Value);
-            else
-                TotalRec = 0;
+          
 
             return ds;
 
