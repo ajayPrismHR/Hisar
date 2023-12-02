@@ -20,6 +20,8 @@ using System.Xml.Linq;
 using static ComplaintTracker.JqueryDatatableParam;
 using System.Reflection;
 using System.Windows;
+using Microsoft.Office.Interop;
+using ComplaintTracker.ExcelLib;
 
 namespace ComplaintTracker.Controllers
 {
@@ -907,6 +909,29 @@ namespace ComplaintTracker.Controllers
         }
 
 
+        //[HttpPost]
+        //public ActionResult ExportToExcelMonthlyComplaint()
+        //{
+
+        //    List<ModelRawComplaintReport> lstdata = new List<ModelRawComplaintReport>();
+        //    ModelReport dataObject = new ModelReport();
+
+        //    dataObject.draw = 0;
+        //    dataObject.start = 0;
+        //    dataObject.length = 10000000;
+
+        //    // Initialization.   
+        //    dataObject.Bill_Month = Request.Form.GetValues("ddlMY")[0];
+        //    dataObject.UserID = Convert.ToInt64(Session["UserID"].ToString());
+        //    dataObject.subdivisionn = Request.Form.GetValues("ddlSubDivision")[0];
+
+        //    DataSet ds = Repository.ReportRawMonthExcelComplaintData(dataObject);
+        //    string _path = Path.Combine(Server.MapPath("~/UploadedFiles"));
+
+
+        //    ExcelMachine.ExportDataSetToExcel(ds, _path);
+        //    return RedirectToAction("ReportMonthlyComplaint");
+        //}
 
         [HttpPost]
         public ActionResult ExportToExcelMonthlyComplaint()
@@ -918,13 +943,17 @@ namespace ComplaintTracker.Controllers
             dataObject.draw = 0;
             dataObject.start = 0;
             dataObject.length = 10000000;
-            
+
             // Initialization.   
             dataObject.Bill_Month = Request.Form.GetValues("ddlMY")[0];
             dataObject.UserID = Convert.ToInt64(Session["UserID"].ToString());
             dataObject.subdivisionn = Request.Form.GetValues("ddlSubDivision")[0];
-         
+
             DataSet ds = Repository.ReportRawMonthExcelComplaintData(dataObject);
+            string _path = Path.Combine(Server.MapPath("~/UploadedFiles"));
+
+
+            //ExcelMachine.ExportDataSetToExcel(ds, _path);
             var gv = new GridView();
             gv.DataSource = ds;
             gv.DataBind();
