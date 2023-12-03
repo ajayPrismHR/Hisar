@@ -132,6 +132,7 @@
 
         $.ajax({
             type: "GET",
+            //url: '/HRPDSS/Dashboard/ddlMY',
             url: '/Dashboard/ddlMY',
             contentType: "application/json; charset=utf-8",
             datatype: JSON,
@@ -146,6 +147,8 @@
 
         $.ajax({
             type: "GET",
+
+            //url: '/HRPDSS/Dashboard/GetDivision',
             url: '/Dashboard/GetDivision',
             contentType: "application/json; charset=utf-8",
             datatype: JSON,
@@ -159,6 +162,7 @@
 
         $.ajax({
             type: "GET",
+            //url: '/HRPDSS/Dashboard/GetSubDivision',
             url: '/Dashboard/GetSubDivision',
             contentType: "application/json; charset=utf-8",
             data: { "divisionId": 1 },
@@ -175,6 +179,7 @@
             var selectedDivision = $("#ddlDivision").val();
             $.ajax({
                 type: "GET",
+                //url: '/HRPDSS/Dashboard/GetSubDivision',
                 url: '/Dashboard/GetSubDivision',
                 contentType: "application/json; charset=utf-8",
                 data: { "divisionId" : selectedDivision },
@@ -204,6 +209,7 @@
 
         myTable = $('#DPaging').dataTable({
             "ajax": {
+                //"url": "/HRPDSS/Report/ReportMonthlyComplaintSearch/",
                 "url": "/Report/ReportMonthlyComplaintSearch/",
                 "type": "POST",
                 "datatype": "json",
