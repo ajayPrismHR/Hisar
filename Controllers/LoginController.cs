@@ -66,7 +66,8 @@ namespace ComplaintTracker.Controllers
                 Session["Roll_Name"] = ds.Tables[0].Rows[0]["ROLE_NAME"].ToString();
                 Session["LoginType"] = "Active";
 
-                FormsAuthentication.SetAuthCookie(user.LoginId, false);
+                FormsAuthentication.SetAuthCookie(user.LoginId, true);
+
                 if (!string.IsNullOrEmpty(Request.Form["ReturnUrl"]))
                 {
 

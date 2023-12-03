@@ -3512,5 +3512,50 @@ namespace ComplaintTracker.DAL
             return lstReportdata;
         }
 
+        public static DataSet ReportRawMonthExcelComplaintData(ModelReport dataObject)
+        {
+
+
+            SqlParameter parmretTotalRecords = new SqlParameter();
+            parmretTotalRecords.ParameterName = "@TOTALRECORDS";
+            parmretTotalRecords.DbType = DbType.Int32;
+            parmretTotalRecords.Size = 8;
+            parmretTotalRecords.Direction = ParameterDirection.Output;
+
+            int TotalRec = 0;
+
+            ModelRawComplaintReport objData = new ModelRawComplaintReport();
+            SqlParameter[] param ={
+                    new SqlParameter("@YearMonth",dataObject.Bill_Month),
+                    new SqlParameter("@userID",dataObject.UserID),
+                    new SqlParameter("@Sdiv",dataObject.subdivisionn)};
+
+            log.Debug(" RAW_COMPLAINT IP " + HelperClass.GetIPHelper() + " Proc Start Time :  " + DateTime.Now.ToString());
+            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "SP_Monthly_Complaint_Report_New", param);
+            log.Debug(" RAW_COMPLAINT IP " + HelperClass.GetIPHelper() + " Proc End Time :  " + DateTime.Now.ToString());
+          
+
+            return ds;
+
+            //if (ds.Tables.Count > 0)
+            //{
+            //    foreach (DataRow dr in ds.Tables[0].Rows)
+            //    {
+            //        objData = new ModelRawComplaintReport();
+            //        objData.ComplaintNo = Convert.ToString(dr.ItemArray[0].ToString());
+            //        objData.Customer_Name = Convert.ToString(dr.ItemArray[1].ToString());
+            //        //objData.Mobile_no = Convert.ToInt64(dr.ItemArray[2].ToString());
+            //        //objData.Category_Name = Convert.ToString(dr.ItemArray[3].ToString());
+            //        //objData.LineMan_Name = Convert.ToString(dr.ItemArray[4].ToString());
+            //        //objData.Complaint_date = Convert.ToString(dr.ItemArray[5].ToString());
+            //        //objData.Resolved_Date = Convert.ToString(dr.ItemArray[6].ToString());
+            //        //objData.Response_Time = Convert.ToString(dr.ItemArray[7].ToString());
+            //        objData.Total = TotalRec;
+            //        lstReportdata.Add(objData);
+            //    }
+            //}
+            //return lstReportdata;
+        }
+
     }
 }

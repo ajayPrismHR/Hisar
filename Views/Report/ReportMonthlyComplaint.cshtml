@@ -48,27 +48,36 @@
                     Search with
                 </h6>
             </div>
-            <div class="card-body">
-                  <div class="row mb-3">
-                       <div class="col-12 col-lg-3">
+            @using (Html.BeginForm("ExportToExcelMonthlyComplaint", "Report", FormMethod.Post))
+            {
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-2">
                             <label>Bill Year</label>
                             @Html.DropDownList("ddlMY", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control select2", id = "ddlMY" })
                         </div>
-                       <div class="col-12 col-lg-3">
+                        <div class="col-12 col-lg-3">
                             <label>Division</label>
                             @Html.DropDownList("ddlDivision", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control select2", id = "ddlDivision", disabled = "disabled" })
                         </div>
-                       <div class="col-12 col-lg-3">
+                        <div class="col-12 col-lg-3">
                             <label>Sub Division</label>
-                            <select id="ddlSubDivision" class="form-control select2" required>
+                            <select id="ddlSubDivision" class="form-control select2" name="ddlSubDivision" required>
                             </select>
                         </div>
-                       <div class="col-12 col-lg-3">
-                             <input type="submit" value="Search" class="btn btn-dark btn-block" id="btnSearch" onclick="searchreq()" />
-                       </div>
-                  </div>
+                        <div class="col-12 col-lg-2">
+                            <input type="button" value="Search" class="btn btn-dark btn-block" id="btnSearch" onclick="searchreq()" />
+                        </div>
+
+                        <div class="col-12 col-lg-2">
+
+                            <input type="submit" value="Download" class="btn btn-dark btn-block" id="btnDownlooad" />
+
+                        </div>
+                    </div>
+                </div>
+            }
             </div>
-        </div>
     </div>
 </div>
 <div class="row">
