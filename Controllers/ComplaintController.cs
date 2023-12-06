@@ -462,7 +462,8 @@ namespace ComplaintTracker.Controllers
             }
             else
             {
-                data.status = "Closed !!! Complaint No. " + model.ComplaintNo.ToString() + " Saved Successfully...!";
+                data.status = "1";
+                data.message = "Closed !!! Complaint No. " + model.ComplaintNo.ToString() + " Saved Successfully...!";
             }
             return Json(data, JsonRequestBehavior.AllowGet);
         }
