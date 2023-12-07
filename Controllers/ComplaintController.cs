@@ -452,19 +452,23 @@ namespace ComplaintTracker.Controllers
         public async Task<JsonResult> closeComplaint(ModelCloseComplaint model)
         {
             int Status = await Repository.CloseComplaint_Save(model, Convert.ToInt32(Session["UserID"].ToString()));
-            TempData["AlertMessage"] = "Closed !!! Complaint No. " + model.ComplaintNo.ToString() + " Saved Successfully...!";
+            //int Status =  1;
+            
             var data = new Response();
             if (Status==-1)
             {
                 data.status = "-1";
                 data.message = "error in saving";
+                TempData["AlertMessage"] = "Closed !!! Complaint No. " + model.ComplaintNo.ToString() + " error in saving...!";
 
             }
             else
             {
                 data.status = "1";
                 data.message = "Closed !!! Complaint No. " + model.ComplaintNo.ToString() + " Saved Successfully...!";
+                TempData["AlertMessage"] = "Closed !!! Complaint No. " + model.ComplaintNo.ToString() + " Saved Successfully...!";
             }
+           // return RedirectToAction("Index");
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

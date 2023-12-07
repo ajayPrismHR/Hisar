@@ -44,6 +44,8 @@
     });
     function closeComplaint() {
         //var TeamDetailPostBackURL = '/HRPDSS/Complaint/closeComplaint';
+        var newUrl= '@Url.Action("Index","Complaint")';
+
         var TeamDetailPostBackURL = '/Complaint/closeComplaint';
         var model = new Object();
         model.ComplaintNo = $("#ComplaintNo").val();
@@ -58,11 +60,13 @@
             success: function (data) {
                 if (data.status == -1) {
                     $("#ClosePopup").modal('hide');
-                    swal("error in saving", "error");
+                    window.location.href = newUrl;
+                    //swal("error in saving", "error");
                 }
                 else {
                     $("#ClosePopup").modal('hide');
-                    swal("Saved Successfully", "success");
+                    window.location.href = newUrl;
+                    //swal("Saved Successfully", "success");
                 }
             },
             error: function (data) {
