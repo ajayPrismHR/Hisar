@@ -37,7 +37,7 @@
 
             $('#submitComplaint').click(function () {
                 $("#UserId").val(@Session["UserId"]);
-                $("#TO_DATE").val($('#rDate').val());
+                $("#TO_DATE").val($('#toDate').val());
             });
 
 
@@ -45,11 +45,10 @@
     function closeComplaint() {
         //var TeamDetailPostBackURL = '/HRPDSS/Complaint/closeComplaint';
         var newUrl= '@Url.Action("Index","Complaint")';
-
         var TeamDetailPostBackURL = '/Complaint/closeComplaint';
         var model = new Object();
         model.ComplaintNo = $("#ComplaintNo").val();
-        model.TO_DATE = $('#rDate').val();
+        model.TO_DATE = $('#toDate').val();
         model.OutageTypeCollectionId1 = $("#ddlOutage1").val();
         $.ajax({
             type: "GET",

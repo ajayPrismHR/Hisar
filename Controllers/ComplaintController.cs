@@ -459,7 +459,7 @@ namespace ComplaintTracker.Controllers
             {
                 data.status = "-1";
                 data.message = "error in saving";
-                TempData["AlertMessage"] = "Closed !!! Complaint No. " + model.ComplaintNo.ToString() + " error in saving...!";
+                TempData["AlertMessage"] = "Complaint No. " + model.ComplaintNo.ToString() + " error in saving...!";
 
             }
             else
