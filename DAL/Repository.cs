@@ -727,7 +727,7 @@ namespace ComplaintTracker.DAL
                     objBlank.Consumer_no = dr.ItemArray[8].ToString();
                     objBlank.LineMan_No = dr.ItemArray[6].ToString();
                     objBlank.SDO = dr.ItemArray[7].ToString();
-                    objBlank.COMPLAINT_NO1 = Convert.ToInt64(dr.ItemArray[10].ToString());
+                    objBlank.COMPLAINT_NO1 = dr.ItemArray[10].ToString();
                     objBlank.Total = TotalRec;
                     lstComplaintSource.Add(objBlank);
                 }
