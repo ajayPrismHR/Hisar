@@ -122,7 +122,8 @@
         var Close = function (recordId) {
            // var TeamDetailPostBackURL = '/HRPDSS/Complaint/DetailsSaveClose';
             var TeamDetailPostBackURL = '/Complaint/DetailsSaveClose';
-            
+
+            alert(recordId)
             $.ajax({
                 type: "GET",
                 url: TeamDetailPostBackURL,

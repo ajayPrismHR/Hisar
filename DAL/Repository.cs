@@ -705,7 +705,7 @@ namespace ComplaintTracker.DAL
                     new SqlParameter("@MAXIMUMROWS",dataObject.length)};
 
             log.Debug(" GetComplaintDetails IP " + HelperClass.GetIPHelper() + " Proc Start Time :  " + DateTime.Now.ToString());
-            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "GetComplaintDetails", param);
+            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "GetComplaintDetails_NEW1", param);
             log.Debug(" GetComplaintDetails IP " + HelperClass.GetIPHelper() + " Proc End Time :  " + DateTime.Now.ToString());
 
 
@@ -1067,6 +1067,22 @@ namespace ComplaintTracker.DAL
 
             }
             return (obj);
+        }
+
+        public static string GetComplaint_NO(string id)
+        {
+            string complaint_no = "";
+            SqlParameter[] param ={
+                    new SqlParameter("@Complaint_no",id)
+                                       };
+            DataSet ds = SqlHelper.ExecuteDataset(HelperClass.Connection, CommandType.StoredProcedure, "ReGenerateComplain", param);
+            //Bind Complaint generic list using dataRow     
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                complaint_no = Convert.ToString(dr["Complaint_No"]);
+                
+            }
+            return (complaint_no);
         }
 
         public static Response ChangeComplaintType_Save(COMPLAINT modelRemark, int UserID)

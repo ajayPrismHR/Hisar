@@ -22,6 +22,7 @@ using System.Web.UI;
 using System.Xml.Linq;
 using static ComplaintTracker.JqueryDatatableParam;
 using static System.Net.WebRequestMethods;
+using Microsoft.Office.Interop.Excel;
 
 
 namespace ComplaintTracker.Controllers
@@ -435,14 +436,13 @@ namespace ComplaintTracker.Controllers
             ViewBag.toDate = DateTime.Now;
             List<SelectList> _list = new List<SelectList>();
             ModelCloseComplaint objClose = new ModelCloseComplaint();
-            if(Id.Substring(0,3)=="111")
+            if (Id.Substring(0, 3) == "999")
             {
-                Id= "HIS"+Id.Substring(3);
+                Id=Id.Substring(3,Id.Length-3);
             }
-            if (Id.Substring(0, 3) == "222")
-            {
-                Id = "DH" + Id.Substring(3);
-            }
+            string complaint_no = Repository.GetComplaint_NO(Id);
+
+            Id = complaint_no;
             objClose.ComplaintNo = Id;
             objClose.OutageTypeCollection1 = Repository.GetOutageType();
             return PartialView("_Close", objClose);
